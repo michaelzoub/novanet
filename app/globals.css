@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    scroll-behavior: smooth;
+    --navbar-height: 64px;
+}
+
+body {
+    @apply font-sans bg-white text-slate-900;
+}
+
+.custom-marker {
+    /* Mapbox marker base class, overridden in component as needed */
+}
+
+/* Dialog animations */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes zoom-in {
+    from {
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes zoom-out {
+    from {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+}
+
+@keyframes slide-in-from-left {
+    from {
+        transform: translate(-50%, -50%) translateX(-10px);
+    }
+    to {
+        transform: translate(-50%, -50%) translateX(0);
+    }
+}
+
+@keyframes slide-in-from-top {
+    from {
+        transform: translate(-50%, -50%) translateY(-10px);
+    }
+    to {
+        transform: translate(-50%, -50%) translateY(0);
+    }
+}
+
+@keyframes slide-out-to-left {
+    from {
+        transform: translate(-50%, -50%) translateX(0);
+    }
+    to {
+        transform: translate(-50%, -50%) translateX(-10px);
+    }
+}
+
+@keyframes slide-out-to-top {
+    from {
+        transform: translate(-50%, -50%) translateY(0);
+    }
+    to {
+        transform: translate(-50%, -50%) translateY(-10px);
+    }
+}
+
+.animate-in {
+    animation: fade-in 0.2s ease-out;
+}
+
+.animate-out {
+    animation: fade-out 0.2s ease-in;
+}
+
+.fade-in-0 {
+    animation: fade-in 0.2s ease-out;
+}
+
+.fade-out-0 {
+    animation: fade-out 0.2s ease-in;
+}
+
+.zoom-in-95 {
+    animation: zoom-in 0.2s ease-out;
+}
+
+.zoom-out-95 {
+    animation: zoom-out 0.2s ease-in;
+}
+
+.slide-in-from-left-1\/2 {
+    animation: slide-in-from-left 0.2s ease-out;
+}
+
+.slide-in-from-top-\[48\%\] {
+    animation: slide-in-from-top 0.2s ease-out;
+}
+
+.slide-out-to-left-1\/2 {
+    animation: slide-out-to-left 0.2s ease-in;
+}
+
+.slide-out-to-top-\[48\%\] {
+    animation: slide-out-to-top 0.2s ease-in;
+}
