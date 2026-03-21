@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import Results from "@/components/Results";
@@ -18,7 +19,9 @@ export default function Home() {
       <Reviews />
       <Zones />
       <Process />
-      <Contact />
+      <Suspense fallback={null}>
+        <Contact />
+      </Suspense>
       <Footer />
     </main>
   );
