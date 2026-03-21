@@ -7,6 +7,7 @@ import Reviews from "@/components/Reviews";
 import Zones from "@/components/Zones";
 import Process from "@/components/Process";
 import Contact from "@/components/Contact";
+import ReferralsPromo from "@/components/ReferralsPromo";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
       <Reviews />
       <Zones />
       <Process />
+      <ReferralsPromo />
       <Suspense fallback={null}>
         <Contact />
       </Suspense>
