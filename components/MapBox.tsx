@@ -42,6 +42,7 @@ export default function MapBox() {
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
+      style: "mapbox://styles/mapbox/streets-v12",
       center: [-73.62, 45.473],
       zoom: zoomAmount,
       pitch: 25,
