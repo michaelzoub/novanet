@@ -177,6 +177,29 @@ export default function ReferralsPage() {
                     : t("referrals.lookupSubmit")}
                 </button>
               </form>
+
+              {result && (
+                <div className="mt-6 border border-gray-200 bg-slate-50 p-5">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#2563eb]">
+                    {t("referrals.yourLink")}
+                  </p>
+                  <p className="mt-3 break-all text-sm font-semibold text-slate-900">
+                    {result.referralLink}
+                  </p>
+                  <p className="mt-4 text-sm text-slate-600">
+                    {t("referrals.code")}:{" "}
+                    <span className="font-semibold">
+                      {result.profile.referral_code}
+                    </span>
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    {t("referrals.count")}:{" "}
+                    <span className="font-semibold">
+                      {result.profile.referral_count}
+                    </span>
+                  </p>
+                </div>
+              )}
             </section>
           </div>
 

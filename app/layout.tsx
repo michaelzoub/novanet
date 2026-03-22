@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { LanguageProvider } from "@/context/LanguageContext";
 import Navbar from "@/components/Navbar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const metadata: Metadata = {
   title: "Nova Net – Lavage Extérieur",
@@ -18,10 +19,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-white text-slate-900 antialiased">
+      <body className="h-screen overflow-hidden bg-white text-slate-900 antialiased">
         <LanguageProvider>
-          <Navbar />
-          <div className="pt-[var(--navbar-height,64px)]">{children}</div>
+          <ScrollArea className="h-screen">
+            <Navbar />
+            <div className="pt-[var(--navbar-height,64px)]">{children}</div>
+          </ScrollArea>
         </LanguageProvider>
       </body>
     </html>
