@@ -12,6 +12,7 @@ type Language = "fr" | "en";
 
 interface LanguageContextType {
   lang: Language;
+  ready: boolean;
   setLang: (lang: Language) => void;
   t: (key: string) => string;
 }
@@ -165,12 +166,14 @@ const translations = {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Language>("fr");
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const storedLang = window.localStorage.getItem("novanet-lang");
     if (storedLang === "fr" || storedLang === "en") {
       setLang(storedLang);
     }
+    setReady(true);
   }, []);
 
   useEffect(() => {
@@ -183,7 +186,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{ lang, ready, setLang, t }}>
       {children}
     </LanguageContext.Provider>
   );

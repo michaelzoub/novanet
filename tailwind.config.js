@@ -15,8 +15,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["Montserrat", "system-ui", "sans-serif"],
-        display: ["Barlow Condensed", "system-ui", "sans-serif"]
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "system-ui", "sans-serif"]
       },
       keyframes: {
         "fade-in": {

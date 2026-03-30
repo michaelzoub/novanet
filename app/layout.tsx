@@ -3,6 +3,21 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { LanguageProvider } from "@/context/LanguageContext";
 import Navbar from "@/components/Navbar";
+import { Barlow_Condensed, Montserrat } from "next/font/google";
+
+const fontSans = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const fontDisplay = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
@@ -60,13 +75,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="fr" className="scroll-smooth">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Montserrat:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="fr"
+      className={`scroll-smooth ${fontSans.variable} ${fontDisplay.variable}`}
+    >
       <body className="min-h-screen overflow-x-hidden bg-white text-slate-900 antialiased">
         <LanguageProvider>
           <Navbar />
