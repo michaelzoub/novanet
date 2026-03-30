@@ -185,3 +185,23 @@ body {
 .animate-results-fade-in {
     animation: results-fade-in 0.38s ease-out both;
 }
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.shimmer-bg {
+    background-image: linear-gradient(
+        90deg,
+        rgba(148, 163, 184, 0.12) 0%,
+        rgba(203, 213, 225, 0.35) 50%,
+        rgba(148, 163, 184, 0.12) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.1s infinite linear;
+}

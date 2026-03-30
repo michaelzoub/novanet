@@ -17,10 +17,8 @@ export default function Results() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
-  // uiReady = wait only for slide 0 images, so initial render is immediate.
-  // allImagesReady = everything preloaded; used later only if we want.
-  const [uiReady, setUiReady] = useState(true);
-  const [allImagesReady, setAllImagesReady] = useState(false);
+  // uiReady = wait only for slide 0 images (before/after) so the first paint isn't grey.
+  const [uiReady, setUiReady] = useState(false);
 
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const loadedUrlsRef = useRef<Set<string>>(new Set());
@@ -81,9 +79,7 @@ export default function Results() {
       setUiReady(true);
 
       // Background preload starts only after slide 0 is done.
-      void loadImages(remaining).then(() => {
-        if (!cancelled) setAllImagesReady(true);
-      });
+    void loadImages(remaining);
     });
 
     return () => {
@@ -216,8 +212,11 @@ export default function Results() {
               onTouchEnd={() => setIsDragging(false)}
             >
               {!uiReady && (
-                <div className="absolute inset-0 flex items-center justify-center bg-slate-100 z-10" aria-hidden>
-                  <div className="h-8 w-8 animate-pulse rounded-full border-2 border-[#0f1f4b]/20 border-t-[#0f1f4b]" />
+                <div className="absolute inset-0 z-10" aria-hidden>
+                  <div className="h-full w-full shimmer-bg" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-full border-2 border-slate-200 border-t-[#0f1f4b] animate-spin" />
+                  </div>
                 </div>
               )}
 
@@ -227,7 +226,11 @@ export default function Results() {
                   <div
                     key={p.before}
                     className={`absolute inset-0 transition-opacity will-change-[opacity] ${
-                      active ? "opacity-100" : "opacity-0 pointer-events-none"
+                      active
+                        ? uiReady
+                          ? "opacity-100"
+                          : "opacity-0 pointer-events-none"
+                        : "opacity-0 pointer-events-none"
                     }`}
                     style={{
                       transitionDuration: `${fadeMs}ms`,

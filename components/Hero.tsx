@@ -83,7 +83,7 @@ export default function Hero() {
         className="absolute inset-0 md:hidden"
         style={{
           background:
-            "linear-gradient(to right, rgb(255 255 255) 0%, rgb(255 255 255) 14%, rgba(255 255 255 / 0.82) 32%, rgba(255 255 255 / 0.28) 58%, rgba(255 255 255 / 0) 86%)",
+            "linear-gradient(to right, rgb(255 255 255) 0%, rgb(255 255 255) 14%, rgba(255 255 255 / 0.64) 32%, rgba(255 255 255 / 0.18) 58%, rgba(255 255 255 / 0) 86%)",
         }}
       />
       <div
@@ -107,10 +107,10 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-                className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#0f1f4b]/12 bg-[#0f1f4b]/[0.06] px-3 py-1.5"
+                className="mb-6 inline-flex max-w-[90vw] items-center gap-2 whitespace-nowrap overflow-hidden text-ellipsis rounded-full border border-[#0f1f4b]/12 bg-[#0f1f4b]/[0.06] px-2 py-1.5 sm:px-3 sm:py-1.5"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-[#0f1f4b]" />
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-[#0f1f4b]">
+                <span className="text-[9px] font-semibold uppercase tracking-widest text-[#0f1f4b] sm:text-[10px]">
                   {copy.badge}
                 </span>
               </motion.div>
@@ -130,7 +130,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                className="mb-8 max-w-xl text-[15px] leading-relaxed text-gray-600"
+                className="mb-8 max-w-xl text-[14px] leading-relaxed text-slate-700 sm:text-[15px]"
               >
                 {copy.description}
               </motion.p>
