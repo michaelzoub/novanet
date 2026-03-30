@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 
 const beforeAfterPairs = [
@@ -22,12 +23,37 @@ const beforeAfterPairs = [
   },
 ];
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 export default function Results() {
   const { lang } = useLanguage();
+  const reduceMotion = useReducedMotion();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
+  const [imagesReady, setImagesReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const urls = beforeAfterPairs.flatMap((p) => [p.before, p.after]);
+    void Promise.all(
+      urls.map(
+        (src) =>
+          new Promise<void>((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            img.src = src;
+          }),
+      ),
+    ).then(() => {
+      if (!cancelled) setImagesReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -111,6 +137,8 @@ export default function Results() {
           after: "After",
         };
 
+  const fadeDuration = reduceMotion ? 0.12 : 0.52;
+
   return (
     <section id="resultats" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-8 md:px-16">
@@ -128,7 +156,7 @@ export default function Results() {
           </div>
         </div>
         <div className="relative">
-          <div className="relative rounded-sm overflow-hidden">
+          <div className="relative rounded-sm overflow-hidden bg-slate-100">
             <div
               ref={sliderRef}
               className="relative h-[500px] w-full cursor-col-resize select-none"
@@ -137,77 +165,99 @@ export default function Results() {
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
             >
-              <div
-                key={currentSlide}
-                className="animate-results-fade-in absolute inset-0"
-              >
-                {/* Before Image (Background) */}
-                <div className="absolute inset-0">
-                  <img
-                    src={currentPair.before}
-                    alt={`${copy.before} — ${currentPair.title}`}
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority={currentSlide === 0 ? "high" : "auto"}
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                </div>
-                {/* After Image (Clipped) */}
-                <div
-                  className="absolute inset-0 overflow-hidden"
-                  style={{
-                    clipPath: `inset(0 0 0 ${100 - sliderPosition}%)`,
-                  }}
-                >
-                  <img
-                    src={currentPair.after}
-                    alt={`${copy.after} — ${currentPair.title}`}
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority={currentSlide === 0 ? "high" : "auto"}
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                </div>
-                {/* Slider Line */}
-                <div
-                  className="absolute bottom-0 top-0 z-10 w-0.5 bg-white shadow-lg"
-                  style={{ left: `${sliderPosition}%` }}
-                >
-                  <div className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 cursor-grab items-center justify-center rounded-full bg-white shadow-lg active:cursor-grabbing">
-                    <div className="flex gap-1">
-                      <div className="h-4 w-1 rounded bg-gray-400"></div>
-                      <div className="h-4 w-1 rounded bg-gray-400"></div>
+              <AnimatePresence mode="sync" initial={false}>
+                {imagesReady && (
+                  <motion.div
+                    key={currentSlide}
+                    className="absolute inset-0 will-change-[opacity]"
+                    initial={{ opacity: reduceMotion ? 1 : 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: reduceMotion ? 1 : 0 }}
+                    transition={{
+                      duration: fadeDuration,
+                      ease: EASE,
+                    }}
+                  >
+                    <div className="absolute inset-0">
+                      <img
+                        src={currentPair.before}
+                        alt={`${copy.before} — ${currentPair.title}`}
+                        loading="eager"
+                        decoding="async"
+                        fetchPriority={currentSlide === 0 ? "high" : "auto"}
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                    </div>
+                    <div
+                      className="absolute inset-0 overflow-hidden"
+                      style={{
+                        clipPath: `inset(0 0 0 ${100 - sliderPosition}%)`,
+                      }}
+                    >
+                      <img
+                        src={currentPair.after}
+                        alt={`${copy.after} — ${currentPair.title}`}
+                        loading="eager"
+                        decoding="async"
+                        fetchPriority={currentSlide === 0 ? "high" : "auto"}
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {imagesReady && (
+                <>
+                  <div
+                    className="absolute bottom-0 top-0 z-10 w-0.5 bg-white shadow-lg"
+                    style={{ left: `${sliderPosition}%` }}
+                  >
+                    <div className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 cursor-grab items-center justify-center rounded-full bg-white shadow-lg active:cursor-grabbing">
+                      <div className="flex gap-1">
+                        <div className="h-4 w-1 rounded bg-gray-400"></div>
+                        <div className="h-4 w-1 rounded bg-gray-400"></div>
+                      </div>
                     </div>
                   </div>
+                  <div className="pointer-events-none absolute left-4 top-4 z-10 rounded bg-black/50 px-3 py-1.5 text-sm font-semibold text-white">
+                    {copy.before}
+                  </div>
+                  <div className="pointer-events-none absolute right-4 top-4 z-10 rounded bg-black/50 px-3 py-1.5 text-sm font-semibold text-white">
+                    {copy.after}
+                  </div>
+                </>
+              )}
+              {!imagesReady && (
+                <div
+                  className="absolute inset-0 flex items-center justify-center bg-slate-100"
+                  aria-hidden
+                >
+                  <div className="h-8 w-8 animate-pulse rounded-full border-2 border-[#0f1f4b]/20 border-t-[#0f1f4b]" />
                 </div>
-                {/* Labels */}
-                <div className="absolute left-4 top-4 rounded bg-black/50 px-3 py-1.5 text-sm font-semibold text-white">
-                  {copy.before}
-                </div>
-                <div className="absolute right-4 top-4 rounded bg-black/50 px-3 py-1.5 text-sm font-semibold text-white">
-                  {copy.after}
-                </div>
-              </div>
+              )}
             </div>
           </div>
           <button
+            type="button"
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-[#0f1f4b] hover:text-white transition-colors z-20"
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-[#0f1f4b] hover:text-white transition-colors duration-300 z-20"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
+            type="button"
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-[#0f1f4b] hover:text-white transition-colors z-20"
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-[#0f1f4b] hover:text-white transition-colors duration-300 z-20"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
           <div className="flex justify-center gap-2 mt-5">
             {beforeAfterPairs.map((_, idx) => (
               <button
+                type="button"
                 key={idx}
                 onClick={() => goToSlide(idx)}
-                className={`h-1.5 rounded-full transition-all ${
+                className={`h-1.5 rounded-full transition-all duration-300 ${
                   idx === currentSlide
                     ? "w-6 bg-[#0f1f4b]"
                     : "w-1.5 bg-gray-300"

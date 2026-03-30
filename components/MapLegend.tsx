@@ -11,12 +11,18 @@ export default function MapLegend() {
           dashedLabel: "Zone desservie",
           boundary:
             "Nous intervenons à l’intérieur de la zone en pointillés (île de Montréal).",
+          priorityLabel: "Priorité locale",
+          priorityDetail:
+            "On priorise les quartiers dans cette zone (NDG, Westmount).",
         }
       : {
           title: "Map legend",
           dashedLabel: "Service area",
           boundary:
             "We serve inside the dotted area — our Island of Montreal coverage.",
+          priorityLabel: "Local priority",
+          priorityDetail:
+            "We prioritize neighborhoods in this zone (NDG, Westmount).",
         };
 
   return (
@@ -33,6 +39,20 @@ export default function MapLegend() {
           <span className="text-[11px] font-medium text-[#0f1f4b]">
             {copy.dashedLabel}
           </span>
+        </div>
+        <div className="mb-2 flex items-start gap-2">
+          <span
+            className="mt-0.5 inline-block h-4 w-8 shrink-0 rounded-sm bg-sky-400/45 ring-1 ring-sky-500/50"
+            aria-hidden
+          />
+          <div>
+            <div className="text-[11px] font-medium text-[#0f1f4b]">
+              {copy.priorityLabel}
+            </div>
+            <p className="text-[11px] leading-snug text-gray-500">
+              {copy.priorityDetail}
+            </p>
+          </div>
         </div>
         <p className="text-[11px] leading-snug text-gray-500">{copy.boundary}</p>
       </div>

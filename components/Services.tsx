@@ -1,10 +1,17 @@
 "use client";
 
+import { useRef } from "react";
 import { Monitor, Droplets, Home, Clock } from "lucide-react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
+
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function Services() {
   const { lang } = useLanguage();
+  const reduceMotion = useReducedMotion();
+  const gridRef = useRef<HTMLDivElement>(null);
+  const gridInView = useInView(gridRef, { once: true, margin: "-48px" });
 
   const copy =
     lang === "fr"
@@ -93,10 +100,38 @@ export default function Services() {
         <p className="mb-10 max-w-2xl text-[15px] leading-relaxed text-gray-600">
           {copy.description}
         </p>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <motion.div
+          ref={gridRef}
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          initial="hidden"
+          animate={gridInView ? "visible" : "hidden"}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: reduceMotion ? 0 : 0.12,
+                delayChildren: reduceMotion ? 0 : 0.05,
+              },
+            },
+          }}
+        >
           {copy.services.map((service, idx) => (
-            <div
+            <motion.div
               key={idx}
+              variants={{
+                hidden: {
+                  opacity: 0,
+                  x: reduceMotion ? 0 : -32,
+                },
+                visible: {
+                  opacity: 1,
+                  x: 0,
+                  transition: {
+                    duration: reduceMotion ? 0.01 : 0.58,
+                    ease: EASE,
+                  },
+                },
+              }}
               className="flex h-full min-w-0 flex-col rounded-sm border border-gray-200 bg-white p-8 md:p-9 transition-all duration-300 ease-out hover:border-[#0f1f4b]/30 hover:shadow-md"
             >
               <div
@@ -121,9 +156,9 @@ export default function Services() {
                   </span>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
 html {
     scroll-behavior: smooth;
     /* Évite le décalage quand Radix verrouille le défilement (dialogue Embauche) */
@@ -19,6 +25,8 @@ section[id] {
 
 body {
     @apply font-sans bg-white text-slate-900;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
 }
 
 /* Institutional CTAs: minimal radius, wide tracking, navy — refined / “high tier” */

@@ -39,14 +39,15 @@ export default function MapBox() {
 
     mapboxgl.accessToken = token;
 
-    let zoomAmount = 10.35;
+    /* Slightly west + closer zoom so NDG / Westmount read clearly */
+    let zoomAmount = 10.82;
     let longitudeCorrection = -0.045;
     let latitudeCorrection = 0.053;
 
     if (window.innerWidth < 700) {
       latitudeCorrection = 0.094;
       longitudeCorrection = -0.082;
-      zoomAmount = 9.55;
+      zoomAmount = 9.92;
     }
 
     const mapStyle =
@@ -62,7 +63,7 @@ export default function MapBox() {
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: mapStyle,
-      center: [-73.62, 45.535],
+      center: [-73.665, 45.508],
       zoom: zoomAmount,
       pitch: 25,
       bearing: -32,
@@ -156,6 +157,8 @@ export default function MapBox() {
 
     return () => {
       window.removeEventListener("resize", resizeMap);
+      markersRef.current.forEach((m) => m.remove());
+      markersRef.current = [];
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;

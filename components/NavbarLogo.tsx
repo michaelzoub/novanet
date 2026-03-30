@@ -1,11 +1,12 @@
 "use client";
 
-/** Nom de fichier sans espaces — évite les 404 / encodage différent selon les CDN. */
-const LOGO_SRC = "/nova-net-logo.jpg";
+/** Fichier dans /public — espaces encodés pour l’URL. */
+const LOGO_SRC =
+  "/novanet.png";
 
 export default function NavbarLogo() {
   return (
-    <span className="relative inline-block h-12 w-[176px] shrink-0 sm:h-[52px] sm:w-[212px]">
+    <span className="relative inline-block h-[52px] w-[196px] shrink-0 sm:h-[58px] sm:w-[236px]">
       <img
         src={LOGO_SRC}
         alt="Nova Net"
