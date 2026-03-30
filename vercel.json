@@ -3,7 +3,7 @@
   "outputDirectory": ".next",
   "headers": [
     {
-      "source": "/(before|after).*\\.jpeg",
+      "source": "/before1.jpeg",
       "headers": [
         {
           "key": "Cache-Control",
@@ -12,7 +12,53 @@
       ]
     },
     {
-      "source": "/pressure-cooker\\.jpg",
+      "source": "/before2.jpeg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+    ,
+    {
+      "source": "/before3.jpeg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/after1.jpeg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/after2.jpeg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/after3.jpeg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/pressure-cooker.jpg",
       "headers": [
         {
           "key": "Cache-Control",
