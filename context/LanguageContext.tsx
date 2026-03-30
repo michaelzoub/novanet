@@ -12,6 +12,7 @@ type Language = "fr" | "en";
 
 interface LanguageContextType {
   lang: Language;
+  ready: boolean;
   setLang: (lang: Language) => void;
   t: (key: string) => string;
 }
@@ -27,11 +28,18 @@ const translations = {
     quote: "Soumission gratuite",
     services: "Services",
     results: "Résultats",
+    refer: "Parrainer",
 
     // Hiring Dialog
     "hiring.title": "Postuler chez Nova Net",
     "hiring.description":
-      "Rejoignez notre équipe! Remplissez le formulaire ci-dessous et téléversez votre CV.",
+      "Rejoignez notre équipe ! Remplissez le formulaire ci-dessous et téléversez votre CV.",
+    "hiring.whyJoin": "Pourquoi nous rejoindre ?",
+    "hiring.whyJoinHint": "afficher",
+    "hiring.whyJoin1": "Compétences en vente et en communication",
+    "hiring.whyJoin2": "Rémunération à la commission",
+    "hiring.whyJoin3": "Les meilleurs peuvent gagner plus de 1 000 $ par semaine",
+    "hiring.whyJoin4": "Primes de performance offertes",
     "hiring.firstName": "Prénom",
     "hiring.lastName": "Nom",
     "hiring.email": "Email",
@@ -55,32 +63,32 @@ const translations = {
       "Format de fichier non supporté. Veuillez utiliser PDF ou Word.",
     "hiring.fileReadError": "Erreur lors de la lecture du fichier.",
     "contact.referralActive":
-      "Offre de parrainage active: la personne qui vous a refere et vous obtenez chacun 20 % une fois ce formulaire complete.",
+      "Offre de parrainage active : vous et la personne qui vous a référé obtenez chacun 20 % une fois ce formulaire complété.",
     "referrals.eyebrow": "Programme de parrainage",
-    "referrals.title": "Creez votre lien et offrez 20 % a vos proches.",
+    "referrals.title": "Créez votre lien et offrez 20 % à vos proches.",
     "referrals.description":
-      "Quand une personne utilise votre lien, arrive sur l'accueil et complete le formulaire de contact, vous obtenez chacun 20 % et votre compteur augmente de 1.",
-    "referrals.createTitle": "Generer un lien",
+      "Lorsqu'une personne utilise votre lien, arrive sur l'accueil et complète le formulaire de contact, vous obtenez chacun 20 % et votre compteur augmente de 1.",
+    "referrals.createTitle": "Générer un lien",
     "referrals.createDescription":
       "Entrez votre nom complet pour obtenir un lien unique.",
     "referrals.fullName": "Nom complet",
-    "referrals.createError": "Impossible de creer votre lien de parrainage.",
-    "referrals.createSubmitting": "Creation en cours...",
-    "referrals.createSubmit": "Creer mon lien",
-    "referrals.lookupTitle": "Verifier un parrainage",
+    "referrals.createError": "Impossible de créer votre lien de parrainage.",
+    "referrals.createSubmitting": "Création en cours…",
+    "referrals.createSubmit": "Créer mon lien",
+    "referrals.lookupTitle": "Vérifier un parrainage",
     "referrals.lookupDescription":
       "Entrez votre nom complet pour retrouver votre lien et votre compteur.",
     "referrals.lookupError": "Impossible de retrouver ce profil de parrainage.",
-    "referrals.lookupSubmitting": "Verification...",
-    "referrals.lookupSubmit": "Verifier mon lien",
+    "referrals.lookupSubmitting": "Vérification…",
+    "referrals.lookupSubmit": "Vérifier mon lien",
     "referrals.howItWorks": "Fonctionnement",
-    "referrals.step1": "1. Vous creez un lien personnel avec votre prenom.",
+    "referrals.step1": "1. Vous créez un lien personnel avec votre prénom.",
     "referrals.step2":
       "2. Votre proche arrive sur la page d'accueil via ce lien.",
     "referrals.step3":
-      "3. Le parrainage compte seulement apres le formulaire de contact complete.",
+      "3. Le parrainage compte seulement après le formulaire de contact complété.",
     "referrals.step4":
-      "4. Le referrer et la personne referee obtiennent chacun 20 %.",
+      "4. Le parrain et la personne parrainée obtiennent chacun 20 %.",
     "referrals.yourLink": "Votre lien",
     "referrals.code": "Code",
     "referrals.count": "Parrainages qualifies",
@@ -91,11 +99,18 @@ const translations = {
     quote: "Free Quote",
     services: "Services",
     results: "Results",
+    refer: "Refer",
 
     // Hiring Dialog
     "hiring.title": "Apply to Nova Net",
     "hiring.description":
       "Join our team! Fill out the form below and upload your CV.",
+    "hiring.whyJoin": "Why join us",
+    "hiring.whyJoinHint": "show",
+    "hiring.whyJoin1": "Sales and communication skills",
+    "hiring.whyJoin2": "Commission-based pay",
+    "hiring.whyJoin3": "Top performers earn $1,000+/week",
+    "hiring.whyJoin4": "Performance bonuses available",
     "hiring.firstName": "First Name",
     "hiring.lastName": "Last Name",
     "hiring.email": "Email",
@@ -151,12 +166,14 @@ const translations = {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Language>("fr");
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const storedLang = window.localStorage.getItem("novanet-lang");
     if (storedLang === "fr" || storedLang === "en") {
       setLang(storedLang);
     }
+    setReady(true);
   }, []);
 
   useEffect(() => {
@@ -169,7 +186,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{ lang, ready, setLang, t }}>
       {children}
     </LanguageContext.Provider>
   );

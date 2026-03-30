@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
+import { scrollToSectionById } from "@/lib/scroll-to-section";
+import NavbarLogo from "./NavbarLogo";
 
 export default function Footer() {
   const router = useRouter();
@@ -11,28 +13,22 @@ export default function Footer() {
     lang === "fr"
       ? {
           description:
-            "Service professionnel de lavage exterieur haute performance dans la region du Grand Montreal.",
+            "Service professionnel de lavage extérieur haute performance dans la région du Grand Montréal.",
           company: "Entreprise",
           services: "Services",
-          legal: "Legal",
-          rights: "Tous droits reserves.",
+          rights: "Tous droits réservés.",
           links: {
             company: [
-              { label: "A propos", href: "#about" },
+              { label: "À propos", href: "#about" },
               { label: "Services", href: "#services" },
               { label: "Portfolio", href: "#resultats" },
               { label: "Contact", href: "#contact" },
             ],
             services: [
-              { label: "Lavage de Vitres", href: "#services" },
-              { label: "Lavage a Pression", href: "#services" },
-              { label: "Scellant de Paves", href: "#services" },
+              { label: "Lavage de vitres", href: "#services" },
+              { label: "Lavage à pression", href: "#services" },
+              { label: "Scellant de pavés", href: "#services" },
               { label: "Sablage", href: "#services" },
-            ],
-            legal: [
-              { label: "Politique de confidentialite", href: "#" },
-              { label: "Conditions d'utilisation", href: "#" },
-              { label: "Mentions legales", href: "#" },
             ],
           },
         }
@@ -41,7 +37,6 @@ export default function Footer() {
             "High-performance professional exterior cleaning across Greater Montreal.",
           company: "Company",
           services: "Services",
-          legal: "Legal",
           rights: "All rights reserved.",
           links: {
             company: [
@@ -56,11 +51,6 @@ export default function Footer() {
               { label: "Paver Sealing", href: "#services" },
               { label: "Sanding", href: "#services" },
             ],
-            legal: [
-              { label: "Privacy Policy", href: "#" },
-              { label: "Terms of Use", href: "#" },
-              { label: "Legal Notice", href: "#" },
-            ],
           },
         };
 
@@ -74,19 +64,7 @@ export default function Footer() {
       const element = document.getElementById(targetId);
 
       if (element) {
-        const navbarHeight = parseInt(
-          getComputedStyle(document.documentElement)
-            .getPropertyValue("--navbar-height")
-            .replace("px", "") || "64",
-          10,
-        );
-        const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth",
-        });
+        scrollToSectionById(targetId);
       } else {
         router.push(href);
       }
@@ -96,9 +74,11 @@ export default function Footer() {
   return (
     <footer className="border-t border-gray-200 bg-gray-50 px-8 py-12 md:px-16">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 grid grid-cols-1 gap-10 md:grid-cols-4">
+        <div className="mb-10 grid grid-cols-1 gap-10 md:grid-cols-3">
           <div>
-            <div className="mb-3 text-xl font-bold text-[#0f1f4b]">Nova Net</div>
+            <div className="mb-3 flex items-center">
+              <NavbarLogo />
+            </div>
             <p className="text-[13px] leading-relaxed text-gray-600">
               {copy.description}
             </p>
@@ -113,7 +93,7 @@ export default function Footer() {
                   key={idx}
                   href={link.href}
                   onClick={(e) => handleSmoothScroll(e, link.href)}
-                  className="block cursor-pointer text-[13px] text-gray-600 transition-colors hover:text-[#2563eb]"
+                  className="block cursor-pointer text-[13px] text-gray-600 transition-colors hover:text-[#0f1f4b]"
                 >
                   {link.label}
                 </a>
@@ -130,24 +110,7 @@ export default function Footer() {
                   key={idx}
                   href={link.href}
                   onClick={(e) => handleSmoothScroll(e, link.href)}
-                  className="block cursor-pointer text-[13px] text-gray-600 transition-colors hover:text-[#2563eb]"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-              {copy.legal}
-            </h4>
-            <div className="space-y-1.5">
-              {copy.links.legal.map((link, idx) => (
-                <a
-                  key={idx}
-                  href={link.href}
-                  onClick={(e) => handleSmoothScroll(e, link.href)}
-                  className="block cursor-pointer text-[13px] text-gray-600 transition-colors hover:text-[#2563eb]"
+                  className="block cursor-pointer text-[13px] text-gray-600 transition-colors hover:text-[#0f1f4b]"
                 >
                   {link.label}
                 </a>

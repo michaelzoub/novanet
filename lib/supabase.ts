@@ -369,6 +369,16 @@ export const referralManager = {
     if (error) throw error;
   },
 
+  async getAllReferralProfiles() {
+    const { data, error } = await supabaseAdmin
+      .from("referral_profiles")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return data as ReferralProfile[];
+  },
+
   async createReferralConversion(
     conversion: Omit<ReferralConversion, "id" | "created_at">,
   ) {

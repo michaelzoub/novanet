@@ -77,12 +77,12 @@ export async function POST(request: Request) {
               <style>
                 body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
                 .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background-color: #2563eb; color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+                .header { background-color: #0f1f4b; color: white; padding: 20px; border-radius: 8px 8px 0 0; }
                 .content { background-color: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }
                 .field { margin-bottom: 20px; }
                 .label { font-weight: bold; color: #0f1f4b; margin-bottom: 5px; display: block; }
                 .value { color: #374151; }
-                .message-box { background-color: white; padding: 15px; border-left: 4px solid #2563eb; margin-top: 10px; }
+                .message-box { background-color: white; padding: 15px; border-left: 4px solid #0f1f4b; margin-top: 10px; }
                 .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }
               </style>
             </head>
@@ -148,7 +148,7 @@ export async function POST(request: Request) {
               <style>
                 body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
                 .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background-color: #2563eb; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }
+                .header { background-color: #0f1f4b; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }
                 .content { background-color: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }
                 .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }
               </style>

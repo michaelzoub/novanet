@@ -3,49 +3,31 @@
 import { Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
-const values = [
-  {
-    title: "Qualité Professionnelle",
-    description:
-      "Nous utilisons uniquement des équipements et produits de qualité supérieure pour garantir des résultats durables.",
-  },
-  {
-    title: "Service Rapide",
-    description:
-      "Notre équipe expérimentée travaille efficacement pour minimiser les délais sans compromettre la qualité.",
-  },
-  {
-    title: "Satisfaction Garantie",
-    description:
-      "Votre satisfaction est notre priorité. Nous ne considérons pas le travail terminé tant que vous n'êtes pas entièrement satisfait.",
-  },
-];
-
 export default function About() {
   const { lang } = useLanguage();
   const copy =
     lang === "fr"
       ? {
-          eyebrow: "A propos",
-          title: "Pourquoi Nous Choisir",
+          eyebrow: "À propos",
+          title: "Pourquoi nous choisir",
           description:
-            "Avec des annees d'experience dans le nettoyage exterieur, nous sommes votre partenaire de confiance.",
-          image: "Image a propos",
+            "Avec des années d'expérience dans le nettoyage extérieur, nous sommes le partenaire de confiance qu'il vous faut.",
+          image: "Image à propos",
           values: [
             {
-              title: "Qualite Professionnelle",
+              title: "Qualité professionnelle",
               description:
-                "Nous utilisons des equipements et produits de qualite superieure pour garantir des resultats durables.",
+                "Nous utilisons des équipements et des produits de grande qualité pour garantir des résultats durables.",
             },
             {
-              title: "Service Rapide",
+              title: "Service rapide",
               description:
-                "Notre equipe experimentee travaille efficacement sans compromettre la qualite.",
+                "Notre équipe expérimentée travaille efficacement sans compromettre la qualité.",
             },
             {
-              title: "Satisfaction Garantie",
+              title: "Satisfaction garantie",
               description:
-                "Votre satisfaction est notre priorite jusqu'a la fin du travail.",
+                "Votre satisfaction est notre priorité jusqu'à la fin des travaux.",
             },
           ],
         }
@@ -78,12 +60,19 @@ export default function About() {
       <div className="max-w-7xl mx-auto px-8 md:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="rounded-lg overflow-hidden h-[480px] bg-gray-200 flex items-center justify-center">
-              <span className="text-gray-400 text-sm">{copy.image}</span>
+            <div className="relative h-[480px] overflow-hidden rounded-sm bg-gray-200">
+              <img
+                src="/about-team.jpg"
+                alt={copy.image}
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
+                className="absolute inset-0 h-full w-full object-cover object-top"
+              />
             </div>
           </div>
           <div>
-            <div className="text-[10px] font-semibold uppercase tracking-[2px] text-[#2563eb] mb-2">
+            <div className="mb-2 text-[10px] font-semibold uppercase tracking-[2px] text-[#0f1f4b]">
               {copy.eyebrow}
             </div>
             <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold uppercase text-[#0f1f4b] mb-3 leading-tight">
@@ -95,9 +84,11 @@ export default function About() {
             <div className="space-y-4">
               {copy.values.map((value, idx) => (
                 <div key={idx} className="flex gap-3.5">
-                  <div className="w-5 h-5 rounded-full bg-[#2563eb] flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="w-2.5 h-2.5 text-white" />
-                  </div>
+                  <Check
+                    className="mt-0.5 h-5 w-5 shrink-0 text-[#0f1f4b]"
+                    strokeWidth={2.5}
+                    aria-hidden
+                  />
                   <div>
                     <h3 className="text-sm font-semibold text-[#0f1f4b] mb-1">
                       {value.title}

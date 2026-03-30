@@ -14,27 +14,27 @@ export default function Contact() {
     lang === "fr"
       ? {
           contactInfo: [
-            { icon: Phone, label: "Telephone", value: "(514) 123-4567" },
-            { icon: Mail, label: "Email", value: "novanet.qc@gmail.com" },
-            { icon: MapPin, label: "Adresse", value: "Montreal, QC" },
+            { icon: Phone, label: "Téléphone", value: "(514) 123-4567" },
+            { icon: Mail, label: "Courriel", value: "novanet.qc@gmail.com" },
+            { icon: MapPin, label: "Adresse", value: "Montréal (QC)" },
           ],
-          titlePrefix: "Pret a ",
-          titleAccent: "Commencer?",
+          titlePrefix: "Prêt à ",
+          titleAccent: "commencer ?",
           description:
-            "Contactez-nous des aujourd'hui pour une soumission gratuite et decouvrez comment nous pouvons transformer votre propriete.",
+            "Contactez-nous dès aujourd'hui pour une soumission gratuite et découvrez comment nous pouvons transformer votre propriété.",
           formTitle: "Demande de soumission",
           formDescription:
             "Remplissez le formulaire ci-dessous et nous vous contacterons rapidement.",
-          firstName: "Prenom",
+          firstName: "Prénom",
           lastName: "Nom",
-          email: "Email",
-          phone: "Telephone",
+          email: "Courriel",
+          phone: "Téléphone",
           message: "Message",
-          messagePlaceholder: "Decrivez vos besoins...",
+          messagePlaceholder: "Décrivez vos besoins…",
           submit: "Envoyer la demande",
-          submitting: "Envoi en cours...",
-          success: "Votre demande a ete envoyee avec succes!",
-          error: "Une erreur est survenue. Veuillez reessayer.",
+          submitting: "Envoi en cours…",
+          success: "Votre demande a été envoyée avec succès !",
+          error: "Une erreur est survenue. Veuillez réessayer.",
         }
       : {
           contactInfo: [
@@ -141,7 +141,7 @@ export default function Contact() {
           <div>
             <h2 className="mb-5 font-display text-4xl font-bold uppercase leading-tight md:text-5xl lg:text-6xl">
               {copy.titlePrefix}
-              <span className="text-[#2563eb]">{copy.titleAccent}</span>
+              <span className="text-[#0f1f4b]">{copy.titleAccent}</span>
             </h2>
             <p className="mb-8 max-w-md text-[15px] leading-relaxed text-gray-600">
               {copy.description}
@@ -149,8 +149,8 @@ export default function Contact() {
             <div className="space-y-5">
               {copy.contactInfo.map((info, idx) => (
                 <div key={idx} className="flex gap-3.5">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-gray-50">
-                    <info.icon className="h-4 w-4 text-[#2563eb]" />
+                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-sm bg-gray-50">
+                    <info.icon className="h-4 w-4 text-[#0f1f4b]" />
                   </div>
                   <div>
                     <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
@@ -164,16 +164,16 @@ export default function Contact() {
               ))}
             </div>
           </div>
-          <div className="rounded-lg border border-gray-200 bg-white p-7 shadow-sm">
-            <h3 className="mb-2 font-display text-2xl font-bold uppercase text-[#0f1f4b]">
+          <div className="rounded-sm border border-gray-200 bg-white p-10 shadow-sm md:p-12">
+            <h3 className="mb-3 font-display text-2xl font-bold uppercase text-[#0f1f4b]">
               {copy.formTitle}
             </h3>
-            <p className="mb-5 text-[13px] text-gray-600">
+            <p className="mb-6 text-[13px] leading-relaxed text-gray-600">
               {copy.formDescription}
             </p>
             {submitStatus.type && (
               <div
-                className={`mb-4 rounded p-3 text-sm ${
+                className={`mb-4 rounded-sm p-3 text-sm ${
                   submitStatus.type === "success"
                     ? "border border-green-200 bg-green-50 text-green-700"
                     : "border border-red-200 bg-red-50 text-red-700"
@@ -183,14 +183,14 @@ export default function Contact() {
               </div>
             )}
             {referralCode && (
-              <div className="mb-4 rounded border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+              <div className="mb-4 rounded-sm border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
                 {t("contact.referralActive")}
               </div>
             )}
             <form onSubmit={handleSubmit} className="space-y-3.5">
               <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2">
                 <div>
-                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                     {copy.firstName} *
                   </label>
                   <input
@@ -199,12 +199,12 @@ export default function Contact() {
                     value={formData.firstName}
                     onChange={handleChange}
                     required
-                    className="w-full rounded border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#2563eb] focus:outline-none"
+                    className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                     placeholder="Jean"
                   />
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                     {copy.lastName} *
                   </label>
                   <input
@@ -213,13 +213,13 @@ export default function Contact() {
                     value={formData.lastName}
                     onChange={handleChange}
                     required
-                    className="w-full rounded border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#2563eb] focus:outline-none"
+                    className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                     placeholder="Dupont"
                   />
                 </div>
               </div>
               <div>
-                <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                   {copy.email} *
                 </label>
                 <input
@@ -228,12 +228,12 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full rounded border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#2563eb] focus:outline-none"
+                  className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                   placeholder="jean.dupont@email.com"
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                   {copy.phone}
                 </label>
                 <input
@@ -241,12 +241,12 @@ export default function Contact() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full rounded border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#2563eb] focus:outline-none"
+                  className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                   placeholder="(514) 123-4567"
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                   {copy.message}
                 </label>
                 <textarea
@@ -254,14 +254,14 @@ export default function Contact() {
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full rounded border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#2563eb] focus:outline-none"
+                  className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                   placeholder={copy.messagePlaceholder}
                 />
               </div>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full rounded bg-[#2563eb] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-50"
+                className="btn-institutional-primary w-full"
               >
                 {isSubmitting ? copy.submitting : copy.submit}
               </button>

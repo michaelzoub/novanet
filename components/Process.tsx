@@ -7,34 +7,34 @@ export default function Process() {
   const copy =
     lang === "fr"
       ? {
-          eyebrow: "Comment ca marche",
-          title: "Notre Processus",
+          eyebrow: "Comment ça marche",
+          title: "Notre processus",
           description:
-            "Un processus simple et transparent pour repondre a tous vos besoins de nettoyage exterieur.",
+            "Un processus simple et transparent pour répondre à tous vos besoins de nettoyage extérieur.",
           steps: [
             {
               number: "01",
               title: "Demande de soumission",
               description:
-                "Contactez-nous pour une evaluation gratuite de vos besoins en nettoyage exterieur.",
+                "Contactez-nous pour une évaluation gratuite de vos besoins en nettoyage extérieur.",
             },
             {
               number: "02",
               title: "Inspection et devis",
               description:
-                "Notre equipe inspecte votre propriete et vous fournit un devis detaille et transparent.",
+                "Notre équipe inspecte votre propriété et vous fournit un devis détaillé et transparent.",
             },
             {
               number: "03",
               title: "Planification",
               description:
-                "Nous planifions l'intervention selon vos disponibilites et nos horaires optimaux.",
+                "Nous planifions l'intervention selon vos disponibilités et nos créneaux optimaux.",
             },
             {
               number: "04",
-              title: "Execution",
+              title: "Réalisation",
               description:
-                "Notre equipe qualifiee effectue le travail avec professionnalisme et attention aux details.",
+                "Notre équipe qualifiée effectue le travail avec professionnalisme et souci du détail.",
             },
           ],
         }
@@ -73,7 +73,7 @@ export default function Process() {
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-8 md:px-16">
-        <div className="text-[10px] font-semibold uppercase tracking-[2px] text-[#2563eb] mb-2">
+        <div className="text-[10px] font-semibold uppercase tracking-[2px] text-[#0f1f4b] mb-2">
           {copy.eyebrow}
         </div>
         <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold uppercase text-[#0f1f4b] mb-3 leading-tight">
@@ -85,7 +85,7 @@ export default function Process() {
         <div className="space-y-5">
           {copy.steps.map((step, idx) => (
             <div key={idx} className="flex gap-4">
-              <div className="font-display text-xl font-bold text-[#2563eb] min-w-[30px]">
+              <div className="font-display text-xl font-bold text-[#0f1f4b] min-w-[30px]">
                 {step.number}
               </div>
               <div>

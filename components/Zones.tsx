@@ -20,9 +20,9 @@ export default function Zones() {
     lang === "fr"
       ? {
           eyebrow: "Zones de service",
-          title: "Ou Nous Servons",
+          title: "Où nous desservons",
           description:
-            "Nous offrons nos services professionnels dans toute la region du Grand Montreal.",
+            "Nous offrons nos services professionnels dans toute la région du Grand Montréal.",
         }
       : {
           eyebrow: "Service Area",
@@ -33,7 +33,7 @@ export default function Zones() {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-8 md:px-16">
-        <div className="text-[10px] font-semibold uppercase tracking-[2px] text-[#2563eb] mb-2">
+        <div className="text-[10px] font-semibold uppercase tracking-[2px] text-[#0f1f4b] mb-2">
           {copy.eyebrow}
         </div>
         <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold uppercase text-[#0f1f4b] mb-3 leading-tight">
@@ -46,7 +46,7 @@ export default function Zones() {
           {zones.map((zone, idx) => (
             <button
               key={idx}
-              className="border border-gray-200 rounded-full px-3.5 py-1.5 text-[13px] font-medium text-gray-700 hover:border-[#2563eb] hover:text-[#2563eb] hover:bg-blue-50/50 transition-colors"
+              className="border border-gray-200 rounded-full px-3.5 py-1.5 text-[13px] font-medium text-gray-700 hover:border-[#0f1f4b] hover:text-[#0f1f4b] hover:bg-[#0f1f4b]/5 transition-colors"
             >
               {zone}
             </button>
