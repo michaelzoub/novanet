@@ -77,7 +77,7 @@ export async function addNovaNetServiceAreaOutline(map: mapboxgl.Map) {
     source: SOURCE_ID,
     paint: {
       "fill-color": "#0f1f4b",
-      "fill-opacity": 0.14,
+      "fill-opacity": 0.1,
     },
   };
 
@@ -91,9 +91,9 @@ export async function addNovaNetServiceAreaOutline(map: mapboxgl.Map) {
     },
     paint: {
       "line-color": "#0f1f4b",
-      "line-width": 3,
-      "line-dasharray": [1.8, 1.15],
-      "line-opacity": 0.95,
+      "line-width": 2.4,
+      "line-dasharray": [2.2, 1.35],
+      "line-opacity": 0.92,
     },
   };
 
@@ -124,21 +124,6 @@ export function emphasizeAdministrativeBoundaries(map: mapboxgl.Map) {
     }
     try {
       map.setLayoutProperty(layer.id, "visibility", "visible");
-    } catch {
-      /* ignore */
-    }
-    try {
-      map.setPaintProperty(layer.id, "line-color", "#0f1f4b");
-    } catch {
-      /* data-driven paint */
-    }
-    try {
-      map.setPaintProperty(layer.id, "line-opacity", 0.72);
-    } catch {
-      /* ignore */
-    }
-    try {
-      map.setPaintProperty(layer.id, "line-width", 2);
     } catch {
       /* ignore */
     }
@@ -208,7 +193,9 @@ const PRIORITY_LINE_LAYER_ID = "novanet-priority-zones-line";
 function addPriorityNeighborhoodsHighlight(map: mapboxgl.Map) {
   if (map.getSource(PRIORITY_SOURCE_ID)) return;
 
-  const beforeId = firstSymbolLayerId(map);
+  // Prefer inserting above our own service outline, but below symbol/labels.
+  const serviceLine = map.getLayer(LINE_LAYER_ID);
+  const beforeId = serviceLine ? undefined : firstSymbolLayerId(map);
 
   map.addSource(PRIORITY_SOURCE_ID, {
     type: "geojson",
@@ -220,8 +207,8 @@ function addPriorityNeighborhoodsHighlight(map: mapboxgl.Map) {
     type: "fill",
     source: PRIORITY_SOURCE_ID,
     paint: {
-      "fill-color": "#60a5fa",
-      "fill-opacity": 0.32,
+      "fill-color": "#93c5fd",
+      "fill-opacity": 0.25,
     },
   };
 
@@ -234,19 +221,28 @@ function addPriorityNeighborhoodsHighlight(map: mapboxgl.Map) {
       "line-join": "round",
     },
     paint: {
-      "line-color": "#3b82f6",
-      "line-width": 1.5,
-      "line-opacity": 0.75,
+      "line-color": "#1d4ed8",
+      "line-width": 2.2,
+      "line-opacity": 0.95,
+      "line-dasharray": [1.2, 1.8],
     },
   };
+
+  // If we found the service line layer, add right after it.
+  if (serviceLine) {
+    map.addLayer(fillLayer, serviceLine.id);
+    map.addLayer(lineLayer, serviceLine.id);
+    return;
+  }
 
   if (beforeId) {
     map.addLayer(fillLayer, beforeId);
     map.addLayer(lineLayer, beforeId);
-  } else {
-    map.addLayer(fillLayer);
-    map.addLayer(lineLayer);
+    return;
   }
+
+  map.addLayer(fillLayer);
+  map.addLayer(lineLayer);
 }
 
 export async function setupMapDemarcation(map: mapboxgl.Map) {

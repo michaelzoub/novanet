@@ -42,7 +42,7 @@ export default function MapLegend() {
         </div>
         <div className="mb-2 flex items-start gap-2">
           <span
-            className="mt-0.5 inline-block h-4 w-8 shrink-0 rounded-sm bg-sky-400/45 ring-1 ring-sky-500/50"
+            className="mt-0.5 inline-block h-4 w-8 shrink-0 rounded-sm bg-sky-400/25 ring-1 ring-sky-500/50 border border-sky-400/70 border-dashed"
             aria-hidden
           />
           <div>

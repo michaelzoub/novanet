@@ -141,7 +141,7 @@ export default function Results() {
       switchTo((currentSlideRef.current + 1) % beforeAfterPairs.length);
     }, 6000);
     return () => window.clearInterval(id);
-  }, []);
+  }, [switchTo]);
 
   const computePercent = (clientX: number) => {
     const el = sliderRef.current;

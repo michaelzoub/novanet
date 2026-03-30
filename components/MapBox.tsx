@@ -39,15 +39,22 @@ export default function MapBox() {
 
     mapboxgl.accessToken = token;
 
-    /* Slightly west + closer zoom so NDG / Westmount read clearly */
+    /* Slightly west + tuned zoom so NDG / Westmount read clearly */
     let zoomAmount = 10.82;
     let longitudeCorrection = -0.045;
     let latitudeCorrection = 0.053;
 
+    // Center camera on the priority zone bbox (NDG + Westmount highlight).
+    const priorityCenterLng = (-73.648 + -73.575) / 2; // -73.6115
+    const priorityCenterLat = (45.458 + 45.512) / 2; // 45.485
+
+    let centerLng = priorityCenterLng;
+    let centerLat = priorityCenterLat;
+
     if (window.innerWidth < 700) {
       latitudeCorrection = 0.094;
       longitudeCorrection = -0.082;
-      zoomAmount = 9.92;
+      zoomAmount = 9.95;
     }
 
     const mapStyle =
@@ -63,7 +70,7 @@ export default function MapBox() {
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: mapStyle,
-      center: [-73.665, 45.508],
+      center: [centerLng, centerLat],
       zoom: zoomAmount,
       pitch: 25,
       bearing: -32,
@@ -167,7 +174,7 @@ export default function MapBox() {
   }, [token]);
 
   return (
-    <div className="relative mt-11 h-[600px] md:mt-8 md:h-[640px]">
+    <div className="relative mt-10 h-[600px] md:mt-8 md:h-[640px]">
       <div className="relative h-full w-full overflow-hidden rounded-lg shadow-sm">
         {!token ? (
           <OsmFallbackMap />
