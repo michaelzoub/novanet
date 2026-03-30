@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, FileText, Check } from "lucide-react";
+import { Upload, FileText, Check, Sparkles, ChevronDown } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +31,7 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
+  const [whyJoinOpen, setWhyJoinOpen] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -159,42 +160,67 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
       open={isOpen}
       onOpenChange={(open) => {
         if (!open) {
+          setWhyJoinOpen(false);
           onClose();
         }
       }}
     >
       <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto px-8 pb-8 pt-2">
-        <DialogHeader>
+        <DialogHeader className="space-y-0">
           <DialogTitle className="font-display text-2xl font-bold uppercase text-[#0f1f4b]">
             {t("hiring.title")}
           </DialogTitle>
           <DialogDescription className="text-[13px] text-gray-600">
             {t("hiring.description")}
           </DialogDescription>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => setWhyJoinOpen((o) => !o)}
+              className="flex w-full max-w-md items-center gap-2 rounded-sm border border-[#0f1f4b]/10 bg-[#0f1f4b]/[0.03] px-2.5 py-1.5 text-left transition-colors hover:border-[#0f1f4b]/20 hover:bg-[#0f1f4b]/[0.06] sm:max-w-lg"
+              aria-expanded={whyJoinOpen}
+              aria-controls="hiring-why-join-list"
+            >
+              <Sparkles className="h-3.5 w-3.5 shrink-0 text-[#0f1f4b]" aria-hidden />
+              <span className="min-w-0 flex-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#0f1f4b]">
+                {t("hiring.whyJoin")}
+              </span>
+              <span className="hidden shrink-0 text-[10px] font-normal normal-case tracking-normal text-gray-500 sm:inline">
+                · {t("hiring.whyJoinHint")}
+              </span>
+              <ChevronDown
+                className={`h-3.5 w-3.5 shrink-0 text-[#0f1f4b] transition-transform duration-200 ${
+                  whyJoinOpen ? "rotate-180" : ""
+                }`}
+                aria-hidden
+              />
+            </button>
+            {whyJoinOpen ? (
+              <ul
+                id="hiring-why-join-list"
+                className="mt-2 max-w-lg space-y-1 border-l-2 border-[#0f1f4b]/20 pl-3 text-[11px] leading-snug text-[#0f1f4b]"
+              >
+                {(
+                  [
+                    "hiring.whyJoin1",
+                    "hiring.whyJoin2",
+                    "hiring.whyJoin3",
+                    "hiring.whyJoin4",
+                  ] as const
+                ).map((key) => (
+                  <li key={key} className="flex gap-2">
+                    <Check
+                      className="mt-0.5 h-3 w-3 shrink-0 text-[#0f1f4b]"
+                      strokeWidth={2.5}
+                      aria-hidden
+                    />
+                    <span>{t(key)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         </DialogHeader>
-
-        <div className="rounded-lg border border-[#0f1f4b]/10 bg-[#0f1f4b]/[0.05] px-4 py-3.5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0f1f4b]">
-            {t("hiring.whyJoin")}
-          </p>
-          <ul className="mt-3 space-y-2.5">
-            {(
-              [
-                "hiring.whyJoin1",
-                "hiring.whyJoin2",
-                "hiring.whyJoin3",
-                "hiring.whyJoin4",
-              ] as const
-            ).map((key) => (
-              <li key={key} className="flex items-start gap-2.5 text-[13px] text-[#0f1f4b]">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-sm bg-[#0f1f4b]/10">
-                  <Check className="h-3 w-3 text-[#0f1f4b]" strokeWidth={3} />
-                </span>
-                <span className="leading-snug">{t(key)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
 
         {submitStatus.type && (
           <div

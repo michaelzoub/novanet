@@ -93,24 +93,29 @@ export default function Services() {
         <p className="mb-10 max-w-2xl text-[15px] leading-relaxed text-gray-600">
           {copy.description}
         </p>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {copy.services.map((service, idx) => (
             <div
               key={idx}
-              className="rounded-lg border border-gray-200 bg-white p-5 transition-all hover:border-[#0f1f4b]/30 hover:shadow-md"
+              className="flex h-full min-w-0 flex-col rounded-sm border border-gray-200 bg-white p-8 md:p-9 transition-all duration-300 ease-out hover:border-[#0f1f4b]/30 hover:shadow-md"
             >
-              <service.icon className="mb-3.5 h-7 w-7 text-[#0f1f4b]" />
-              <h3 className="mb-2.5 text-sm font-semibold uppercase tracking-wide text-[#0f1f4b]">
+              <div
+                className="mb-5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[#0f1f4b] text-white"
+                aria-hidden
+              >
+                <service.icon className="h-5 w-5" strokeWidth={1.5} />
+              </div>
+              <h3 className="font-display mb-3 text-sm font-bold uppercase tracking-wide text-[#0f1f4b]">
                 {service.title}
               </h3>
-              <p className="mb-4 text-[13px] leading-relaxed text-gray-600">
+              <p className="mb-6 flex-1 text-[13px] leading-relaxed text-gray-600">
                 {service.description}
               </p>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="mt-auto flex flex-wrap gap-2">
                 {service.tags.map((tag, tagIdx) => (
                   <span
                     key={tagIdx}
-                    className="rounded-full bg-gray-50 px-2.5 py-1 text-[11px] font-medium text-gray-600"
+                    className="rounded-full border border-gray-100 bg-gray-50/90 px-2.5 py-0.5 text-[11px] font-normal text-gray-500"
                   >
                     {tag}
                   </span>

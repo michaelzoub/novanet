@@ -14,8 +14,15 @@ interface Review {
   source?: "google" | "internal";
 }
 
+interface GoogleMeta {
+  rating?: number;
+  userRatingsTotal?: number;
+  placeName?: string;
+}
+
+/** Même lien que novanet_site-32.html (share.google) */
 const DEFAULT_GOOGLE_LISTING_URL =
-  "https://www.google.com/maps/place/Nova+Net+Lavage+Ext%C3%A9rieur/data=!4m2!3m1!1s0x0:0xa21d46665ddf7cef";
+  "https://share.google/0gXX1ufLW8A91Oe0h";
 
 export default function Reviews() {
   const { lang } = useLanguage();
@@ -23,19 +30,28 @@ export default function Reviews() {
   const [reviewSource, setReviewSource] = useState<"google" | "internal" | null>(
     null,
   );
+  const [googleMeta, setGoogleMeta] = useState<GoogleMeta | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchReviews() {
+      setLoading(true);
       try {
-        const response = await fetch("/api/getReviews");
+        const response = await fetch(
+          `/api/getReviews?lang=${encodeURIComponent(lang)}`,
+        );
         const data = await response.json();
         if (data.body && Array.isArray(data.body)) {
           setReviews(data.body);
         }
         if (data.source === "google" || data.source === "internal") {
           setReviewSource(data.source);
+        }
+        if (data.googleMeta && typeof data.googleMeta === "object") {
+          setGoogleMeta(data.googleMeta as GoogleMeta);
+        } else {
+          setGoogleMeta(null);
         }
       } catch (error) {
         console.error("Error fetching reviews:", error);
@@ -44,7 +60,7 @@ export default function Reviews() {
       }
     }
     fetchReviews();
-  }, []);
+  }, [lang]);
 
   useEffect(() => {
     if (reviews.length > 0) {
@@ -77,7 +93,12 @@ export default function Reviews() {
   const averageRating =
     reviews.length > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-      : 5.0;
+      : googleMeta?.rating ?? 5.0;
+
+  const reviewCountLabel =
+    reviews.length > 0
+      ? reviews.length
+      : (googleMeta?.userRatingsTotal ?? 0);
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }).map((_, i) => (
@@ -100,6 +121,8 @@ export default function Reviews() {
           empty: "Aucun avis disponible pour le moment.",
           verified: "Client vérifié",
           googleCta: "Voir sur Google",
+          googleSummary:
+            "Les avis détaillés sont affichés sur Google. Voici la note publique de l’établissement :",
         }
       : {
           eyebrow: "Testimonials",
@@ -110,6 +133,8 @@ export default function Reviews() {
           empty: "No reviews available right now.",
           verified: "Verified client",
           googleCta: "View on Google",
+          googleSummary:
+            "Full reviews are shown on Google. Public listing summary:",
         };
 
   return (
@@ -123,7 +148,7 @@ export default function Reviews() {
             <h2 className="font-display mb-3 text-4xl font-bold uppercase leading-tight text-[#0f1f4b] md:text-5xl lg:text-6xl">
               {copy.title}
             </h2>
-            {reviewSource === "google" && (
+            {(reviewSource === "google" || googleMeta != null) && (
               <a
                 href={
                   process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL ??
@@ -146,7 +171,7 @@ export default function Reviews() {
                 {renderStars(Math.round(averageRating))}
               </div>
               <div className="text-[11px] text-gray-500 font-medium">
-                {copy.basedOn} {reviews.length} {copy.reviews}
+                {copy.basedOn} {reviewCountLabel} {copy.reviews}
               </div>
             </div>
           </div>
@@ -154,7 +179,44 @@ export default function Reviews() {
         {loading ? (
           <div className="text-center py-12 text-gray-500">{copy.loading}</div>
         ) : reviews.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">{copy.empty}</div>
+          googleMeta != null &&
+          (googleMeta.userRatingsTotal != null ||
+            googleMeta.rating != null) ? (
+            <div className="rounded-sm border border-gray-200 bg-slate-50/80 px-6 py-10 text-center">
+              <p className="mb-3 text-[14px] leading-relaxed text-gray-700">
+                {copy.googleSummary}
+              </p>
+              <div className="mb-2 flex justify-center gap-2 text-[#0f1f4b]">
+                <span className="font-display text-3xl font-bold">
+                  {googleMeta.rating != null
+                    ? googleMeta.rating.toFixed(1)
+                    : "—"}
+                </span>
+                <span className="flex items-center text-[#f59e0b]">
+                  {renderStars(Math.round(googleMeta.rating ?? 5))}
+                </span>
+              </div>
+              {googleMeta.userRatingsTotal != null && (
+                <p className="mb-5 text-[12px] text-gray-500">
+                  {copy.basedOn} {googleMeta.userRatingsTotal}{" "}
+                  {copy.reviews} (Google)
+                </p>
+              )}
+              <a
+                href={
+                  process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL ??
+                  DEFAULT_GOOGLE_LISTING_URL
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#0f1f4b] underline underline-offset-2"
+              >
+                {copy.googleCta}
+              </a>
+            </div>
+          ) : (
+            <div className="text-center py-12 text-gray-500">{copy.empty}</div>
+          )
         ) : (
           <div className="overflow-hidden">
             <div
@@ -174,7 +236,7 @@ export default function Reviews() {
                       .map((review, idx) => (
                         <div
                           key={review.id ?? idx}
-                          className="rounded-lg border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
+                          className="rounded-sm border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
                         >
                           <div className="mb-3 flex items-center gap-3">
                             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#0f1f4b] text-sm font-semibold text-white">

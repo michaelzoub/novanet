@@ -27,12 +27,14 @@ const translations = {
     quote: "Soumission gratuite",
     services: "Services",
     results: "Résultats",
+    refer: "Parrainer",
 
     // Hiring Dialog
     "hiring.title": "Postuler chez Nova Net",
     "hiring.description":
       "Rejoignez notre équipe ! Remplissez le formulaire ci-dessous et téléversez votre CV.",
     "hiring.whyJoin": "Pourquoi nous rejoindre ?",
+    "hiring.whyJoinHint": "afficher",
     "hiring.whyJoin1": "Compétences en vente et en communication",
     "hiring.whyJoin2": "Rémunération à la commission",
     "hiring.whyJoin3": "Les meilleurs peuvent gagner plus de 1 000 $ par semaine",
@@ -96,12 +98,14 @@ const translations = {
     quote: "Free Quote",
     services: "Services",
     results: "Results",
+    refer: "Refer",
 
     // Hiring Dialog
     "hiring.title": "Apply to Nova Net",
     "hiring.description":
       "Join our team! Fill out the form below and upload your CV.",
     "hiring.whyJoin": "Why join us",
+    "hiring.whyJoinHint": "show",
     "hiring.whyJoin1": "Sales and communication skills",
     "hiring.whyJoin2": "Commission-based pay",
     "hiring.whyJoin3": "Top performers earn $1,000+/week",

@@ -129,7 +129,7 @@ export default function Results() {
           </div>
         </div>
         <div className="relative">
-          <div className="relative rounded-lg overflow-hidden">
+          <div className="relative rounded-sm overflow-hidden">
             <div
               ref={sliderRef}
               className="relative h-[500px] w-full cursor-col-resize select-none"
@@ -140,7 +140,7 @@ export default function Results() {
             >
               <div
                 key={currentSlide}
-                className="animate-results-ltr absolute inset-0"
+                className="animate-results-fade-in absolute inset-0"
               >
                 {/* Before Image (Background) */}
                 <div className="absolute inset-0">
@@ -156,7 +156,9 @@ export default function Results() {
                 {/* After Image (Clipped) */}
                 <div
                   className="absolute inset-0 overflow-hidden"
-                  style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
+                  style={{
+                    clipPath: `inset(0 0 0 ${100 - sliderPosition}%)`,
+                  }}
                 >
                   <Image
                     src={currentPair.after}

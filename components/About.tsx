@@ -61,7 +61,7 @@ export default function About() {
       <div className="max-w-7xl mx-auto px-8 md:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="relative h-[480px] overflow-hidden rounded-lg bg-gray-200">
+            <div className="relative h-[480px] overflow-hidden rounded-sm bg-gray-200">
               <Image
                 src="/about-team.jpg"
                 alt={copy.image}

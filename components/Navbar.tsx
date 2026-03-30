@@ -70,16 +70,16 @@ export default function Navbar() {
       {isHomePage ? (
         <div className="absolute left-1/2 top-1/2 hidden w-auto max-w-[55vw] -translate-x-1/2 -translate-y-1/2 items-center gap-6 lg:gap-10 md:flex">
           <a
-            href="#services"
-            className="text-sm font-medium text-slate-700 transition-colors hover:text-[#0f1f4b]"
-          >
-            {t("services")}
-          </a>
-          <a
             href="#resultats"
             className="text-sm font-medium text-slate-700 transition-colors hover:text-[#0f1f4b]"
           >
             {t("results")}
+          </a>
+          <a
+            href="#referrals"
+            className="text-sm font-medium text-slate-700 transition-colors hover:text-[#0f1f4b]"
+          >
+            {t("refer")}
           </a>
           <button
             type="button"

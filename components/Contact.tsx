@@ -149,7 +149,7 @@ export default function Contact() {
             <div className="space-y-5">
               {copy.contactInfo.map((info, idx) => (
                 <div key={idx} className="flex gap-3.5">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-gray-50">
+                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-sm bg-gray-50">
                     <info.icon className="h-4 w-4 text-[#0f1f4b]" />
                   </div>
                   <div>
@@ -164,16 +164,16 @@ export default function Contact() {
               ))}
             </div>
           </div>
-          <div className="rounded-lg border border-gray-200 bg-white p-7 shadow-sm">
-            <h3 className="mb-2 font-display text-2xl font-bold uppercase text-[#0f1f4b]">
+          <div className="rounded-sm border border-gray-200 bg-white p-10 shadow-sm md:p-12">
+            <h3 className="mb-3 font-display text-2xl font-bold uppercase text-[#0f1f4b]">
               {copy.formTitle}
             </h3>
-            <p className="mb-5 text-[13px] text-gray-600">
+            <p className="mb-6 text-[13px] leading-relaxed text-gray-600">
               {copy.formDescription}
             </p>
             {submitStatus.type && (
               <div
-                className={`mb-4 rounded p-3 text-sm ${
+                className={`mb-4 rounded-sm p-3 text-sm ${
                   submitStatus.type === "success"
                     ? "border border-green-200 bg-green-50 text-green-700"
                     : "border border-red-200 bg-red-50 text-red-700"
@@ -183,7 +183,7 @@ export default function Contact() {
               </div>
             )}
             {referralCode && (
-              <div className="mb-4 rounded border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+              <div className="mb-4 rounded-sm border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
                 {t("contact.referralActive")}
               </div>
             )}
@@ -199,7 +199,7 @@ export default function Contact() {
                     value={formData.firstName}
                     onChange={handleChange}
                     required
-                    className="w-full rounded border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
+                    className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                     placeholder="Jean"
                   />
                 </div>
@@ -213,7 +213,7 @@ export default function Contact() {
                     value={formData.lastName}
                     onChange={handleChange}
                     required
-                    className="w-full rounded border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
+                    className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                     placeholder="Dupont"
                   />
                 </div>
@@ -228,7 +228,7 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full rounded border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
+                  className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                   placeholder="jean.dupont@email.com"
                 />
               </div>
@@ -241,7 +241,7 @@ export default function Contact() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full rounded border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
+                  className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                   placeholder="(514) 123-4567"
                 />
               </div>
@@ -254,7 +254,7 @@ export default function Contact() {
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full rounded border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
+                  className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                   placeholder={copy.messagePlaceholder}
                 />
               </div>

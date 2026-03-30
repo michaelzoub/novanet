@@ -60,177 +60,191 @@ export default function DashboardPage() {
     }
   };
 
+  const handleLogout = () => {
+    setProfiles(null);
+    setSessionCode("");
+    setCode("");
+    setError("");
+  };
+
   if (!profiles) {
     return (
-      <main className="min-h-screen bg-white text-slate-900">
-        <section className="border-b border-gray-100 bg-white">
-          <div className="mx-auto max-w-7xl px-8 py-14 md:px-16">
+      <main className="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-slate-50 via-white to-[#f4f7fb] text-slate-900">
+        <div className="mx-auto flex max-w-lg flex-col px-4 py-12 md:px-6 md:py-16">
+          <div className="mb-10 text-center">
             <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#0f1f4b]">
               Accès restreint
             </p>
-            <h1 className="max-w-4xl font-display text-4xl font-bold uppercase leading-[0.95] text-[#0f1f4b] md:text-6xl">
+            <h1 className="font-display text-3xl font-bold uppercase leading-tight text-[#0f1f4b] sm:text-4xl md:text-5xl">
               Tableau de bord
             </h1>
-            <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-gray-600">
-              Entrez votre code d&apos;accès pour consulter les profils de parrainage.
+            <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-slate-600">
+              Entrez votre code d&apos;accès pour consulter les profils de
+              parrainage.
             </p>
           </div>
-        </section>
 
-        <section className="bg-[#f8fafc] py-14">
-          <div className="mx-auto max-w-7xl px-8 md:px-16">
-            <div className="max-w-md border border-gray-200 bg-white p-7 shadow-sm">
-              <h2 className="font-display text-2xl font-bold uppercase text-[#0f1f4b]">
-                Connexion
-              </h2>
-              <p className="mt-2 text-[13px] text-gray-600">
-                Entrez le code d&apos;accès administrateur.
-              </p>
+          <div className="rounded-xl border border-slate-200/90 bg-white p-8 shadow-[0_1px_3px_rgba(15,31,75,0.06)]">
+            <h2 className="font-display text-xl font-bold uppercase text-[#0f1f4b] md:text-2xl">
+              Connexion
+            </h2>
+            <p className="mt-2 text-[13px] leading-snug text-slate-600">
+              Code d&apos;accès administrateur fourni par Nova Net.
+            </p>
 
-              <form onSubmit={handleLogin} className="mt-6 space-y-4">
-                <div>
-                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                    Code d&apos;accès
-                  </label>
-                  <input
-                    type="password"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    placeholder="••••••••"
-                    required
-                    className="w-full border border-gray-200 px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-[#0f1f4b]"
-                  />
+            <form onSubmit={handleLogin} className="mt-7 space-y-4">
+              <div>
+                <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
+                  Code d&apos;accès
+                </label>
+                <input
+                  type="password"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  autoComplete="current-password"
+                  className="w-full rounded-sm border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-[#0f1f4b]"
+                />
+              </div>
+
+              {error && (
+                <div className="rounded-sm border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700">
+                  {error}
                 </div>
+              )}
 
-                {error && (
-                  <div className="border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700">
-                    {error}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="btn-institutional-primary w-full disabled:opacity-60"
-                >
-                  {isLoading ? "Connexion…" : "Accéder au tableau de bord"}
-                </button>
-              </form>
-            </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn-institutional-primary w-full rounded-sm disabled:opacity-60"
+              >
+                {isLoading ? "Connexion…" : "Accéder au tableau de bord"}
+              </button>
+            </form>
           </div>
-        </section>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-white text-slate-900">
-      <section className="border-b border-gray-100 bg-white">
-        <div className="mx-auto max-w-7xl px-8 py-14 md:px-16">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#0f1f4b]">
-            Administration
-          </p>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h1 className="max-w-4xl font-display text-4xl font-bold uppercase leading-[0.95] text-[#0f1f4b] md:text-6xl">
-                Tableau de bord
-              </h1>
-              <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-gray-600">
-                {profiles.length} profil{profiles.length !== 1 ? "s" : ""} de
-                parrainage enregistré{profiles.length !== 1 ? "s" : ""}.
-              </p>
-            </div>
+    <main className="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-slate-50 via-white to-[#f4f7fb] text-slate-900">
+      <div className="mx-auto max-w-6xl px-4 py-10 md:px-8 md:py-12">
+        <header className="mb-10 flex flex-col gap-6 border-b border-slate-200/90 pb-8 sm:flex-row sm:items-center sm:justify-between">
+          <div className="text-center sm:text-left">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#0f1f4b]">
+              Administration
+            </p>
+            <h1 className="font-display text-3xl font-bold uppercase leading-tight text-[#0f1f4b] md:text-4xl">
+              Tableau de bord
+            </h1>
+            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-slate-600">
+              <span className="inline-flex items-center rounded-sm bg-[#0f1f4b]/[0.07] px-2.5 py-0.5 font-semibold text-[#0f1f4b]">
+                {profiles.length}
+              </span>
+              <span className="ml-2">
+                profil{profiles.length !== 1 ? "s" : ""} de parrainage
+                enregistré{profiles.length !== 1 ? "s" : ""}.
+              </span>
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-end">
             <button
+              type="button"
               onClick={handleRefresh}
               disabled={isLoading}
-              className="border border-[#0f1f4b] bg-white px-5 py-2.5 text-sm font-semibold text-[#0f1f4b] transition-colors hover:border-[#0f1f4b] hover:text-[#0f1f4b] disabled:opacity-60"
+              className="rounded-sm border border-[#0f1f4b] bg-white px-5 py-2.5 text-sm font-semibold text-[#0f1f4b] transition-colors hover:bg-[#0f1f4b]/5 disabled:opacity-60"
             >
               {isLoading ? "Chargement…" : "Actualiser"}
             </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-sm border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-400 hover:text-[#0f1f4b]"
+            >
+              Déconnexion
+            </button>
           </div>
-        </div>
-      </section>
+        </header>
 
-      <section className="bg-[#f8fafc] py-14">
-        <div className="mx-auto max-w-7xl px-8 md:px-16">
-          {profiles.length === 0 ? (
-            <div className="border border-gray-200 bg-white p-7 shadow-sm">
-              <p className="text-sm text-gray-500">
-                Aucun profil de parrainage pour l&apos;instant.
-              </p>
-            </div>
-          ) : (
-            <div className="border border-gray-200 bg-white shadow-sm">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-200 bg-[#f8fafc]">
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                        Nom
-                      </th>
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                        Code
-                      </th>
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                        Parrainages
-                      </th>
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                        Récompense
-                      </th>
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                        Lien
-                      </th>
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                        Créé le
-                      </th>
+        {profiles.length === 0 ? (
+          <div className="rounded-xl border border-slate-200/90 bg-white p-10 text-center shadow-sm">
+            <p className="text-sm text-slate-600">
+              Aucun profil de parrainage pour l&apos;instant.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-[0_1px_3px_rgba(15,31,75,0.06)]">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50/90">
+                    <th className="px-4 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] md:px-5">
+                      Nom
+                    </th>
+                    <th className="px-4 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] md:px-5">
+                      Code
+                    </th>
+                    <th className="px-4 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] md:px-5">
+                      Parrainages
+                    </th>
+                    <th className="px-4 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] md:px-5">
+                      Récompense
+                    </th>
+                    <th className="px-4 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] md:px-5">
+                      Lien
+                    </th>
+                    <th className="px-4 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] md:px-5">
+                      Créé le
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {profiles.map((profile, i) => (
+                    <tr
+                      key={profile.id}
+                      className={
+                        i % 2 === 0
+                          ? "border-b border-slate-100 bg-white"
+                          : "border-b border-slate-100 bg-slate-50/50"
+                      }
+                    >
+                      <td className="px-4 py-3.5 font-semibold text-[#0f1f4b] md:px-5">
+                        {profile.full_name}
+                      </td>
+                      <td className="px-4 py-3.5 font-mono text-xs text-slate-600 md:px-5">
+                        {profile.referral_code}
+                      </td>
+                      <td className="px-4 py-3.5 text-slate-700 md:px-5">
+                        {profile.referral_count}
+                      </td>
+                      <td className="px-4 py-3.5 text-slate-700 md:px-5">
+                        {profile.reward_percent}%
+                      </td>
+                      <td className="px-4 py-3.5 md:px-5">
+                        <a
+                          href={`${origin}/r/${profile.referral_code}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="break-all text-[#0f1f4b] underline-offset-2 hover:underline"
+                        >
+                          {origin}/r/{profile.referral_code}
+                        </a>
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3.5 text-slate-500 md:px-5">
+                        {new Date(profile.created_at).toLocaleDateString(
+                          "fr-CA",
+                        )}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {profiles.map((profile, i) => (
-                      <tr
-                        key={profile.id}
-                        className={
-                          i % 2 === 0
-                            ? "border-b border-gray-100 bg-white"
-                            : "border-b border-gray-100 bg-[#f8fafc]"
-                        }
-                      >
-                        <td className="px-5 py-3.5 font-semibold text-[#0f1f4b]">
-                          {profile.full_name}
-                        </td>
-                        <td className="px-5 py-3.5 font-mono text-xs text-slate-600">
-                          {profile.referral_code}
-                        </td>
-                        <td className="px-5 py-3.5 text-slate-700">
-                          {profile.referral_count}
-                        </td>
-                        <td className="px-5 py-3.5 text-slate-700">
-                          {profile.reward_percent}%
-                        </td>
-                        <td className="px-5 py-3.5">
-                          <a
-                            href={`${origin}/r/${profile.referral_code}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="break-all text-[#0f1f4b] underline-offset-2 hover:underline"
-                          >
-                            {origin}/r/{profile.referral_code}
-                          </a>
-                        </td>
-                        <td className="whitespace-nowrap px-5 py-3.5 text-slate-500">
-                          {new Date(profile.created_at).toLocaleDateString(
-                            "fr-CA",
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+        )}
+      </div>
     </main>
   );
 }

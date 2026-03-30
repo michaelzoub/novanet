@@ -4,9 +4,58 @@ import { ReactNode } from "react";
 import { LanguageProvider } from "@/context/LanguageContext";
 import Navbar from "@/components/Navbar";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Nova Net – Lavage Extérieur",
-  description: "Service professionnel de lavage extérieur haute performance.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default:
+      "Nova Net — Lavage extérieur professionnel | Grand Montréal",
+    template: "%s | Nova Net",
+  },
+  description:
+    "Nova Net offre lavage de vitres, lavage à pression, scellant de pavés et sablage pour résidences et entreprises dans la région du Grand Montréal. Soumission gratuite, service rapide et résultats durables.",
+  keywords: [
+    "lavage extérieur Montréal",
+    "lavage à pression",
+    "lavage de vitres",
+    "scellant de pavés",
+    "Nova Net",
+    "Grand Montréal",
+    "Laval",
+    "Longueuil",
+  ],
+  authors: [{ name: "Nova Net" }],
+  creator: "Nova Net",
+  publisher: "Nova Net",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    locale: "fr_CA",
+    url: siteUrl,
+    siteName: "Nova Net",
+    title: "Nova Net — Lavage extérieur professionnel | Grand Montréal",
+    description:
+      "Lavage de vitres, pression, pavés et sablage sur le Grand Montréal. Faites une demande de soumission gratuite.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nova Net — Lavage extérieur professionnel",
+    description:
+      "Services de nettoyage extérieur haute performance dans la région de Montréal.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: siteUrl,
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

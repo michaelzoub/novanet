@@ -2,23 +2,25 @@
 
 import mapboxgl from "mapbox-gl";
 import { useEffect, useRef, useState } from "react";
+import { setupMapDemarcation } from "@/lib/mapbox-emphasize-boundaries";
 import { markers } from "@/types/markers";
 import MapLegend from "./MapLegend";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-/** OSM embed — works without a Mapbox token (shows streets & boundaries). */
+/** OSM embed — works without a Mapbox token. Tighter bbox = higher zoom so roads & area limits read more clearly. */
 function OsmFallbackMap() {
   return (
     <iframe
       title="Zones de service — carte"
-      className="absolute inset-0 h-full w-full rounded-lg border-0"
-      src="https://www.openstreetmap.org/export/embed.html?bbox=-73.82%2C45.40%2C-73.42%2C45.55&layer=mapnik"
+      className="absolute inset-0 h-full w-full rounded-sm border-0"
+      src="https://www.openstreetmap.org/export/embed.html?bbox=-73.78%2C45.42%2C-73.48%2C45.58&layer=mapnik"
       loading="lazy"
       referrerPolicy="no-referrer-when-downgrade"
     />
   );
 }
 
+/** Carte : `setupMapDemarcation` charge `/geo/montreal-isle.geojson` (île) + renforce les limites admin. */
 export default function MapBox() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -37,30 +39,40 @@ export default function MapBox() {
 
     mapboxgl.accessToken = token;
 
-    let zoomAmount = 13;
+    let zoomAmount = 10.35;
     let longitudeCorrection = -0.045;
     let latitudeCorrection = 0.053;
 
     if (window.innerWidth < 700) {
       latitudeCorrection = 0.094;
       longitudeCorrection = -0.082;
-      zoomAmount = 12;
+      zoomAmount = 9.55;
     }
+
+    const mapStyle =
+      process.env.NEXT_PUBLIC_MAPBOX_STYLE_URL?.trim() ||
+      "mapbox://styles/mapbox/light-v11";
+
+    /** Pan autorisé, mais limité au Grand Montréal (évite de perdre la zone utile). */
+    const maxBoundsGL: [mapboxgl.LngLatLike, mapboxgl.LngLatLike] = [
+      [-74.12, 45.2],
+      [-73.2, 45.82],
+    ];
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: "mapbox://styles/mapbox/light-v11",
-      center: [-73.62, 45.473],
+      style: mapStyle,
+      center: [-73.62, 45.535],
       zoom: zoomAmount,
       pitch: 25,
       bearing: -32,
+      maxBounds: maxBoundsGL,
     });
 
     mapRef.current.scrollZoom.disable();
     mapRef.current.boxZoom.disable();
     mapRef.current.doubleClickZoom.disable();
     mapRef.current.touchZoomRotate.disable();
-    mapRef.current.dragPan.disable();
     mapRef.current.dragRotate.disable();
     mapRef.current.keyboard.disable();
 
@@ -68,7 +80,15 @@ export default function MapBox() {
     const resizeMap = () => {
       map.resize();
     };
-    map.once("load", resizeMap);
+    const applyDemarcation = () => {
+      if (!map.isStyleLoaded()) return;
+      resizeMap();
+      void setupMapDemarcation(map).catch((err) =>
+        console.error("[MapBox] délimitation", err),
+      );
+    };
+    map.once("load", applyDemarcation);
+    map.once("idle", applyDemarcation);
     window.addEventListener("resize", resizeMap);
 
     async function loadJobs() {
@@ -89,7 +109,8 @@ export default function MapBox() {
 
         if (body.body && Array.isArray(body.body)) {
           body.body.forEach((e: markers) => {
-            if (!e.status.toLowerCase().includes("completed")) {
+            const st = (e.status ?? "").toLowerCase();
+            if (!st.includes("completed")) {
               return;
             }
 
@@ -143,19 +164,19 @@ export default function MapBox() {
   }, [token]);
 
   return (
-    <div className="relative mt-8 h-[500px]">
+    <div className="relative mt-8 h-[600px] md:h-[640px]">
       <div className="relative h-full w-full overflow-hidden rounded-lg shadow-sm">
         {!token ? (
           <OsmFallbackMap />
         ) : (
           <div
             ref={mapContainerRef}
-            className="relative h-full w-full rounded-lg"
+            className="relative h-full w-full rounded-sm"
           />
         )}
       </div>
       {selectedMarkerInfo && (
-        <div className="absolute right-4 top-4 z-50 w-64 rounded-lg bg-white p-4 shadow-md">
+        <div className="absolute right-4 top-4 z-50 w-64 rounded-sm bg-white p-4 shadow-md">
           <h3 className="mb-2 text-sm font-semibold text-[#0f1f4b]">
             {selectedMarkerInfo.jobType}
           </h3>
