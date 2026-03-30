@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -62,13 +61,12 @@ export default function About() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div>
             <div className="relative h-[480px] overflow-hidden rounded-sm bg-gray-200">
-              <Image
+              <img
                 src="/about-team.jpg"
                 alt={copy.image}
-                fill
-                className="object-cover object-top"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
+                decoding="async"
+                fetchPriority="high"
+                className="absolute inset-0 h-full w-full object-cover object-top"
               />
             </div>
           </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -144,13 +143,12 @@ export default function Results() {
               >
                 {/* Before Image (Background) */}
                 <div className="absolute inset-0">
-                  <Image
+                  <img
                     src={currentPair.before}
                     alt={`${copy.before} — ${currentPair.title}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 896px"
-                    priority={currentSlide === 0}
+                    decoding="async"
+                    fetchPriority={currentSlide === 0 ? "high" : "auto"}
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>
                 {/* After Image (Clipped) */}
@@ -160,13 +158,12 @@ export default function Results() {
                     clipPath: `inset(0 0 0 ${100 - sliderPosition}%)`,
                   }}
                 >
-                  <Image
+                  <img
                     src={currentPair.after}
                     alt={`${copy.after} — ${currentPair.title}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 896px"
-                    priority={currentSlide === 0}
+                    decoding="async"
+                    fetchPriority={currentSlide === 0 ? "high" : "auto"}
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>
                 {/* Slider Line */}

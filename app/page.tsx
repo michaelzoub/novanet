@@ -9,10 +9,11 @@ import Process from "@/components/Process";
 import Contact from "@/components/Contact";
 import ReferralsPromo from "@/components/ReferralsPromo";
 import Footer from "@/components/Footer";
+import HomePagePresence from "@/components/HomePagePresence";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <HomePagePresence>
       <Hero />
       <Services />
       <Results />
@@ -25,6 +26,6 @@ export default function Home() {
         <Contact />
       </Suspense>
       <Footer />
-    </main>
+    </HomePagePresence>
   );
 }
