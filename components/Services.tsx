@@ -1,8 +1,7 @@
 "use client";
 
-import { useRef } from "react";
 import { Monitor, Droplets, Home, Clock } from "lucide-react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -10,8 +9,6 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export default function Services() {
   const { lang } = useLanguage();
   const reduceMotion = useReducedMotion();
-  const gridRef = useRef<HTMLDivElement>(null);
-  const gridInView = useInView(gridRef, { once: true, margin: "-48px" });
 
   const copy =
     lang === "fr"
@@ -101,10 +98,10 @@ export default function Services() {
           {copy.description}
         </p>
         <motion.div
-          ref={gridRef}
           className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
           initial="hidden"
-          animate={gridInView ? "visible" : "hidden"}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2, margin: "0px 0px -56px 0px" }}
           variants={{
             hidden: {},
             visible: {
@@ -132,7 +129,7 @@ export default function Services() {
                   },
                 },
               }}
-              className="flex h-full min-w-0 flex-col rounded-sm border border-gray-200 bg-white p-8 md:p-9 transition-all duration-300 ease-out hover:border-[#0f1f4b]/30 hover:shadow-md"
+              className="flex h-full min-w-0 flex-col rounded-sm border border-gray-200 bg-white p-8 md:p-9 transition-all duration-300 ease-out hover:border-[#0f1f4b]/30 hover:shadow-md transform-gpu will-change-[transform,opacity]"
             >
               <div
                 className="mb-5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[#0f1f4b] text-white"
