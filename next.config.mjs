@@ -1,9 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Pas d’API `/_next/image` (évite 402 / paiement sur l’optimiseur Vercel ; `<img>` sert les fichiers /public tels quels).
+  /**
+   * Jamais d’optimisation payante Vercel sur /_next/image :
+   * - loader personnalisé = l’URL finale pointe vers /public ou l’URL absolue telle quelle ;
+   * - `unoptimized` en complément pour les chemins que Next traiterait encore par défaut.
+   */
   images: {
     unoptimized: true,
+    loader: "custom",
+    loaderFile: "./image-loader.mjs",
   },
 };
 
