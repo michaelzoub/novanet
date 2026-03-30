@@ -146,6 +146,7 @@ export default function Results() {
                   <img
                     src={currentPair.before}
                     alt={`${copy.before} — ${currentPair.title}`}
+                    loading="eager"
                     decoding="async"
                     fetchPriority={currentSlide === 0 ? "high" : "auto"}
                     className="absolute inset-0 h-full w-full object-cover"
@@ -161,6 +162,7 @@ export default function Results() {
                   <img
                     src={currentPair.after}
                     alt={`${copy.after} — ${currentPair.title}`}
+                    loading="eager"
                     decoding="async"
                     fetchPriority={currentSlide === 0 ? "high" : "auto"}
                     className="absolute inset-0 h-full w-full object-cover"

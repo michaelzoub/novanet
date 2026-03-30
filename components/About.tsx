@@ -64,6 +64,7 @@ export default function About() {
               <img
                 src="/about-team.jpg"
                 alt={copy.image}
+                loading="eager"
                 decoding="async"
                 fetchPriority="high"
                 className="absolute inset-0 h-full w-full object-cover object-top"
