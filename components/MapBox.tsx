@@ -6,6 +6,7 @@ import { setupMapDemarcation } from "@/lib/mapbox-emphasize-boundaries";
 import { markers } from "@/types/markers";
 import MapLegend from "./MapLegend";
 import "mapbox-gl/dist/mapbox-gl.css";
+//
 
 /** OSM embed — works without a Mapbox token. Tighter bbox = higher zoom so roads & area limits read more clearly. */
 function OsmFallbackMap() {
