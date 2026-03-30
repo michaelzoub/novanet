@@ -79,13 +79,30 @@ export default function ReferralsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white text-slate-900">
-      <section className="border-b border-gray-100 bg-white">
+    <main className="relative min-h-screen overflow-hidden bg-slate-50 text-slate-900">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_55%_at_50%_-8%,rgba(37,99,235,0.16),transparent_55%)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(15,31,75,0.06)_0%,transparent_42%,rgba(37,99,235,0.05)_100%)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -right-24 top-32 h-72 w-72 rounded-full bg-[#0f1f4b]/10 blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -left-16 bottom-20 h-56 w-56 rounded-full bg-[#0f1f4b]/10 blur-3xl"
+        aria-hidden
+      />
+
+      <section className="relative border-b border-[#0f1f4b]/15 bg-white/90 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-8 py-14 md:px-16">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#2563eb]">
+          <div className="inline-flex rounded-full border border-[#0f1f4b]/20 bg-[#eef0f6]/95 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#0f1f4b]">
             {t("referrals.eyebrow")}
-          </p>
-          <h1 className="max-w-4xl font-display text-4xl font-bold uppercase leading-[0.95] text-[#0f1f4b] md:text-6xl">
+          </div>
+          <h1 className="mt-4 max-w-4xl font-display text-4xl font-bold uppercase leading-[0.95] text-[#0f1f4b] md:text-6xl">
             {t("referrals.title")}
           </h1>
           <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-gray-600">
@@ -94,7 +111,7 @@ export default function ReferralsPage() {
         </div>
       </section>
 
-      <section className="bg-[#f8fafc] py-14">
+      <section className="relative bg-transparent py-14">
         <div className="mx-auto grid max-w-7xl gap-8 px-8 md:px-16 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="space-y-8">
             <section className="border border-gray-200 bg-white p-7 shadow-sm">
@@ -107,7 +124,7 @@ export default function ReferralsPage() {
 
               <form onSubmit={handleCreate} className="mt-6 space-y-4">
                 <div>
-                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                     {t("referrals.fullName")}
                   </label>
                   <input
@@ -116,7 +133,7 @@ export default function ReferralsPage() {
                     onChange={(event) => setFullName(event.target.value)}
                     placeholder="Jean Tremblay"
                     required
-                    className="w-full border border-gray-200 px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-[#2563eb]"
+                    className="w-full border border-gray-200 px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-[#0f1f4b]"
                   />
                 </div>
 
@@ -129,7 +146,7 @@ export default function ReferralsPage() {
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="w-full bg-[#2563eb] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="btn-institutional-primary w-full disabled:opacity-60"
                 >
                   {isCreating
                     ? t("referrals.createSubmitting")
@@ -148,7 +165,7 @@ export default function ReferralsPage() {
 
               <form onSubmit={handleLookup} className="mt-6 space-y-4">
                 <div>
-                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                     {t("referrals.fullName")}
                   </label>
                   <input
@@ -157,7 +174,7 @@ export default function ReferralsPage() {
                     onChange={(event) => setLookupName(event.target.value)}
                     placeholder="Jean Tremblay"
                     required
-                    className="w-full border border-gray-200 px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-[#2563eb]"
+                    className="w-full border border-gray-200 px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-[#0f1f4b]"
                   />
                 </div>
 
@@ -170,7 +187,7 @@ export default function ReferralsPage() {
                 <button
                   type="submit"
                   disabled={isLookingUp}
-                  className="w-full border border-[#0f1f4b] bg-white px-5 py-2.5 text-sm font-semibold text-[#0f1f4b] transition-colors hover:border-[#2563eb] hover:text-[#2563eb] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="btn-institutional-secondary w-full disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isLookingUp
                     ? t("referrals.lookupSubmitting")
@@ -180,7 +197,7 @@ export default function ReferralsPage() {
 
               {result && (
                 <div className="mt-6 border border-gray-200 bg-slate-50 p-5">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#2563eb]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#0f1f4b]">
                     {t("referrals.yourLink")}
                   </p>
                   <p className="mt-3 break-all text-sm font-semibold text-slate-900">
@@ -216,7 +233,7 @@ export default function ReferralsPage() {
 
             {result && (
               <div className="mt-8 border border-gray-200 bg-slate-50 p-5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#2563eb]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#0f1f4b]">
                   {t("referrals.yourLink")}
                 </p>
                 <p className="mt-3 break-all text-sm font-semibold text-slate-900">

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Hero() {
@@ -11,15 +10,15 @@ export default function Hero() {
   const copy =
     lang === "fr"
       ? {
-          badge: "Grand Montreal - Service Professionnel",
+          badge: "Grand Montréal — Service professionnel",
           titleTop: "VOYEZ LA",
-          titleBottom: "DIFFERENCE",
+          titleBottom: "DIFFÉRENCE",
           description:
-            "Lavage de vitres interieur et exterieur, lavage a pression, scellant de paves et sablage - on redonne a votre propriete l'eclat qu'elle merite.",
+            "Lavage de vitres intérieur et extérieur, lavage à pression, scellant de pavés et sablage : nous redonnons à votre propriété l'éclat qu'elle mérite.",
           primaryCta: "Obtenir une soumission",
-          secondaryCta: "Voir nos resultats",
+          secondaryCta: "Voir nos résultats",
           satisfaction: "Satisfaction",
-          response: "Reponse",
+          response: "Réponse",
         }
       : {
           badge: "Greater Montreal - Professional Service",
@@ -65,20 +64,27 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-[85vh] items-center overflow-hidden bg-white"
+      className="relative flex min-h-[85vh] items-center overflow-hidden bg-slate-100"
     >
       <div
-        className="absolute inset-0 bg-cover bg-right bg-no-repeat opacity-10"
+        className="absolute inset-0 bg-cover bg-no-repeat"
         style={{
-          backgroundImage:
-            'url(\'data:image/svg+xml,%3Csvg width="1200" height="800" xmlns="http://www.w3.org/2000/svg"%3E%3Crect fill="%23e5e7eb" width="1200" height="800"/%3E%3C/svg%3E\')',
+          backgroundImage: "url(/pressure-cooker.jpg)",
+          backgroundPosition: "right center",
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-transparent" />
+      {/* Horizontal fade: solid white on the left for copy, transparent on the right so the photo reads fully */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to right, rgb(255 255 255) 0%, rgb(255 255 255) 28%, rgba(255 255 255 / 0.94) 44%, rgba(255 255 255 / 0.45) 62%, rgba(255 255 255 / 0.12) 78%, rgba(255 255 255 / 0) 100%)",
+        }}
+      />
       <div className="relative z-10 mx-auto w-full max-w-7xl px-8 py-16 md:px-16">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#2563eb]" />
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-[#2563eb]">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#0f1f4b]/12 bg-[#0f1f4b]/[0.06] px-3 py-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#0f1f4b]" />
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-[#0f1f4b]">
             {copy.badge}
           </span>
         </div>
@@ -90,19 +96,13 @@ export default function Hero() {
         <p className="mb-8 max-w-xl text-[15px] leading-relaxed text-gray-600">
           {copy.description}
         </p>
-        <div className="mb-12 flex flex-wrap gap-3">
-          <Link
-            href="#contact"
-            className="rounded bg-[#2563eb] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1d4ed8]"
-          >
+        <div className="mb-12 flex flex-wrap gap-4">
+          <a href="#contact" className="btn-institutional-primary">
             {copy.primaryCta}
-          </Link>
-          <Link
-            href="#resultats"
-            className="rounded border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-[#0f1f4b] transition-colors hover:border-[#2563eb] hover:text-[#2563eb]"
-          >
+          </a>
+          <a href="#resultats" className="btn-institutional-secondary">
             {copy.secondaryCta}
-          </Link>
+          </a>
         </div>
         <div ref={statsRef} className="flex gap-10">
           <div>

@@ -65,7 +65,7 @@ export default function DashboardPage() {
       <main className="min-h-screen bg-white text-slate-900">
         <section className="border-b border-gray-100 bg-white">
           <div className="mx-auto max-w-7xl px-8 py-14 md:px-16">
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#2563eb]">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#0f1f4b]">
               Accès restreint
             </p>
             <h1 className="max-w-4xl font-display text-4xl font-bold uppercase leading-[0.95] text-[#0f1f4b] md:text-6xl">
@@ -89,7 +89,7 @@ export default function DashboardPage() {
 
               <form onSubmit={handleLogin} className="mt-6 space-y-4">
                 <div>
-                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                  <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                     Code d&apos;accès
                   </label>
                   <input
@@ -98,7 +98,7 @@ export default function DashboardPage() {
                     onChange={(e) => setCode(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full border border-gray-200 px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-[#2563eb]"
+                    className="w-full border border-gray-200 px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-[#0f1f4b]"
                   />
                 </div>
 
@@ -111,7 +111,7 @@ export default function DashboardPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-[#2563eb] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="btn-institutional-primary w-full disabled:opacity-60"
                 >
                   {isLoading ? "Connexion…" : "Accéder au tableau de bord"}
                 </button>
@@ -127,7 +127,7 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-white text-slate-900">
       <section className="border-b border-gray-100 bg-white">
         <div className="mx-auto max-w-7xl px-8 py-14 md:px-16">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#2563eb]">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#0f1f4b]">
             Administration
           </p>
           <div className="flex flex-wrap items-end justify-between gap-4">
@@ -143,7 +143,7 @@ export default function DashboardPage() {
             <button
               onClick={handleRefresh}
               disabled={isLoading}
-              className="border border-[#0f1f4b] bg-white px-5 py-2.5 text-sm font-semibold text-[#0f1f4b] transition-colors hover:border-[#2563eb] hover:text-[#2563eb] disabled:opacity-60"
+              className="border border-[#0f1f4b] bg-white px-5 py-2.5 text-sm font-semibold text-[#0f1f4b] transition-colors hover:border-[#0f1f4b] hover:text-[#0f1f4b] disabled:opacity-60"
             >
               {isLoading ? "Chargement…" : "Actualiser"}
             </button>
@@ -165,22 +165,22 @@ export default function DashboardPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-gray-200 bg-[#f8fafc]">
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                         Nom
                       </th>
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                         Code
                       </th>
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                         Parrainages
                       </th>
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                         Récompense
                       </th>
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                         Lien
                       </th>
-                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#2563eb]">
+                      <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                         Créé le
                       </th>
                     </tr>
@@ -212,7 +212,7 @@ export default function DashboardPage() {
                             href={`${origin}/r/${profile.referral_code}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="break-all text-[#2563eb] underline-offset-2 hover:underline"
+                            className="break-all text-[#0f1f4b] underline-offset-2 hover:underline"
                           >
                             {origin}/r/{profile.referral_code}
                           </a>

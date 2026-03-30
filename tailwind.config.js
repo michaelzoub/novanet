@@ -7,6 +7,13 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        brand: {
+          DEFAULT: "#0f1f4b",
+          hover: "#152a5a",
+          muted: "#e8ebf2",
+        },
+      },
       fontFamily: {
         sans: ["Montserrat", "system-ui", "sans-serif"],
         display: ["Barlow Condensed", "system-ui", "sans-serif"]

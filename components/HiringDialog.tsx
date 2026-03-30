@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, FileText } from "lucide-react";
+import { Upload, FileText, Check } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -173,6 +173,29 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
           </DialogDescription>
         </DialogHeader>
 
+        <div className="rounded-lg border border-[#0f1f4b]/10 bg-[#0f1f4b]/[0.05] px-4 py-3.5">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0f1f4b]">
+            {t("hiring.whyJoin")}
+          </p>
+          <ul className="mt-3 space-y-2.5">
+            {(
+              [
+                "hiring.whyJoin1",
+                "hiring.whyJoin2",
+                "hiring.whyJoin3",
+                "hiring.whyJoin4",
+              ] as const
+            ).map((key) => (
+              <li key={key} className="flex items-start gap-2.5 text-[13px] text-[#0f1f4b]">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-sm bg-[#0f1f4b]/10">
+                  <Check className="h-3 w-3 text-[#0f1f4b]" strokeWidth={3} />
+                </span>
+                <span className="leading-snug">{t(key)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {submitStatus.type && (
           <div
             className={`p-3 rounded text-sm ${
@@ -188,7 +211,7 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb] mb-1.5">
+              <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] mb-1.5">
                 {t("hiring.firstName")} *
               </label>
               <input
@@ -197,12 +220,12 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
                 value={formData.firstName}
                 onChange={handleChange}
                 required
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#2563eb] text-sm"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#0f1f4b] text-sm"
                 placeholder="Jean"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb] mb-1.5">
+              <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] mb-1.5">
                 {t("hiring.lastName")} *
               </label>
               <input
@@ -211,7 +234,7 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
                 value={formData.lastName}
                 onChange={handleChange}
                 required
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#2563eb] text-sm"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#0f1f4b] text-sm"
                 placeholder="Dupont"
               />
             </div>
@@ -219,7 +242,7 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb] mb-1.5">
+              <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] mb-1.5">
                 {t("hiring.email")} *
               </label>
               <input
@@ -228,12 +251,12 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#2563eb] text-sm"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#0f1f4b] text-sm"
                 placeholder="jean.dupont@email.com"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb] mb-1.5">
+              <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] mb-1.5">
                 {t("hiring.phone")} *
               </label>
               <input
@@ -242,17 +265,17 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
                 value={formData.phone}
                 onChange={handleChange}
                 required
-                className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#2563eb] text-sm"
+                className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#0f1f4b] text-sm"
                 placeholder="(514) 123-4567"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb] mb-1.5">
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] mb-1.5">
               {t("hiring.cv")} *
             </label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#2563eb] transition-colors">
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#0f1f4b] transition-colors">
               <input
                 type="file"
                 id="cv-upload"
@@ -267,7 +290,7 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
               >
                 {cvFile ? (
                   <>
-                    <FileText className="w-8 h-8 text-[#2563eb] mb-2" />
+                    <FileText className="w-8 h-8 text-[#0f1f4b] mb-2" />
                     <span className="text-sm font-medium text-[#0f1f4b]">
                       {cvFile.name}
                     </span>
@@ -291,7 +314,7 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
           </div>
 
           <div>
-            <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#2563eb] mb-1.5">
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b] mb-1.5">
               {t("hiring.message")}
             </label>
             <textarea
@@ -299,7 +322,7 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
               name="message"
               value={formData.message}
               onChange={handleChange}
-              className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#2563eb] text-sm"
+              className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#0f1f4b] text-sm"
               placeholder={t("hiring.messagePlaceholder")}
             />
           </div>
@@ -308,14 +331,14 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-5 py-2.5 border border-gray-200 text-sm font-semibold rounded hover:bg-gray-50 transition-colors"
+              className="btn-institutional-ghost flex-1"
             >
               {t("hiring.cancel")}
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-5 py-2.5 bg-[#2563eb] text-white text-sm font-semibold rounded hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-institutional-primary flex-1"
             >
               {isSubmitting ? t("hiring.submitting") : t("hiring.submit")}
             </button>

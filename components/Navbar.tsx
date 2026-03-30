@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import HiringDialog from "./HiringDialog";
+import NavbarLogo from "./NavbarLogo";
 
 export default function Navbar() {
   const { lang, setLang, t } = useLanguage();
@@ -24,7 +25,7 @@ export default function Navbar() {
     };
 
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 12);
     };
 
     updateNavbarHeight();
@@ -56,54 +57,62 @@ export default function Navbar() {
   return (
     <nav
       ref={navRef}
-      className={`fixed top-0 left-0 right-0 z-50 bg-white h-16 flex items-center px-8 md:px-16 border-b border-gray-100 transition-shadow ${
-        isHomePage ? "justify-between" : "justify-between"
-      } ${scrolled ? "shadow-sm" : ""}`}
+      className={`fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b border-slate-200/60 bg-white/70 px-4 backdrop-blur-md transition-[box-shadow,background-color] md:px-10 ${
+        scrolled ? "shadow-sm bg-white/85" : ""
+      }`}
     >
-      <div className="flex items-center">
-        <Link
-          href="/"
-          className="text-xl font-bold text-[#0f1f4b] tracking-tight"
-        >
-          Nova Net
+      <div className="flex min-w-0 shrink-0 items-center">
+        <Link href="/" className="flex items-center gap-2 py-1">
+          <NavbarLogo />
         </Link>
       </div>
-      {isHomePage && (
-        <div className="hidden md:flex items-center gap-10">
-          <Link
+
+      {isHomePage ? (
+        <div className="absolute left-1/2 top-1/2 hidden w-auto max-w-[55vw] -translate-x-1/2 -translate-y-1/2 items-center gap-6 lg:gap-10 md:flex">
+          <a
             href="#services"
-            className="text-sm font-medium text-gray-700 hover:text-[#2563eb] transition-colors"
+            className="text-sm font-medium text-slate-700 transition-colors hover:text-[#0f1f4b]"
           >
             {t("services")}
-          </Link>
-          <Link
+          </a>
+          <a
             href="#resultats"
-            className="text-sm font-medium text-gray-700 hover:text-[#2563eb] transition-colors"
+            className="text-sm font-medium text-slate-700 transition-colors hover:text-[#0f1f4b]"
           >
             {t("results")}
-          </Link>
+          </a>
           <button
+            type="button"
             onClick={() => setIsHiringDialogOpen(true)}
-            className="text-sm font-medium text-[#2563eb] hover:underline"
+            className="text-sm font-medium text-[#0f1f4b] hover:underline"
           >
             {t("hiring")}
           </button>
         </div>
-      )}
-      <div className="flex items-center gap-3">
+      ) : null}
+
+      <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-3">
         <button
+          type="button"
           onClick={toggleLang}
-          className="text-xs font-medium px-3 py-1.5 rounded border border-gray-200 bg-white text-gray-700 hover:border-[#2563eb] hover:text-[#2563eb] transition-colors"
+          className="rounded-sm border border-slate-300/90 bg-white/90 px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-slate-700 transition-colors hover:border-[#0f1f4b] hover:text-[#0f1f4b]"
         >
           {lang === "fr" ? "EN" : "FR"}
         </button>
-        <Link
-          href={isHomePage ? "#contact" : "/#contact"}
-          className="text-sm font-semibold px-5 py-2 rounded bg-[#2563eb] text-white hover:bg-[#1d4ed8] transition-colors"
-        >
-          {t("quote")}
-        </Link>
+        {isHomePage ? (
+          <a href="#contact" className="btn-institutional-nav whitespace-nowrap">
+            {t("quote")}
+          </a>
+        ) : (
+          <Link
+            href="/#contact"
+            className="btn-institutional-nav whitespace-nowrap"
+          >
+            {t("quote")}
+          </Link>
+        )}
       </div>
+
       <HiringDialog
         isOpen={isHiringDialogOpen}
         onClose={() => setIsHiringDialogOpen(false)}

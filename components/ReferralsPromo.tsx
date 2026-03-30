@@ -13,7 +13,7 @@ export default function ReferralsPromo() {
           eyebrow: "Programme de Référence",
           title: "GAGNEZ EN\nRECOMMANDANT",
           description:
-            "Recommandez Novanet à vos proches et obtenez une récompense à chaque nouveau client que vous nous envoyez. Simple, rapide et avantageux.",
+            "Recommandez Nova Net à vos proches et obtenez une récompense à chaque nouveau client que vous nous envoyez. Simple, rapide et avantageux.",
           steps: [
             {
               number: "01",
@@ -37,7 +37,7 @@ export default function ReferralsPromo() {
           eyebrow: "Referral Program",
           title: "EARN BY\nREFERRING",
           description:
-            "Refer Novanet to friends and earn a reward for every new client you send our way. Simple, fast, and worth it.",
+            "Refer Nova Net to friends and earn a reward for every new client you send our way. Simple, fast, and worth it.",
           steps: [
             {
               number: "01",
@@ -63,10 +63,10 @@ export default function ReferralsPromo() {
       <div className="mx-auto max-w-7xl px-8 md:px-16">
         <div className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
           <div>
-            <div className="mb-4 inline-flex h-11 w-11 items-center justify-center bg-blue-50 text-[#2563eb]">
+            <div className="mb-4 inline-flex h-11 w-11 items-center justify-center bg-[#0f1f4b]/[0.08] text-[#0f1f4b]">
               <Gift size={20} />
             </div>
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#2563eb]">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#0f1f4b]">
               {copy.eyebrow}
             </p>
             <h2 className="font-display text-4xl font-bold uppercase leading-[0.95] text-[#0f1f4b] md:text-5xl whitespace-pre-line">
@@ -75,10 +75,7 @@ export default function ReferralsPromo() {
             <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-gray-600">
               {copy.description}
             </p>
-            <Link
-              href="/referrals"
-              className="mt-8 inline-block bg-[#2563eb] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1d4ed8]"
-            >
+            <Link href="/referrals" className="btn-institutional-primary mt-8">
               {copy.cta}
             </Link>
           </div>

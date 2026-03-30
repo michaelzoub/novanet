@@ -6,6 +6,19 @@ import { markers } from "@/types/markers";
 import MapLegend from "./MapLegend";
 import "mapbox-gl/dist/mapbox-gl.css";
 
+/** OSM embed — works without a Mapbox token (shows streets & boundaries). */
+function OsmFallbackMap() {
+  return (
+    <iframe
+      title="Zones de service — carte"
+      className="absolute inset-0 h-full w-full rounded-lg border-0"
+      src="https://www.openstreetmap.org/export/embed.html?bbox=-73.82%2C45.40%2C-73.42%2C45.55&layer=mapnik"
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+    />
+  );
+}
+
 export default function MapBox() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -17,16 +30,10 @@ export default function MapBox() {
     review: string;
   } | null>(null);
 
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-    const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-    if (!token) {
-      console.error(
-        "NEXT_PUBLIC_MAPBOX_TOKEN is not set. Please add it to your .env.local file."
-      );
-      return;
-    }
+  useEffect(() => {
+    if (!token || !mapContainerRef.current) return;
 
     mapboxgl.accessToken = token;
 
@@ -42,7 +49,7 @@ export default function MapBox() {
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: "mapbox://styles/mapbox/streets-v12",
+      style: "mapbox://styles/mapbox/light-v11",
       center: [-73.62, 45.473],
       zoom: zoomAmount,
       pitch: 25,
@@ -56,6 +63,13 @@ export default function MapBox() {
     mapRef.current.dragPan.disable();
     mapRef.current.dragRotate.disable();
     mapRef.current.keyboard.disable();
+
+    const map = mapRef.current;
+    const resizeMap = () => {
+      map.resize();
+    };
+    map.once("load", resizeMap);
+    window.addEventListener("resize", resizeMap);
 
     async function loadJobs() {
       const mapCurrent = mapRef.current;
@@ -72,7 +86,6 @@ export default function MapBox() {
         });
 
         const body = await response.json();
-        console.log(body);
 
         if (body.body && Array.isArray(body.body)) {
           body.body.forEach((e: markers) => {
@@ -100,7 +113,7 @@ export default function MapBox() {
 
             const lngLat = new mapboxgl.LngLat(
               e.location[0] + longitudeCorrection,
-              e.location[1] + latitudeCorrection
+              e.location[1] + latitudeCorrection,
             );
 
             const marker = new mapboxgl.Marker({
@@ -121,38 +134,46 @@ export default function MapBox() {
     loadJobs();
 
     return () => {
+      window.removeEventListener("resize", resizeMap);
       if (mapRef.current) {
         mapRef.current.remove();
+        mapRef.current = null;
       }
     };
-  }, []);
+  }, [token]);
 
   return (
-    <div className="relative h-[500px] mt-8">
-      <div
-        ref={mapContainerRef}
-        className="rounded-lg overflow-hidden w-full h-full shadow-sm relative"
-      />
+    <div className="relative mt-8 h-[500px]">
+      <div className="relative h-full w-full overflow-hidden rounded-lg shadow-sm">
+        {!token ? (
+          <OsmFallbackMap />
+        ) : (
+          <div
+            ref={mapContainerRef}
+            className="relative h-full w-full rounded-lg"
+          />
+        )}
+      </div>
       {selectedMarkerInfo && (
-        <div className="absolute top-4 right-4 bg-white shadow-md rounded-lg p-4 z-50 w-64">
-          <h3 className="font-semibold text-sm mb-2 text-[#0f1f4b]">
+        <div className="absolute right-4 top-4 z-50 w-64 rounded-lg bg-white p-4 shadow-md">
+          <h3 className="mb-2 text-sm font-semibold text-[#0f1f4b]">
             {selectedMarkerInfo.jobType}
           </h3>
           {selectedMarkerInfo.status && (
-            <p className="text-[12px] text-gray-600 mb-2">
+            <p className="mb-2 text-[12px] text-gray-600">
               Statut: {selectedMarkerInfo.status}
             </p>
           )}
           {selectedMarkerInfo.review && (
-            <div className="flex flex-col mt-3">
-              <p className="text-[12px] text-gray-600 mb-2">
+            <div className="mt-3 flex flex-col">
+              <p className="mb-2 text-[12px] text-gray-600">
                 {selectedMarkerInfo.review}
               </p>
-              <p className="text-[#f59e0b] text-xs">★★★★★</p>
+              <p className="text-xs text-[#f59e0b]">★★★★★</p>
             </div>
           )}
           <button
-            className="mt-3 text-[11px] text-[#2563eb] hover:cursor-pointer transition-colors hover:text-[#1d4ed8]"
+            className="mt-3 text-[11px] text-[#0f1f4b] transition-colors hover:cursor-pointer hover:text-[#152a5a]"
             onClick={() => setSelectedMarkerInfo(null)}
           >
             Fermer
