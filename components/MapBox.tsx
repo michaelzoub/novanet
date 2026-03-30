@@ -167,7 +167,7 @@ export default function MapBox() {
   }, [token]);
 
   return (
-    <div className="relative mt-8 h-[600px] md:h-[640px]">
+    <div className="relative mt-11 h-[600px] md:mt-8 md:h-[640px]">
       <div className="relative h-full w-full overflow-hidden rounded-lg shadow-sm">
         {!token ? (
           <OsmFallbackMap />

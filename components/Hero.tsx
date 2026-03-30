@@ -34,8 +34,10 @@ export default function Hero() {
         };
 
   useEffect(() => {
+    if (!ready) return;
+
     const animateCounter = (el: HTMLElement, target: number) => {
-      const duration = 2200;
+      const duration = 1600;
       const start = performance.now();
 
       const tick = (now: number) => {
@@ -53,14 +55,17 @@ export default function Hero() {
       requestAnimationFrame(tick);
     };
 
-    if (statsRef.current) {
+    const id = window.requestAnimationFrame(() => {
+      if (!statsRef.current) return;
       const counters = statsRef.current.querySelectorAll("[data-t]");
       counters.forEach((counter) => {
         const target = parseInt(counter.getAttribute("data-t") || "0", 10);
         animateCounter(counter as HTMLElement, target);
       });
-    }
-  }, []);
+    });
+
+    return () => cancelAnimationFrame(id);
+  }, [ready]);
 
   return (
     <section
@@ -68,15 +73,21 @@ export default function Hero() {
       className="relative flex min-h-[85vh] items-center overflow-hidden bg-slate-100"
     >
       <div
-        className="absolute inset-0 bg-cover bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-no-repeat max-md:bg-[length:cover] max-md:bg-[position:62%_center] md:bg-[position:right_center]"
         style={{
           backgroundImage: "url(/pressure-cooker.jpg)",
-          backgroundPosition: "right center",
         }}
       />
-      {/* Horizontal fade: solid white on the left for copy, transparent on the right so the photo reads fully */}
+      {/* Mobile: softer fade on the right so equipment stays visible */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 md:hidden"
+        style={{
+          background:
+            "linear-gradient(to right, rgb(255 255 255) 0%, rgb(255 255 255) 14%, rgba(255 255 255 / 0.82) 32%, rgba(255 255 255 / 0.28) 58%, rgba(255 255 255 / 0) 86%)",
+        }}
+      />
+      <div
+        className="absolute inset-0 hidden md:block"
         style={{
           background:
             "linear-gradient(to right, rgb(255 255 255) 0%, rgb(255 255 255) 28%, rgba(255 255 255 / 0.94) 44%, rgba(255 255 255 / 0.45) 62%, rgba(255 255 255 / 0.12) 78%, rgba(255 255 255 / 0) 100%)",
@@ -87,10 +98,10 @@ export default function Hero() {
           {ready ? (
             <motion.div
               key={lang}
-              initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -6, filter: "blur(6px)" }}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
