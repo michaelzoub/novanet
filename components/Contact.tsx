@@ -29,12 +29,14 @@ export default function Contact() {
           lastName: "Nom",
           email: "Courriel",
           phone: "Téléphone",
+          phoneRequired: "Téléphone",
           message: "Message",
           messagePlaceholder: "Décrivez vos besoins…",
           submit: "Envoyer la demande",
           submitting: "Envoi en cours…",
           success: "Votre demande a été envoyée avec succès !",
           error: "Une erreur est survenue. Veuillez réessayer.",
+          phoneMissing: "Veuillez entrer votre numéro de téléphone (obligatoire).",
         }
       : {
           contactInfo: [
@@ -53,12 +55,14 @@ export default function Contact() {
           lastName: "Last Name",
           email: "Email",
           phone: "Phone",
+          phoneRequired: "Phone",
           message: "Message",
           messagePlaceholder: "Describe what you need...",
           submit: "Send request",
           submitting: "Sending...",
           success: "Your request was sent successfully!",
           error: "An error occurred. Please try again.",
+          phoneMissing: "Please enter your phone number (required).",
         };
 
   const [formData, setFormData] = useState({
@@ -89,6 +93,11 @@ export default function Contact() {
     setSubmitStatus({ type: null, message: "" });
 
     try {
+      if (!formData.phone.trim()) {
+        setSubmitStatus({ type: "error", message: copy.phoneMissing });
+        return;
+      }
+
       const response = await fetch("/api/submitContact", {
         method: "POST",
         headers: {
@@ -234,13 +243,14 @@ export default function Contact() {
               </div>
               <div>
                 <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                  {copy.phone}
+                  {copy.phoneRequired} *
                 </label>
                 <input
                   type="tel"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
+            required
                   className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
                   placeholder="(514) 123-4567"
                 />

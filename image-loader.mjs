@@ -6,12 +6,14 @@
  */
 export default function imageLoader({ src }) {
   if (!src) return "";
+  const cdnBase = (process.env.NEXT_PUBLIC_ASSET_CDN || "").replace(/\/$/, "");
+
   if (
     src.startsWith("http://") ||
     src.startsWith("https://") ||
     src.startsWith("/")
   ) {
-    return src;
+    return cdnBase && src.startsWith("/") ? `${cdnBase}${src}` : src;
   }
-  return `/${src}`;
+  return cdnBase ? `${cdnBase}/${src}` : `/${src}`;
 }

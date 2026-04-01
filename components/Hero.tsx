@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function Hero() {
   const { lang, ready } = useLanguage();
   const statsRef = useRef<HTMLDivElement>(null);
+  const [statsCanAnimate, setStatsCanAnimate] = useState(false);
 
   const copy =
     lang === "fr"
@@ -35,6 +36,12 @@ export default function Hero() {
 
   useEffect(() => {
     if (!ready) return;
+    // Reset per-language so we never show "0" during the language fade.
+    setStatsCanAnimate(false);
+  }, [ready, lang]);
+
+  useEffect(() => {
+    if (!ready || !statsCanAnimate) return;
 
     const animateCounter = (el: HTMLElement, target: number) => {
       const duration = 1600;
@@ -59,13 +66,14 @@ export default function Hero() {
       if (!statsRef.current) return;
       const counters = statsRef.current.querySelectorAll("[data-t]");
       counters.forEach((counter) => {
+        (counter as HTMLElement).textContent = "0";
         const target = parseInt(counter.getAttribute("data-t") || "0", 10);
         animateCounter(counter as HTMLElement, target);
       });
     });
 
     return () => cancelAnimationFrame(id);
-  }, [ready]);
+  }, [ready, lang, statsCanAnimate]);
 
   return (
     <section
@@ -101,7 +109,14 @@ export default function Hero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], type: "tween" }}
+              onAnimationComplete={() => setStatsCanAnimate(true)}
+              style={{
+                willChange: "transform, opacity",
+                transform: "translateZ(0)",
+                WebkitBackfaceVisibility: "hidden",
+                backfaceVisibility: "hidden",
+              }}
             >
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
@@ -150,9 +165,9 @@ export default function Hero() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={statsCanAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 ref={statsRef}
                 className="flex gap-10"
               >

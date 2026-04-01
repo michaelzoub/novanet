@@ -10,14 +10,15 @@ export async function POST(request: Request) {
     const { firstName, lastName, email, phone, message, referralCode } = body;
 
     // Validate required fields
-    if (!firstName || !lastName || !email) {
+    if (!firstName || !lastName || !email || !phone) {
       return NextResponse.json(
-        { error: "Les champs prénom, nom et email sont requis." },
+        { error: "Les champs prénom, nom, email et téléphone sont requis." },
         { status: 400 },
       );
     }
 
     const normalizedEmail = String(email).trim().toLowerCase();
+    const normalizedPhone = String(phone).trim();
     const normalizedReferralCode =
       typeof referralCode === "string" ? referralCode.trim().toLowerCase() : "";
 
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
       first_name: firstName,
       last_name: lastName,
       email: normalizedEmail,
-      phone: phone || null,
+      phone: normalizedPhone,
       message: message || null,
       referred_by_referral_profile_id: referralProfile?.id ?? null,
       referral_discount_percent: referralProfile ? 20 : null,
@@ -100,16 +101,10 @@ export async function POST(request: Request) {
                     <span class="label">Email:</span>
                     <span class="value">${email}</span>
                   </div>
-                  ${
-                    phone
-                      ? `
                   <div class="field">
                     <span class="label">Téléphone:</span>
-                    <span class="value">${phone}</span>
+                    <span class="value">${normalizedPhone}</span>
                   </div>
-                  `
-                      : ""
-                  }
                   ${
                     message
                       ? `

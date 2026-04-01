@@ -4,10 +4,81 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 
-const beforeAfterPairs = [
-  { before: "/before1.jpeg", after: "/after1.jpeg", titleFr: "Lavage de Vitres", titleEn: "Window Washing" },
-  { before: "/before2.jpeg", after: "/after2.jpeg", titleFr: "Lavage à Pression", titleEn: "Pressure Washing" },
-  { before: "/before3.jpeg", after: "/after3.jpeg", titleFr: "Scellant de Pavés", titleEn: "Paver Sealing" },
+const CDN_BASE = (process.env.NEXT_PUBLIC_ASSET_CDN ?? "").replace(/\/$/, "");
+const assetUrl = (path: string) => (CDN_BASE ? `${CDN_BASE}${path}` : path);
+
+type ResultPair = {
+  beforeJpeg: string;
+  afterJpeg: string;
+  beforePreload: string;
+  afterPreload: string;
+  beforeSet: { avif: string; webp: string };
+  afterSet: { avif: string; webp: string };
+  titleFr: string;
+  titleEn: string;
+};
+
+const beforeAfterPairs: ResultPair[] = [
+  {
+    beforeJpeg: "/before1.jpeg",
+    afterJpeg: "/after1.jpeg",
+    beforePreload: "/results/before1-1280.webp",
+    afterPreload: "/results/after1-1280.webp",
+    beforeSet: {
+      avif:
+        "/results/before1-640.avif 640w, /results/before1-960.avif 960w, /results/before1-1280.avif 1280w, /results/before1-1600.avif 1600w",
+      webp:
+        "/results/before1-640.webp 640w, /results/before1-960.webp 960w, /results/before1-1280.webp 1280w, /results/before1-1600.webp 1600w",
+    },
+    afterSet: {
+      avif:
+        "/results/after1-640.avif 640w, /results/after1-960.avif 960w, /results/after1-1280.avif 1280w, /results/after1-1600.avif 1600w",
+      webp:
+        "/results/after1-640.webp 640w, /results/after1-960.webp 960w, /results/after1-1280.webp 1280w, /results/after1-1600.webp 1600w",
+    },
+    titleFr: "Lavage de Vitres",
+    titleEn: "Window Washing",
+  },
+  {
+    beforeJpeg: "/before2.jpeg",
+    afterJpeg: "/after2.jpeg",
+    beforePreload: "/results/before2-1280.webp",
+    afterPreload: "/results/after2-1280.webp",
+    beforeSet: {
+      avif:
+        "/results/before2-640.avif 640w, /results/before2-960.avif 960w, /results/before2-1280.avif 1280w, /results/before2-1600.avif 1600w",
+      webp:
+        "/results/before2-640.webp 640w, /results/before2-960.webp 960w, /results/before2-1280.webp 1280w, /results/before2-1600.webp 1600w",
+    },
+    afterSet: {
+      avif:
+        "/results/after2-640.avif 640w, /results/after2-960.avif 960w, /results/after2-1280.avif 1280w, /results/after2-1600.avif 1600w",
+      webp:
+        "/results/after2-640.webp 640w, /results/after2-960.webp 960w, /results/after2-1280.webp 1280w, /results/after2-1600.webp 1600w",
+    },
+    titleFr: "Lavage à Pression",
+    titleEn: "Pressure Washing",
+  },
+  {
+    beforeJpeg: "/before3.jpeg",
+    afterJpeg: "/after3.jpeg",
+    beforePreload: "/results/before3-1280.webp",
+    afterPreload: "/results/after3-1280.webp",
+    beforeSet: {
+      avif:
+        "/results/before3-640.avif 640w, /results/before3-960.avif 960w, /results/before3-1280.avif 1280w, /results/before3-1600.avif 1600w",
+      webp:
+        "/results/before3-640.webp 640w, /results/before3-960.webp 960w, /results/before3-1280.webp 1280w, /results/before3-1600.webp 1600w",
+    },
+    afterSet: {
+      avif:
+        "/results/after3-640.avif 640w, /results/after3-960.avif 960w, /results/after3-1280.avif 1280w, /results/after3-1600.avif 1600w",
+      webp:
+        "/results/after3-640.webp 640w, /results/after3-960.webp 960w, /results/after3-1280.webp 1280w, /results/after3-1600.webp 1600w",
+    },
+    titleFr: "Scellant de Pavés",
+    titleEn: "Paver Sealing",
+  },
 ];
 
 export default function Results() {
@@ -52,13 +123,10 @@ export default function Results() {
   // then preload remaining images in the background.
   useEffect(() => {
     let cancelled = false;
-    const slide0 = [
-      beforeAfterPairs[0].before,
-      beforeAfterPairs[0].after,
-    ];
+    const slide0 = [beforeAfterPairs[0].beforePreload, beforeAfterPairs[0].afterPreload];
     const remaining = beforeAfterPairs
       .slice(1)
-      .flatMap((p) => [p.before, p.after]);
+      .flatMap((p) => [p.beforePreload, p.afterPreload]);
 
     const loadImages = async (urls: string[]) => {
       await Promise.all(
@@ -107,7 +175,7 @@ export default function Results() {
   const preloadSlide = useCallback(
     async (idx: number) => {
       const p = beforeAfterPairs[idx];
-      await Promise.all([preloadSrc(p.before), preloadSrc(p.after)]);
+      await Promise.all([preloadSrc(p.beforePreload), preloadSrc(p.afterPreload)]);
     },
     [preloadSrc],
   );
@@ -224,7 +292,7 @@ export default function Results() {
                 const active = idx === currentSlide;
                 return (
                   <div
-                    key={p.before}
+                    key={p.beforeJpeg}
                     className={`absolute inset-0 transition-opacity will-change-[opacity] ${
                       active
                         ? uiReady
@@ -238,28 +306,79 @@ export default function Results() {
                     aria-hidden={!active}
                   >
                     <div className="absolute inset-0">
-                      <img
-                        src={p.before}
-                        alt={`${copy.before} — ${lang === "fr" ? p.titleFr : p.titleEn}`}
-                        loading={active ? "eager" : "lazy"}
-                        decoding="async"
-                        fetchPriority={active ? "high" : "low"}
-                        className="absolute inset-0 h-full w-full object-cover"
-                      />
+                      <picture className="absolute inset-0 block h-full w-full">
+                        <source
+                          type="image/avif"
+                          srcSet={p.beforeSet.avif
+                            .split(", ")
+                            .map((entry) => {
+                              const [url, w] = entry.split(" ");
+                              return `${assetUrl(url)} ${w}`;
+                            })
+                            .join(", ")}
+                          sizes="(max-width: 768px) 100vw, 1200px"
+                        />
+                        <source
+                          type="image/webp"
+                          srcSet={p.beforeSet.webp
+                            .split(", ")
+                            .map((entry) => {
+                              const [url, w] = entry.split(" ");
+                              return `${assetUrl(url)} ${w}`;
+                            })
+                            .join(", ")}
+                          sizes="(max-width: 768px) 100vw, 1200px"
+                        />
+                        <img
+                          src={assetUrl(p.beforeJpeg)}
+                          alt={`${copy.before} — ${lang === "fr" ? p.titleFr : p.titleEn}`}
+                          loading={active ? "eager" : "lazy"}
+                          decoding="async"
+                          fetchPriority={active ? "high" : "low"}
+                          className="h-full w-full object-cover"
+                        />
+                      </picture>
                     </div>
-                    {/* More stable than clip-path: we crop via container width */}
+                    {/* True overlay reveal: clip the top layer without resizing it */}
                     <div
-                      className="absolute inset-y-0 right-0 overflow-hidden"
-                      style={{ width: `${sliderPosition}%` }}
+                      className="absolute inset-0"
+                      style={{
+                        clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`,
+                        WebkitClipPath: `inset(0 ${100 - sliderPosition}% 0 0)`,
+                      }}
                     >
-                      <img
-                        src={p.after}
-                        alt={`${copy.after} — ${lang === "fr" ? p.titleFr : p.titleEn}`}
-                        loading={active ? "eager" : "lazy"}
-                        decoding="async"
-                        fetchPriority={active ? "high" : "low"}
-                        className="absolute inset-0 h-full w-full object-cover"
-                      />
+                      <picture className="absolute inset-0 block h-full w-full">
+                        <source
+                          type="image/avif"
+                          srcSet={p.afterSet.avif
+                            .split(", ")
+                            .map((entry) => {
+                              const [url, w] = entry.split(" ");
+                              return `${assetUrl(url)} ${w}`;
+                            })
+                            .join(", ")}
+                          sizes="(max-width: 768px) 100vw, 1200px"
+                        />
+                        <source
+                          type="image/webp"
+                          srcSet={p.afterSet.webp
+                            .split(", ")
+                            .map((entry) => {
+                              const [url, w] = entry.split(" ");
+                              return `${assetUrl(url)} ${w}`;
+                            })
+                            .join(", ")}
+                          sizes="(max-width: 768px) 100vw, 1200px"
+                        />
+                        <img
+                          src={assetUrl(p.afterJpeg)}
+                          alt={`${copy.after} — ${lang === "fr" ? p.titleFr : p.titleEn}`}
+                          loading={active ? "eager" : "lazy"}
+                          decoding="async"
+                          fetchPriority={active ? "high" : "low"}
+                          className="h-full w-full object-cover"
+                        />
+                      </picture>
                     </div>
                   </div>
                 );
