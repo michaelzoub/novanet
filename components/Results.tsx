@@ -343,8 +343,9 @@ export default function Results() {
                     <div
                       className="absolute inset-0"
                       style={{
-                        clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`,
-                        WebkitClipPath: `inset(0 ${100 - sliderPosition}% 0 0)`,
+                        // Show AFTER on the right side of the handle (true overlay, no resizing).
+                        clipPath: `inset(0 0 0 ${sliderPosition}%)`,
+                        WebkitClipPath: `inset(0 0 0 ${sliderPosition}%)`,
                       }}
                     >
                       <picture className="absolute inset-0 block h-full w-full">
