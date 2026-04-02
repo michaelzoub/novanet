@@ -3,19 +3,13 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { LanguageProvider } from "@/context/LanguageContext";
 import Navbar from "@/components/Navbar";
-import { Barlow_Condensed, Montserrat } from "next/font/google";
+import { Outfit } from "next/font/google";
 
-const fontSans = Montserrat({
+/** Single cohesive stack: geometric, legible, works for institutional CTAs and headlines. */
+const outfit = Outfit({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-sans",
-  display: "swap",
-});
-
-const fontDisplay = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  variable: "--font-display",
   display: "swap",
 });
 
@@ -77,7 +71,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="fr"
-      className={`scroll-smooth ${fontSans.variable} ${fontDisplay.variable}`}
+      className={`scroll-smooth ${outfit.variable}`}
     >
       <body className="min-h-screen overflow-x-hidden bg-white text-slate-900 antialiased">
         <LanguageProvider>

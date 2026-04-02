@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -12,7 +13,9 @@ export default function Hero() {
   const copy =
     lang === "fr"
       ? {
-          badge: "Grand Montréal — Service professionnel",
+          badge: "Grand Montréal · Service professionnel",
+          heroImageAlt:
+            "Technicien effectuant un lavage à pression sur une surface extérieure.",
           titleTop: "VOYEZ LA",
           titleBottom: "DIFFÉRENCE",
           description:
@@ -23,11 +26,13 @@ export default function Hero() {
           response: "Réponse",
         }
       : {
-          badge: "Greater Montreal - Professional Service",
+          badge: "Greater Montreal · Professional service",
+          heroImageAlt:
+            "Technician pressure washing an outdoor surface.",
           titleTop: "SEE THE",
           titleBottom: "DIFFERENCE",
           description:
-            "Interior and exterior window washing, pressure washing, paver sealing, and sanding - we bring your property back to its best.",
+            "Interior and exterior window washing, pressure washing, paver sealing, and sanding — we bring your property back to its best.",
           primaryCta: "Get a quote",
           secondaryCta: "See our results",
           satisfaction: "Satisfaction",
@@ -36,7 +41,6 @@ export default function Hero() {
 
   useEffect(() => {
     if (!ready) return;
-    // Reset per-language so we never show "0" during the language fade.
     setStatsCanAnimate(false);
   }, [ready, lang]);
 
@@ -76,129 +80,164 @@ export default function Hero() {
   }, [ready, lang, statsCanAnimate]);
 
   return (
-    <section
-      id="hero"
-      className="relative flex min-h-[85vh] items-center overflow-hidden bg-slate-100"
-    >
-      <div
-        className="absolute inset-0 bg-cover bg-no-repeat max-md:bg-[length:cover] max-md:bg-[position:62%_center] md:bg-[position:right_center]"
-        style={{
-          backgroundImage: "url(/pressure-cooker.jpg)",
-        }}
-      />
-      {/* Mobile: softer fade on the right so equipment stays visible */}
-      <div
-        className="absolute inset-0 md:hidden"
-        style={{
-          background:
-            "linear-gradient(to right, rgb(255 255 255) 0%, rgb(255 255 255) 14%, rgba(255 255 255 / 0.64) 32%, rgba(255 255 255 / 0.18) 58%, rgba(255 255 255 / 0) 86%)",
-        }}
-      />
-      <div
-        className="absolute inset-0 hidden md:block"
-        style={{
-          background:
-            "linear-gradient(to right, rgb(255 255 255) 0%, rgb(255 255 255) 28%, rgba(255 255 255 / 0.94) 44%, rgba(255 255 255 / 0.45) 62%, rgba(255 255 255 / 0.12) 78%, rgba(255 255 255 / 0) 100%)",
-        }}
-      />
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-8 py-16 md:px-16">
-        <AnimatePresence mode="wait" initial={false}>
-          {ready ? (
-            <motion.div
-              key={lang}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], type: "tween" }}
-              onAnimationComplete={() => setStatsCanAnimate(true)}
-              style={{
-                willChange: "transform, opacity",
-                transform: "translateZ(0)",
-                WebkitBackfaceVisibility: "hidden",
-                backfaceVisibility: "hidden",
-              }}
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-                className="mb-6 inline-flex max-w-[90vw] items-center gap-2 whitespace-nowrap overflow-hidden text-ellipsis rounded-full border border-[#0f1f4b]/12 bg-[#0f1f4b]/[0.06] px-2 py-1.5 sm:px-3 sm:py-1.5"
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0f1f4b]" />
-                <span className="text-[9px] font-semibold uppercase tracking-widest text-[#0f1f4b] sm:text-[10px]">
-                  {copy.badge}
-                </span>
-              </motion.div>
+    <section id="hero" className="relative overflow-hidden bg-white">
+      <div className="mx-auto grid max-w-[1600px] md:min-h-[min(88vh,920px)] md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+        {/* Copy column — plain surface, no photo wash */}
+        <div className="order-2 flex items-center border-slate-100 bg-white px-5 py-10 sm:px-8 sm:py-12 md:order-1 md:border-r md:py-20 md:pl-12 md:pr-10 lg:pl-16 lg:pr-12">
+          <div className="w-full max-w-xl lg:max-w-none lg:pr-4">
+            <AnimatePresence mode="wait" initial={false}>
+              {ready ? (
+                <motion.div
+                  key={lang}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{
+                    duration: 0.5,
+                    ease: [0.22, 1, 0.36, 1],
+                    type: "tween",
+                  }}
+                  onAnimationComplete={() => setStatsCanAnimate(true)}
+                  style={{
+                    willChange: "transform, opacity",
+                    transform: "translateZ(0)",
+                    WebkitBackfaceVisibility: "hidden",
+                    backfaceVisibility: "hidden",
+                  }}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.45,
+                      delay: 0.05,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="mb-5 inline-flex max-w-full items-stretch border border-slate-200/90 bg-slate-50/60 shadow-[0_1px_0_rgba(15,31,75,0.06)] md:mb-7"
+                  >
+                    <span
+                      className="w-1 shrink-0 bg-[#0f1f4b]"
+                      aria-hidden
+                    />
+                    <span className="px-3 py-2 text-[10px] font-semibold uppercase leading-snug tracking-[0.18em] text-slate-600 sm:px-4 sm:py-2.5 sm:text-[11px] sm:tracking-[0.2em]">
+                      {copy.badge}
+                    </span>
+                  </motion.div>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-                className="mb-5 max-w-4xl font-display text-5xl font-bold uppercase leading-[0.95] text-[#0f1f4b] md:text-7xl lg:text-8xl"
-              >
-                {copy.titleTop}
-                <br />
-                {copy.titleBottom}
-              </motion.h1>
+                  <motion.h1
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 0.12,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="mb-4 max-w-3xl font-display text-4xl font-semibold uppercase leading-[1.02] tracking-[-0.02em] text-[#0f1f4b] sm:mb-5 sm:text-5xl md:text-6xl lg:text-[4.25rem] lg:leading-[0.98]"
+                  >
+                    {copy.titleTop}
+                    <br />
+                    {copy.titleBottom}
+                  </motion.h1>
 
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                className="mb-8 max-w-xl text-[14px] leading-relaxed text-slate-700 sm:text-[15px]"
-              >
-                {copy.description}
-              </motion.p>
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.55,
+                      delay: 0.2,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="mb-7 max-w-lg text-[15px] font-normal leading-[1.65] text-slate-600 sm:mb-9 sm:text-base"
+                  >
+                    {copy.description}
+                  </motion.p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
-                className="mb-12 flex flex-wrap gap-4"
-              >
-                <a href="#contact" className="btn-institutional-primary">
-                  {copy.primaryCta}
-                </a>
-                <a href="#resultats" className="btn-institutional-secondary">
-                  {copy.secondaryCta}
-                </a>
-              </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.55,
+                      delay: 0.26,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="mb-12 flex flex-wrap gap-3 sm:gap-4"
+                  >
+                    <a href="#contact" className="btn-institutional-primary">
+                      {copy.primaryCta}
+                    </a>
+                    <a
+                      href="#resultats"
+                      className="btn-institutional-secondary"
+                    >
+                      {copy.secondaryCta}
+                    </a>
+                  </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={statsCanAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                ref={statsRef}
-                className="flex gap-10"
-              >
-                <div>
-                  <div className="font-display text-4xl font-bold leading-none text-[#0f1f4b]">
-                    <span data-t="5">0</span>★
-                  </div>
-                  <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-widest text-gray-500">
-                    Google
-                  </div>
-                </div>
-                <div>
-                  <div className="font-display text-4xl font-bold leading-none text-[#0f1f4b]">
-                    <span data-t="100">0</span>%
-                  </div>
-                  <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-widest text-gray-500">
-                    {copy.satisfaction}
-                  </div>
-                </div>
-                <div>
-                  <div className="font-display text-4xl font-bold leading-none text-[#0f1f4b]">
-                    <span data-t="24">0</span>H
-                  </div>
-                  <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-widest text-gray-500">
-                    {copy.response}
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={
+                      statsCanAnimate
+                        ? { opacity: 1, y: 0 }
+                        : { opacity: 0, y: 8 }
+                    }
+                    transition={{
+                      duration: 0.35,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    ref={statsRef}
+                    className="flex flex-wrap gap-x-10 gap-y-7 border-t border-slate-200/80 pt-8 sm:gap-x-12 sm:gap-y-8 sm:pt-10"
+                  >
+                    <div>
+                      <div className="font-display text-3xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-4xl">
+                        <span data-t="5">0</span>★
+                      </div>
+                      <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        Google
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-display text-3xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-4xl">
+                        <span data-t="100">0</span>%
+                      </div>
+                      <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        {copy.satisfaction}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-display text-3xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-4xl">
+                        <span data-t="24">0</span>H
+                      </div>
+                      <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        {copy.response}
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Image column — full cover, minimal edge treatment (no full-frame white wash) */}
+        <div className="relative order-1 h-[min(26svh,220px)] min-h-[156px] max-h-[220px] shrink-0 md:h-auto md:max-h-none md:min-h-[min(88vh,920px)]">
+          <Image
+            src="/pressurewasher.webp"
+            alt={copy.heroImageAlt}
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 48vw"
+            className="object-cover object-[58%_42%] sm:object-[60%_center] md:object-[56%_center]"
+          />
+          {/* Lightly darken for print-like depth; optional narrow seam blend toward copy */}
+          <div
+            className="pointer-events-none absolute inset-0 bg-slate-900/[0.025] md:bg-slate-900/[0.04]"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute inset-y-0 left-0 z-[1] hidden w-14 bg-gradient-to-r from-white via-white/40 to-transparent md:block"
+            aria-hidden
+          />
+        </div>
       </div>
     </section>
   );
