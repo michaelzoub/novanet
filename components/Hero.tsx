@@ -1,11 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import { HeroRestoredPhotoFill } from "@/components/hero/HeroRestoredPhotoFill";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function Hero() {
+type HeroProps = {
+  /** Use unique ids when multiple heroes appear on one page (e.g. `/heroes`). */
+  sectionId?: string;
+  /** Pass false for below-the-fold previews so LCP stays on the first hero. */
+  imagePriority?: boolean;
+};
+
+export default function Hero({
+  sectionId = "hero",
+  imagePriority: _imagePriority = true,
+}: HeroProps) {
   const { lang, ready } = useLanguage();
   const statsRef = useRef<HTMLDivElement>(null);
   const [statsCanAnimate, setStatsCanAnimate] = useState(false);
@@ -80,7 +90,7 @@ export default function Hero() {
   }, [ready, lang, statsCanAnimate]);
 
   return (
-    <section id="hero" className="relative overflow-hidden bg-white">
+    <section id={sectionId} className="relative overflow-hidden bg-white">
       <div className="mx-auto grid max-w-[1600px] md:min-h-[min(88vh,920px)] md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
         {/* Copy column — plain surface, no photo wash */}
         <div className="order-2 flex items-center border-slate-100 bg-white px-5 py-10 sm:px-8 sm:py-12 md:order-1 md:border-r md:py-20 md:pl-12 md:pr-10 lg:pl-16 lg:pr-12">
@@ -220,13 +230,9 @@ export default function Hero() {
 
         {/* Image column — full cover, minimal edge treatment (no full-frame white wash) */}
         <div className="relative order-1 h-[min(26svh,220px)] min-h-[156px] max-h-[220px] shrink-0 md:h-auto md:max-h-none md:min-h-[min(88vh,920px)]">
-          <Image
-            src="/pressurewasher.webp"
+          <HeroRestoredPhotoFill
             alt={copy.heroImageAlt}
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 48vw"
-            className="object-cover object-[58%_42%] sm:object-[60%_center] md:object-[56%_center]"
+            className="bg-[position:58%_42%] sm:bg-[position:60%_center] md:bg-[position:56%_center]"
           />
           {/* Lightly darken for print-like depth; optional narrow seam blend toward copy */}
           <div

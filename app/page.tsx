@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Hero from "@/components/Hero";
+import HeroGradientAurora from "@/components/HeroGradientAurora";
 import Services from "@/components/Services";
 import Results from "@/components/Results";
 import About from "@/components/About";
@@ -13,7 +13,7 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <Hero />
+      <HeroGradientAurora />
       <Services />
       <Results />
       <About />
