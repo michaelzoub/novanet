@@ -93,7 +93,7 @@ export default function Hero({
     <section id={sectionId} className="relative overflow-hidden bg-white">
       <div className="mx-auto grid max-w-[1600px] md:min-h-[min(88vh,920px)] md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
         {/* Copy column — plain surface, no photo wash */}
-        <div className="order-2 flex items-center border-slate-100 bg-white px-5 py-10 sm:px-8 sm:py-12 md:order-1 md:border-r md:py-20 md:pl-12 md:pr-10 lg:pl-16 lg:pr-12">
+        <div className="order-2 flex items-center border-slate-100 bg-white px-4 py-8 sm:px-8 sm:py-12 md:order-1 md:border-r md:py-20 md:pl-12 md:pr-10 lg:pl-16 lg:pr-12">
           <div className="w-full max-w-xl lg:max-w-none lg:pr-4">
             <AnimatePresence mode="wait" initial={false}>
               {ready ? (
@@ -232,7 +232,7 @@ export default function Hero({
         <div className="relative order-1 h-[min(26svh,220px)] min-h-[156px] max-h-[220px] shrink-0 md:h-auto md:max-h-none md:min-h-[min(88vh,920px)]">
           <HeroRestoredPhotoFill
             alt={copy.heroImageAlt}
-            className="bg-[position:58%_42%] sm:bg-[position:60%_center] md:bg-[position:56%_center]"
+            className="bg-[position:34%_40%] sm:bg-[position:60%_center] md:bg-[position:56%_center]"
           />
           {/* Lightly darken for print-like depth; optional narrow seam blend toward copy */}
           <div

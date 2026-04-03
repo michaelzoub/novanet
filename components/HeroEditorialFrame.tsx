@@ -26,7 +26,7 @@ export default function HeroEditorialFrame({
       className="relative overflow-hidden bg-slate-50"
     >
       <div className="mx-auto grid max-w-[1400px] gap-0 md:min-h-[min(88vh,900px)] md:grid-cols-[1.05fr_0.95fr] md:items-center md:gap-4 md:px-8 md:py-12 lg:px-12">
-        <div className="order-2 flex flex-col justify-center px-5 py-12 sm:px-8 md:order-1 md:py-16 md:pr-6 lg:pl-4">
+        <div className="order-2 flex flex-col justify-center px-4 py-10 sm:px-8 sm:py-12 md:order-1 md:py-16 md:pr-6 lg:pl-4">
           {ready ? (
             <>
               <div className="mb-6 inline-flex max-w-full items-stretch border border-slate-200/90 bg-white shadow-[0_1px_0_rgba(15,31,75,0.06)]">
@@ -85,11 +85,11 @@ export default function HeroEditorialFrame({
           ) : null}
         </div>
 
-        <div className="order-1 px-5 pb-2 pt-8 sm:px-8 md:order-2 md:px-4 md:py-8">
+        <div className="order-1 px-4 pb-2 pt-6 sm:px-8 sm:pt-8 md:order-2 md:px-4 md:py-8">
           <div className="relative mx-auto aspect-[4/3] w-full max-w-xl overflow-hidden rounded-xs border border-slate-200/80 bg-white shadow-[0_24px_60px_rgba(15,31,75,0.12)] md:aspect-[5/6] md:max-w-none">
             <HeroRestoredPhotoFill
               alt={copy.heroImageAlt}
-              className="bg-[position:56%_center]"
+              className="bg-[position:34%_center] sm:bg-[position:56%_center]"
             />
             <div
               className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-slate-900/[0.03] to-transparent"

@@ -23,12 +23,12 @@ export default function HeroClassicBackdrop({
   return (
     <section
       id={sectionId}
-      className="relative flex min-h-[calc(100vh-4rem)] items-center overflow-hidden bg-white"
+      className="relative flex min-h-[min(100dvh,920px)] items-center overflow-hidden bg-white sm:min-h-[calc(100vh-4rem)]"
     >
       <div className="pointer-events-none absolute inset-0">
         <HeroRestoredPhotoFill
           alt={copy.heroImageAlt}
-          className="bg-[position:72%_center]"
+          className="bg-[position:36%_center] sm:bg-[position:72%_center]"
         />
         {/* Same idea as `.hgrad` in the static HTML */}
         <div
@@ -37,18 +37,14 @@ export default function HeroClassicBackdrop({
         />
       </div>
 
-      <div className="relative z-[1] w-full max-w-[1100px] px-6 py-16 pl-8 sm:px-10 md:py-20 md:pl-12 lg:pl-16">
+      <div className="relative z-[1] w-full max-w-[1100px] px-5 py-12 pl-6 sm:px-10 sm:py-16 sm:pl-8 md:py-20 md:pl-12 lg:pl-16">
         {ready ? (
           <>
-            <div className="mb-7 inline-flex items-center gap-2.5 rounded-xs border border-blue-200/80 bg-blue-50/70 px-4 py-1.5">
-              <span
-                className="h-1.5 w-1.5 shrink-0 rounded-xs bg-[#2563eb]"
-                aria-hidden
-              />
-              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#2563eb]">
+            <p className="mb-7 max-w-full text-balance">
+              <span className="inline-block rounded-full bg-[#0f1f4b]/[0.09] px-3.5 py-2 text-[10px] font-semibold uppercase leading-snug tracking-[0.18em] text-[#0f1f4b] sm:text-[11px] sm:tracking-[0.2em]">
                 {copy.badge}
               </span>
-            </div>
+            </p>
 
             <h1 className="font-display text-[clamp(3rem,8vw,6.75rem)] font-bold uppercase leading-[0.92] tracking-[-0.02em] text-[#0f1f4b]">
               {copy.titleLine1}

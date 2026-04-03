@@ -25,10 +25,10 @@ export default function HeroCinematic({
       id={sectionId}
       className="relative overflow-hidden bg-[#0f1f4b]"
     >
-      <div className="relative aspect-[21/9] min-h-[320px] w-full md:min-h-[420px] lg:min-h-[min(52vh,520px)]">
+      <div className="relative min-h-[min(52vh,440px)] w-full sm:aspect-[21/9] sm:min-h-[320px] md:min-h-[420px] lg:min-h-[min(52vh,520px)]">
         <HeroRestoredPhotoFill
           alt={copy.heroImageAlt}
-          className="bg-[position:60%_42%]"
+          className="bg-[position:30%_44%] sm:bg-[position:60%_42%]"
         />
         <div
           className="absolute inset-0 bg-gradient-to-r from-[#0f1f4b]/95 via-[#0f1f4b]/55 to-transparent md:from-[#0f1f4b]/90 md:via-[#0f1f4b]/35"
@@ -39,7 +39,7 @@ export default function HeroCinematic({
           aria-hidden
         />
 
-        <div className="absolute inset-0 flex flex-col justify-end px-5 pb-12 pt-24 sm:px-10 md:pb-16 md:pl-12 lg:pl-16">
+        <div className="absolute inset-0 flex flex-col justify-end px-4 pb-8 pt-16 sm:px-10 sm:pb-12 sm:pt-24 md:pb-16 md:pl-12 lg:pl-16">
           {ready ? (
             <div className="max-w-2xl">
               <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70">
@@ -73,8 +73,8 @@ export default function HeroCinematic({
       </div>
 
       {ready ? (
-        <div className="border-t border-white/10 bg-[#0f1f4b] px-5 py-10 sm:px-10 md:pl-12 lg:pl-16">
-          <div className="mx-auto flex max-w-6xl flex-wrap gap-x-14 gap-y-6">
+        <div className="border-t border-white/10 bg-[#0f1f4b] px-4 py-8 sm:px-10 sm:py-10 md:pl-12 lg:pl-16">
+          <div className="mx-auto flex max-w-6xl flex-wrap gap-x-10 gap-y-5 sm:gap-x-14 sm:gap-y-6">
             <div>
               <div className="font-display text-3xl font-semibold text-white sm:text-4xl">
                 5<span className="text-amber-400">★</span>{" "}

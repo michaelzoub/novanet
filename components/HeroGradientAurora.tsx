@@ -45,7 +45,7 @@ export default function HeroGradientAurora({
   return (
     <section
       id={sectionId}
-      className="relative min-h-[min(90vh,880px)] overflow-hidden bg-neutral-200"
+      className="relative min-h-[min(88dvh,860px)] overflow-hidden bg-neutral-200 sm:min-h-[min(90vh,880px)]"
     >
       <motion.div
         className="pointer-events-none absolute inset-0"
@@ -56,15 +56,15 @@ export default function HeroGradientAurora({
       >
         <HeroRestoredPhotoFill
           alt={copy.heroImageAlt}
-          className="bg-[position:62%_center] sm:bg-[position:66%_center] md:bg-[position:70%_center]"
+          className="bg-[position:32%_46%] sm:bg-[position:62%_center] md:bg-[position:66%_center] lg:bg-[position:70%_center]"
         />
       </motion.div>
 
-      <div className="relative z-[1] mx-auto flex min-h-[min(90vh,880px)] max-w-[1440px] items-center justify-start py-16 pl-2 pr-5 sm:pl-3 sm:pr-8 md:pl-3 md:pr-10 lg:pl-4 xl:pl-5">
+      <div className="relative z-[1] mx-auto flex min-h-[min(88dvh,860px)] max-w-[1440px] items-center justify-center px-4 py-10 sm:min-h-[min(90vh,880px)] sm:justify-start sm:px-5 sm:py-16 md:pl-3 md:pr-10 lg:pl-4 xl:pl-5">
         <motion.div
-          className="w-full max-w-xl border border-slate-200/80 p-8 shadow-[0_24px_80px_rgba(0,0,0,0.12)] sm:p-10 md:max-w-[440px] lg:max-w-[480px]"
-          initial={reduceMotion ? false : { opacity: 0, x: -52 }}
-          animate={{ opacity: 1, x: 0 }}
+          className="w-full max-w-xl border border-slate-200/80 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.12)] sm:p-8 md:max-w-[440px] md:p-10 lg:max-w-[480px]"
+          initial={reduceMotion ? false : { opacity: 0, y: 20, x: 0 }}
+          animate={{ opacity: 1, y: 0, x: 0 }}
           transition={cardTransition}
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.9)",
