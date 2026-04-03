@@ -12,14 +12,14 @@ type Props = {
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
+/** Y-only motion: avoids Safari compositor flashes from many simultaneous opacity tweens. */
 const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { y: 14 },
   show: (i: number) => ({
-    opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
-      delay: 0.08 + i * 0.065,
+      duration: 0.48,
+      delay: 0.06 + i * 0.055,
       ease: easeOut,
     },
   }),
@@ -34,59 +34,42 @@ export default function HeroGradientAurora({
   const copy = getHeroCopy(lang);
   const reduceMotion = useReducedMotion();
 
-  const photoTransition = reduceMotion
-    ? { duration: 0.2 }
-    : { duration: 1.05, ease: easeOut };
-
   const cardTransition = reduceMotion
     ? { duration: 0.2 }
-    : { duration: 0.7, delay: 0.14, ease: easeOut };
+    : { duration: 0.65, delay: 0.1, ease: easeOut };
 
   return (
     <section
       id={sectionId}
-      className="relative min-h-[min(88dvh,860px)] overflow-hidden bg-neutral-200 sm:min-h-[min(90vh,880px)]"
+      className="relative isolate min-h-[min(88svh,860px)] overflow-hidden bg-neutral-200 sm:min-h-[min(90vh,880px)]"
     >
-      <motion.div
-        className="pointer-events-none absolute inset-0"
-        initial={reduceMotion ? false : { opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={photoTransition}
-        style={{
-          willChange: reduceMotion ? undefined : "transform, opacity",
-          transform: reduceMotion ? undefined : "translateZ(0)",
-          WebkitBackfaceVisibility: "hidden",
-          backfaceVisibility: "hidden",
-        }}
-      >
+      {/* Static layer: no Motion opacity here (Safari + cover backgrounds tend to “snap”). */}
+      <div className="pointer-events-none absolute inset-0">
         <HeroRestoredPhotoFill
           alt={copy.heroImageAlt}
           className="bg-[position:32%_46%] sm:bg-[position:62%_center] md:bg-[position:66%_center] lg:bg-[position:70%_center]"
         />
-      </motion.div>
+      </div>
 
-      <div className="relative z-[1] mx-auto flex min-h-[min(88dvh,860px)] max-w-[1440px] items-center justify-center px-4 py-10 sm:min-h-[min(90vh,880px)] sm:justify-start sm:px-5 sm:py-16 md:pl-3 md:pr-10 lg:pl-4 xl:pl-5">
+      {/* svh on small screens: stable height when mobile browser chrome shows/hides (dvh jumps). */}
+      <div className="relative z-[1] mx-auto flex min-h-[min(88svh,860px)] max-w-[1440px] items-center justify-center px-4 py-10 sm:min-h-[min(90vh,880px)] sm:justify-start sm:px-5 sm:py-16 md:pl-3 md:pr-10 lg:pl-4 xl:pl-5">
         <motion.div
           className="w-full max-w-xl border border-slate-200/80 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.12)] sm:p-8 md:max-w-[440px] md:p-10 lg:max-w-[480px]"
-          initial={reduceMotion ? false : { opacity: 0, y: 20, x: 0 }}
-          animate={{ opacity: 1, y: 0, x: 0 }}
+          initial={reduceMotion ? false : { y: 22 }}
+          animate={{ y: 0 }}
           transition={cardTransition}
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.9)",
-            willChange: reduceMotion ? undefined : "transform, opacity",
-            transform: reduceMotion ? undefined : "translateZ(0)",
-            WebkitBackfaceVisibility: "hidden",
-            backfaceVisibility: "hidden",
           }}
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={lang}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
+              initial={{ y: 10 }}
+              animate={{ y: 0 }}
+              exit={{ y: -6 }}
               transition={{
-                duration: reduceMotion ? 0.15 : 0.42,
+                duration: reduceMotion ? 0.12 : 0.32,
                 ease: easeOut,
               }}
             >
