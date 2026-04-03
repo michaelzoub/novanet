@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface Review {
@@ -26,6 +27,7 @@ const DEFAULT_GOOGLE_LISTING_URL =
 
 export default function Reviews() {
   const { lang } = useLanguage();
+  const reduceMotion = useReducedMotion();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewSource, setReviewSource] = useState<"google" | "internal" | null>(
     null,
@@ -63,13 +65,12 @@ export default function Reviews() {
   }, [lang]);
 
   useEffect(() => {
-    if (reviews.length > 0) {
-      const interval = setInterval(() => {
-        setCurrentPage((prev) => (prev + 1) % Math.ceil(reviews.length / 2));
-      }, 6000);
-      return () => clearInterval(interval);
-    }
-  }, [reviews.length]);
+    if (reduceMotion || reviews.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentPage((prev) => (prev + 1) % Math.ceil(reviews.length / 2));
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [reviews.length, reduceMotion]);
 
   const goToPage = (page: number) => {
     if (reviews.length === 0) return;
@@ -220,7 +221,7 @@ export default function Reviews() {
         ) : (
           <div className="overflow-hidden">
             <div
-              className="flex transition-transform duration-600 ease-out"
+              className="flex transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
               style={{
                 transform: `translateX(-${currentPage * 100}%)`,
               }}
@@ -281,7 +282,7 @@ export default function Reviews() {
                   <button
                     key={idx}
                     onClick={() => goToPage(idx)}
-                    className={`h-1.5 rounded-full transition-all ${
+                    className={`h-1.5 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none ${
                       idx === currentPage
                         ? "w-6 bg-[#0f1f4b]"
                         : "w-1.5 bg-gray-300"

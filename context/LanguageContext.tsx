@@ -2,17 +2,20 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useState,
   ReactNode,
 } from "react";
 
 type Language = "fr" | "en";
 
+const LANG_COOKIE = "novanet-lang";
+
 interface LanguageContextType {
   lang: Language;
-  ready: boolean;
   setLang: (lang: Language) => void;
   t: (key: string) => string;
 }
@@ -164,29 +167,63 @@ const translations = {
   },
 };
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Language>("fr");
-  const [ready, setReady] = useState(false);
+function persistLang(lang: Language) {
+  if (typeof document === "undefined") return;
+  document.documentElement.lang = lang;
+  try {
+    localStorage.setItem("novanet-lang", lang);
+  } catch {
+    /* ignore */
+  }
+  document.cookie = `${LANG_COOKIE}=${lang}; path=/; max-age=31536000; samesite=lax`;
+}
 
-  useEffect(() => {
-    const storedLang = window.localStorage.getItem("novanet-lang");
-    if (storedLang === "fr" || storedLang === "en") {
-      setLang(storedLang);
+export function LanguageProvider({
+  children,
+  initialLang,
+}: {
+  children: ReactNode;
+  initialLang: Language;
+}) {
+  const [lang, setLangState] = useState<Language>(initialLang);
+
+  /**
+   * Cookie + server `initialLang` are the source of truth for the first paint.
+   * Align localStorage to match so we never flip language after hydration (no EN↔FR flash).
+   */
+  useLayoutEffect(() => {
+    try {
+      const stored = localStorage.getItem("novanet-lang");
+      if (stored === "en" || stored === "fr") {
+        if (stored !== initialLang) {
+          localStorage.setItem("novanet-lang", initialLang);
+        }
+      } else {
+        localStorage.setItem("novanet-lang", initialLang);
+      }
+      document.documentElement.lang = initialLang;
+    } catch {
+      document.documentElement.lang = initialLang;
     }
-    setReady(true);
-  }, []);
+  }, [initialLang]);
 
   useEffect(() => {
-    window.localStorage.setItem("novanet-lang", lang);
-    document.documentElement.lang = lang;
+    persistLang(lang);
   }, [lang]);
 
-  const t = (key: string): string => {
-    return translations[lang][key as keyof typeof translations.fr] || key;
-  };
+  const setLang = useCallback((next: Language) => {
+    setLangState(next);
+  }, []);
+
+  const t = useCallback(
+    (key: string): string => {
+      return translations[lang][key as keyof typeof translations.fr] || key;
+    },
+    [lang],
+  );
 
   return (
-    <LanguageContext.Provider value={{ lang, ready, setLang, t }}>
+    <LanguageContext.Provider value={{ lang, setLang, t }}>
       {children}
     </LanguageContext.Provider>
   );

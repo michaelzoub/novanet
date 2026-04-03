@@ -199,13 +199,14 @@ export default function Results() {
     [preloadSlide],
   );
 
-  // Auto-rotate slides.
+  // Auto-rotate slides (disabled when user prefers reduced motion).
   useEffect(() => {
+    if (reduceMotion) return;
     const id = window.setInterval(() => {
       switchTo((currentSlideRef.current + 1) % beforeAfterPairs.length);
     }, 6000);
     return () => window.clearInterval(id);
-  }, [switchTo]);
+  }, [switchTo, reduceMotion]);
 
   const computePercent = (clientX: number) => {
     const el = sliderRef.current;
@@ -439,7 +440,7 @@ export default function Results() {
                   if (isSwitching) return;
                   switchTo(idx);
                 }}
-                className={`h-1.5 rounded-full transition-all ${
+                className={`h-1.5 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none ${
                   idx === currentSlide ? "w-6 bg-[#0f1f4b]" : "w-1.5 bg-gray-300"
                 }`}
               />

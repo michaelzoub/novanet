@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { ReactNode } from "react";
 import { LanguageProvider } from "@/context/LanguageContext";
 import Navbar from "@/components/Navbar";
@@ -18,6 +19,9 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  icons: {
+    icon: "/icon.svg",
+  },
   title: {
     default:
       "Nova Net — Lavage extérieur professionnel | Grand Montréal",
@@ -68,13 +72,17 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const cookieLang = cookies().get("novanet-lang")?.value;
+  const initialLang =
+    cookieLang === "en" || cookieLang === "fr" ? cookieLang : "fr";
+
   return (
     <html
-      lang="fr"
+      lang={initialLang}
       className={`scroll-smooth ${outfit.variable}`}
     >
       <body className="min-h-screen overflow-x-hidden bg-white text-slate-900 antialiased">
-        <LanguageProvider>
+        <LanguageProvider initialLang={initialLang}>
           <Navbar />
           <div className="pt-[var(--navbar-height,64px)]">{children}</div>
         </LanguageProvider>

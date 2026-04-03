@@ -17,7 +17,7 @@ export default function HeroEditorialFrame({
   sectionId = "hero",
   imagePriority: _imagePriority = true,
 }: Props) {
-  const { lang, ready } = useLanguage();
+  const { lang } = useLanguage();
   const copy = getHeroCopy(lang);
 
   return (
@@ -27,7 +27,6 @@ export default function HeroEditorialFrame({
     >
       <div className="mx-auto grid max-w-[1400px] gap-0 md:min-h-[min(88vh,900px)] md:grid-cols-[1.05fr_0.95fr] md:items-center md:gap-4 md:px-8 md:py-12 lg:px-12">
         <div className="order-2 flex flex-col justify-center px-4 py-10 sm:px-8 sm:py-12 md:order-1 md:py-16 md:pr-6 lg:pl-4">
-          {ready ? (
             <>
               <div className="mb-6 inline-flex max-w-full items-stretch border border-slate-200/90 bg-white shadow-[0_1px_0_rgba(15,31,75,0.06)]">
                 <span className="w-1 shrink-0 bg-[#0f1f4b]" aria-hidden />
@@ -82,7 +81,6 @@ export default function HeroEditorialFrame({
                 </div>
               </div>
             </>
-          ) : null}
         </div>
 
         <div className="order-1 px-4 pb-2 pt-6 sm:px-8 sm:pt-8 md:order-2 md:px-4 md:py-8">

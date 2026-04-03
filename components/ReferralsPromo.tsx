@@ -4,6 +4,13 @@ import Link from "next/link";
 import { Gift, ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
+import {
+  LANDING_EASE,
+  LANDING_REVEAL_DURATION,
+  LANDING_STAGGER_CHILD,
+  LANDING_STAGGER_DELAY,
+  LANDING_VIEWPORT,
+} from "@/lib/landing-motion";
 
 export default function ReferralsPromo() {
   const { lang } = useLanguage();
@@ -64,52 +71,56 @@ export default function ReferralsPromo() {
           cta: "Join the program",
         };
 
-  const easeOutExpo = [0.22, 1, 0.36, 1] as const;
-
   const fadeUp = reduceMotion
-    ? { hidden: { opacity: 0 }, visible: { opacity: 1 } }
+    ? { hidden: { opacity: 1 }, visible: { opacity: 1 } }
     : {
-        hidden: { opacity: 0, y: 14 },
+        hidden: { opacity: 1, y: 10 },
         visible: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.44, ease: easeOutExpo },
+          transition: { duration: LANDING_REVEAL_DURATION, ease: LANDING_EASE },
         },
       };
 
   const staggerLeft = {
     hidden: {},
     visible: {
-      transition: { staggerChildren: 0.09, delayChildren: 0.05 },
+      transition: {
+        staggerChildren: reduceMotion ? 0 : LANDING_STAGGER_CHILD,
+        delayChildren: reduceMotion ? 0 : LANDING_STAGGER_DELAY,
+      },
     },
   };
 
   const staggerSteps = {
     hidden: {},
     visible: {
-      transition: { staggerChildren: 0.09, delayChildren: 0.1 },
+      transition: {
+        staggerChildren: reduceMotion ? 0 : LANDING_STAGGER_CHILD,
+        delayChildren: reduceMotion ? 0 : LANDING_STAGGER_DELAY * 2,
+      },
     },
   };
 
   const stepVariant = reduceMotion
-    ? { hidden: { opacity: 0 }, visible: { opacity: 1 } }
+    ? { hidden: { opacity: 1 }, visible: { opacity: 1 } }
     : {
-        hidden: { opacity: 0, y: 10 },
+        hidden: { opacity: 1, y: 10 },
         visible: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.38, ease: easeOutExpo },
+          transition: { duration: LANDING_REVEAL_DURATION, ease: LANDING_EASE },
         },
       };
 
   const cardReveal = reduceMotion
-    ? { hidden: { opacity: 0 }, visible: { opacity: 1 } }
+    ? { hidden: { opacity: 1 }, visible: { opacity: 1 } }
     : {
-        hidden: { opacity: 0, y: 18 },
+        hidden: { opacity: 1, y: 10 },
         visible: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.52, ease: easeOutExpo },
+          transition: { duration: LANDING_REVEAL_DURATION, ease: LANDING_EASE },
         },
       };
 
@@ -123,7 +134,7 @@ export default function ReferralsPromo() {
           className="relative overflow-hidden rounded-sm border border-[#0f1f4b]/10 bg-white/95 p-10 shadow-[0_24px_60px_-18px_rgba(15,31,75,0.14)] ring-1 ring-[#0f1f4b]/[0.04] md:p-12 lg:px-14 lg:py-16"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2, margin: "0px 0px -48px 0px" }}
+          viewport={LANDING_VIEWPORT}
           variants={cardReveal}
         >
           <div
@@ -139,7 +150,7 @@ export default function ReferralsPromo() {
             <motion.div
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.25 }}
+              viewport={LANDING_VIEWPORT}
               variants={staggerLeft}
             >
               <motion.div
@@ -184,7 +195,7 @@ export default function ReferralsPromo() {
               className="mt-12 space-y-4 lg:mt-0"
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.18 }}
+              viewport={LANDING_VIEWPORT}
               variants={staggerSteps}
             >
               {copy.steps.map((step) => (

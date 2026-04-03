@@ -3,8 +3,13 @@
 import { Monitor, Droplets, Home, Clock } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
+import {
+  LANDING_EASE,
+  LANDING_REVEAL_DURATION,
+  LANDING_STAGGER_CHILD,
+  LANDING_STAGGER_DELAY,
+  LANDING_VIEWPORT,
+} from "@/lib/landing-motion";
 
 export default function Services() {
   const { lang } = useLanguage();
@@ -101,13 +106,13 @@ export default function Services() {
           className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2, margin: "0px 0px -56px 0px" }}
+          viewport={LANDING_VIEWPORT}
           variants={{
             hidden: {},
             visible: {
               transition: {
-                staggerChildren: reduceMotion ? 0 : 0.12,
-                delayChildren: reduceMotion ? 0 : 0.05,
+                staggerChildren: reduceMotion ? 0 : LANDING_STAGGER_CHILD,
+                delayChildren: reduceMotion ? 0 : LANDING_STAGGER_DELAY,
               },
             },
           }}
@@ -117,15 +122,15 @@ export default function Services() {
               key={idx}
               variants={{
                 hidden: {
-                  opacity: 0,
-                  x: reduceMotion ? 0 : -32,
+                  opacity: 1,
+                  y: reduceMotion ? 0 : 10,
                 },
                 visible: {
                   opacity: 1,
-                  x: 0,
+                  y: 0,
                   transition: {
-                    duration: reduceMotion ? 0.01 : 0.58,
-                    ease: EASE,
+                    duration: reduceMotion ? 0.01 : LANDING_REVEAL_DURATION,
+                    ease: LANDING_EASE,
                   },
                 },
               }}

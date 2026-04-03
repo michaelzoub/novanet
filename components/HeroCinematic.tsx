@@ -17,7 +17,7 @@ export default function HeroCinematic({
   sectionId = "hero",
   imagePriority: _imagePriority = true,
 }: Props) {
-  const { lang, ready } = useLanguage();
+  const { lang } = useLanguage();
   const copy = getHeroCopy(lang);
 
   return (
@@ -40,7 +40,6 @@ export default function HeroCinematic({
         />
 
         <div className="absolute inset-0 flex flex-col justify-end px-4 pb-8 pt-16 sm:px-10 sm:pb-12 sm:pt-24 md:pb-16 md:pl-12 lg:pl-16">
-          {ready ? (
             <div className="max-w-2xl">
               <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70">
                 {copy.badge}
@@ -68,38 +67,35 @@ export default function HeroCinematic({
                 </a>
               </div>
             </div>
-          ) : null}
         </div>
       </div>
 
-      {ready ? (
-        <div className="border-t border-white/10 bg-[#0f1f4b] px-4 py-8 sm:px-10 sm:py-10 md:pl-12 lg:pl-16">
-          <div className="mx-auto flex max-w-6xl flex-wrap gap-x-10 gap-y-5 sm:gap-x-14 sm:gap-y-6">
-            <div>
-              <div className="font-display text-3xl font-semibold text-white sm:text-4xl">
-                5<span className="text-amber-400">★</span>{" "}
-                <span className="text-lg font-normal text-white/50">Google</span>
-              </div>
+      <div className="border-t border-white/10 bg-[#0f1f4b] px-4 py-8 sm:px-10 sm:py-10 md:pl-12 lg:pl-16">
+        <div className="mx-auto flex max-w-6xl flex-wrap gap-x-10 gap-y-5 sm:gap-x-14 sm:gap-y-6">
+          <div>
+            <div className="font-display text-3xl font-semibold text-white sm:text-4xl">
+              5<span className="text-amber-400">★</span>{" "}
+              <span className="text-lg font-normal text-white/50">Google</span>
             </div>
-            <div>
-              <div className="font-display text-3xl font-semibold text-white sm:text-4xl">
-                100%
-              </div>
-              <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">
-                {copy.satisfaction}
-              </div>
+          </div>
+          <div>
+            <div className="font-display text-3xl font-semibold text-white sm:text-4xl">
+              100%
             </div>
-            <div>
-              <div className="font-display text-3xl font-semibold text-white sm:text-4xl">
-                24H
-              </div>
-              <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">
-                {copy.response}
-              </div>
+            <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">
+              {copy.satisfaction}
+            </div>
+          </div>
+          <div>
+            <div className="font-display text-3xl font-semibold text-white sm:text-4xl">
+              24H
+            </div>
+            <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">
+              {copy.response}
             </div>
           </div>
         </div>
-      ) : null}
+      </div>
     </section>
   );
 }

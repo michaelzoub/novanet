@@ -2,13 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import { getHeroCopy } from "@/components/hero/heroCopy";
 import { HeroRestoredPhotoFill } from "@/components/hero/HeroRestoredPhotoFill";
-import { AnimatePresence, motion } from "framer-motion";
 
 type HeroProps = {
-  /** Use unique ids when multiple heroes appear on one page (e.g. `/heroes`). */
   sectionId?: string;
-  /** Pass false for below-the-fold previews so LCP stays on the first hero. */
   imagePriority?: boolean;
 };
 
@@ -16,46 +14,21 @@ export default function Hero({
   sectionId = "hero",
   imagePriority: _imagePriority = true,
 }: HeroProps) {
-  const { lang, ready } = useLanguage();
+  const { lang } = useLanguage();
   const statsRef = useRef<HTMLDivElement>(null);
   const [statsCanAnimate, setStatsCanAnimate] = useState(false);
-
-  const copy =
-    lang === "fr"
-      ? {
-          badge: "Grand Montréal · Service professionnel",
-          heroImageAlt:
-            "Technicien effectuant un lavage à pression sur une surface extérieure.",
-          titleTop: "VOYEZ LA",
-          titleBottom: "DIFFÉRENCE",
-          description:
-            "Lavage de vitres intérieur et extérieur, lavage à pression, scellant de pavés et sablage : nous redonnons à votre propriété l'éclat qu'elle mérite.",
-          primaryCta: "Obtenir une soumission",
-          secondaryCta: "Voir nos résultats",
-          satisfaction: "Satisfaction",
-          response: "Réponse",
-        }
-      : {
-          badge: "Greater Montreal · Professional service",
-          heroImageAlt:
-            "Technician pressure washing an outdoor surface.",
-          titleTop: "SEE THE",
-          titleBottom: "DIFFERENCE",
-          description:
-            "Interior and exterior window washing, pressure washing, paver sealing, and sanding — we bring your property back to its best.",
-          primaryCta: "Get a quote",
-          secondaryCta: "See our results",
-          satisfaction: "Satisfaction",
-          response: "Response",
-        };
+  const copy = getHeroCopy(lang);
 
   useEffect(() => {
-    if (!ready) return;
     setStatsCanAnimate(false);
-  }, [ready, lang]);
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setStatsCanAnimate(true));
+    });
+    return () => cancelAnimationFrame(id);
+  }, [lang]);
 
   useEffect(() => {
-    if (!ready || !statsCanAnimate) return;
+    if (!statsCanAnimate) return;
 
     const animateCounter = (el: HTMLElement, target: number) => {
       const duration = 1600;
@@ -87,154 +60,84 @@ export default function Hero({
     });
 
     return () => cancelAnimationFrame(id);
-  }, [ready, lang, statsCanAnimate]);
+  }, [lang, statsCanAnimate]);
 
   return (
     <section id={sectionId} className="relative overflow-hidden bg-white">
       <div className="mx-auto grid max-w-[1600px] md:min-h-[min(88vh,920px)] md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-        {/* Copy column — plain surface, no photo wash */}
         <div className="order-2 flex items-center border-slate-100 bg-white px-4 py-8 sm:px-8 sm:py-12 md:order-1 md:border-r md:py-20 md:pl-12 md:pr-10 lg:pl-16 lg:pr-12">
           <div className="w-full max-w-xl lg:max-w-none lg:pr-4">
-            <AnimatePresence mode="wait" initial={false}>
-              {ready ? (
-                <motion.div
-                  key={lang}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{
-                    duration: 0.5,
-                    ease: [0.22, 1, 0.36, 1],
-                    type: "tween",
-                  }}
-                  onAnimationComplete={() => setStatsCanAnimate(true)}
-                  style={{
-                    willChange: "transform, opacity",
-                    transform: "translateZ(0)",
-                    WebkitBackfaceVisibility: "hidden",
-                    backfaceVisibility: "hidden",
-                  }}
-                >
-                  <motion.div
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.45,
-                      delay: 0.05,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="mb-5 inline-flex max-w-full items-stretch border border-slate-200/90 bg-slate-50/60 shadow-[0_1px_0_rgba(15,31,75,0.06)] md:mb-7"
-                  >
-                    <span
-                      className="w-1 shrink-0 bg-[#0f1f4b]"
-                      aria-hidden
-                    />
-                    <span className="px-3 py-2 text-[10px] font-semibold uppercase leading-snug tracking-[0.18em] text-slate-600 sm:px-4 sm:py-2.5 sm:text-[11px] sm:tracking-[0.2em]">
-                      {copy.badge}
-                    </span>
-                  </motion.div>
+            <div
+              className="motion-reduce:transition-none"
+              onAnimationEnd={() => setStatsCanAnimate(true)}
+            >
+              <div className="mb-5 inline-flex max-w-full items-stretch border border-slate-200/90 bg-slate-50/60 shadow-[0_1px_0_rgba(15,31,75,0.06)] md:mb-7">
+                <span
+                  className="w-1 shrink-0 bg-[#0f1f4b]"
+                  aria-hidden
+                />
+                <span className="px-3 py-2 text-[10px] font-semibold uppercase leading-snug tracking-[0.18em] text-slate-600 sm:px-4 sm:py-2.5 sm:text-[11px] sm:tracking-[0.2em]">
+                  {copy.badge}
+                </span>
+              </div>
 
-                  <motion.h1
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.6,
-                      delay: 0.12,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="mb-4 max-w-3xl font-display text-4xl font-semibold uppercase leading-[1.02] tracking-[-0.02em] text-[#0f1f4b] sm:mb-5 sm:text-5xl md:text-6xl lg:text-[4.25rem] lg:leading-[0.98]"
-                  >
-                    {copy.titleTop}
-                    <br />
-                    {copy.titleBottom}
-                  </motion.h1>
+              <h1 className="mb-4 max-w-3xl font-display text-4xl font-semibold uppercase leading-[1.02] tracking-[-0.02em] text-[#0f1f4b] sm:mb-5 sm:text-5xl md:text-6xl lg:text-[4.25rem] lg:leading-[0.98]">
+                {copy.titleLine1}
+                <br />
+                {copy.titleLine2}
+              </h1>
 
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.55,
-                      delay: 0.2,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="mb-7 max-w-lg text-[15px] font-normal leading-[1.65] text-slate-600 sm:mb-9 sm:text-base"
-                  >
-                    {copy.description}
-                  </motion.p>
+              <p className="mb-7 max-w-lg text-[15px] font-normal leading-[1.65] text-slate-600 sm:mb-9 sm:text-base">
+                {copy.description}
+              </p>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.55,
-                      delay: 0.26,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="mb-12 flex flex-wrap gap-3 sm:gap-4"
-                  >
-                    <a href="#contact" className="btn-institutional-primary">
-                      {copy.primaryCta}
-                    </a>
-                    <a
-                      href="#resultats"
-                      className="btn-institutional-secondary"
-                    >
-                      {copy.secondaryCta}
-                    </a>
-                  </motion.div>
+              <div className="mb-12 flex flex-wrap gap-3 sm:gap-4">
+                <a href="#contact" className="btn-institutional-primary">
+                  {copy.primaryCta}
+                </a>
+                <a href="#resultats" className="btn-institutional-secondary">
+                  {copy.secondaryCta}
+                </a>
+              </div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={
-                      statsCanAnimate
-                        ? { opacity: 1, y: 0 }
-                        : { opacity: 0, y: 8 }
-                    }
-                    transition={{
-                      duration: 0.35,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    ref={statsRef}
-                    className="flex flex-wrap gap-x-10 gap-y-7 border-t border-slate-200/80 pt-8 sm:gap-x-12 sm:gap-y-8 sm:pt-10"
-                  >
-                    <div>
-                      <div className="font-display text-3xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-4xl">
-                        <span data-t="5">0</span>★
-                      </div>
-                      <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        Google
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-display text-3xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-4xl">
-                        <span data-t="100">0</span>%
-                      </div>
-                      <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        {copy.satisfaction}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-display text-3xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-4xl">
-                        <span data-t="24">0</span>H
-                      </div>
-                      <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        {copy.response}
-                      </div>
-                    </div>
-                  </motion.div>
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
+              <div
+                ref={statsRef}
+                className="flex flex-wrap gap-x-10 gap-y-7 border-t border-slate-200/80 pt-8 sm:gap-x-12 sm:gap-y-8 sm:pt-10"
+              >
+                <div>
+                  <div className="font-display text-3xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-4xl">
+                    <span data-t="5">5</span>★
+                  </div>
+                  <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    Google
+                  </div>
+                </div>
+                <div>
+                  <div className="font-display text-3xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-4xl">
+                    <span data-t="100">100</span>%
+                  </div>
+                  <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    {copy.satisfaction}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-display text-3xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-4xl">
+                    <span data-t="24">24</span>H
+                  </div>
+                  <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    {copy.response}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Image column — full cover, minimal edge treatment (no full-frame white wash) */}
         <div className="relative order-1 h-[min(26svh,220px)] min-h-[156px] max-h-[220px] shrink-0 md:h-auto md:max-h-none md:min-h-[min(88vh,920px)]">
           <HeroRestoredPhotoFill
             alt={copy.heroImageAlt}
             className="bg-[position:34%_40%] sm:bg-[position:60%_center] md:bg-[position:56%_center]"
           />
-          {/* Lightly darken for print-like depth; optional narrow seam blend toward copy */}
           <div
             className="pointer-events-none absolute inset-0 bg-slate-900/[0.025] md:bg-slate-900/[0.04]"
             aria-hidden
