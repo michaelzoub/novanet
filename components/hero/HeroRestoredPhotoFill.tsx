@@ -19,9 +19,6 @@ export function HeroRestoredPhotoFill({ alt, className = "" }: Props) {
       className={`absolute inset-0 bg-cover bg-no-repeat ${className}`}
       style={{
         backgroundImage: `url("${HERO_RESTORED_BACKGROUND_IMAGE_URL}")`,
-        transform: "translateZ(0)",
-        WebkitBackfaceVisibility: "hidden",
-        backfaceVisibility: "hidden",
       }}
     />
   );
