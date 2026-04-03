@@ -49,10 +49,15 @@ export default function HeroGradientAurora({
     >
       <motion.div
         className="pointer-events-none absolute inset-0"
-        initial={reduceMotion ? false : { opacity: 0, scale: 1.035 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={reduceMotion ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={photoTransition}
-        style={{ willChange: reduceMotion ? undefined : "transform, opacity" }}
+        style={{
+          willChange: reduceMotion ? undefined : "transform, opacity",
+          transform: reduceMotion ? undefined : "translateZ(0)",
+          WebkitBackfaceVisibility: "hidden",
+          backfaceVisibility: "hidden",
+        }}
       >
         <HeroRestoredPhotoFill
           alt={copy.heroImageAlt}
@@ -69,6 +74,9 @@ export default function HeroGradientAurora({
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.9)",
             willChange: reduceMotion ? undefined : "transform, opacity",
+            transform: reduceMotion ? undefined : "translateZ(0)",
+            WebkitBackfaceVisibility: "hidden",
+            backfaceVisibility: "hidden",
           }}
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -98,7 +106,7 @@ export default function HeroGradientAurora({
                 <motion.div variants={fadeUp} custom={0} className="mb-6">
                   <div className="inline-flex max-w-full items-stretch border border-slate-200/90 bg-slate-50/80">
                     <span className="w-1 shrink-0 bg-[#0f1f4b]" aria-hidden />
-                    <span className="whitespace-nowrap px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 sm:text-[11px]">
+                    <span className="max-w-full px-3 py-2 pr-4 text-[10px] font-semibold uppercase leading-snug tracking-[0.18em] text-slate-600 sm:px-4 sm:pr-5 sm:text-[11px] sm:tracking-[0.2em]">
                       {copy.badge}
                     </span>
                   </div>
