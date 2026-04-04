@@ -206,8 +206,10 @@ export default function Navbar() {
               color: "#0f766e",
               borderBottom: "1px solid #f1f5f9",
               background: "none",
-              border: "none",
-              borderBottom: "1px solid #f1f5f9" as never,
+              borderTop: "none",
+              borderLeft: "none",
+              borderRight: "none",
+              borderBottom: "1px solid #f1f5f9",
               cursor: "pointer",
               textAlign: "left",
             }}
