@@ -13,7 +13,7 @@ export async function GET() {
       status: job.status,
       review: job.review || "",
       location: job.location,
-      clientId: job.client_id,
+      clientId: job.client_id ?? undefined,
     }));
 
     return NextResponse.json({ body: markersData });
