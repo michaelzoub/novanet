@@ -339,11 +339,24 @@ export const potentialClientManager = {
       current_job_id: null,
     });
 
-    // Link any jobs that referenced this potential_client to the new client
-    await supabaseAdmin
+    // Find and re-link any jobs that referenced this potential_client
+    const { data: linkedJobs } = await supabaseAdmin
       .from("jobs")
-      .update({ client_id: newClient.id, updated_at: new Date().toISOString() })
+      .select("id")
       .eq("potential_client_id", id);
+
+    if (linkedJobs && linkedJobs.length > 0) {
+      await supabaseAdmin
+        .from("jobs")
+        .update({ client_id: newClient.id, updated_at: new Date().toISOString() })
+        .eq("potential_client_id", id);
+
+      // Reflect the linked jobs in number_of_jobs
+      await supabaseAdmin
+        .from("clients")
+        .update({ number_of_jobs: linkedJobs.length, updated_at: new Date().toISOString() })
+        .eq("id", newClient.id);
+    }
 
     return newClient;
   },

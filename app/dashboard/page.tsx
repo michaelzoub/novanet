@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -13,8 +14,6 @@ type Job = {
   job_type: string;
   status: string;
   description?: string | null;
-  scheduled_date?: string | null;
-  completed_date?: string | null;
   created_at: string;
 };
 
@@ -51,15 +50,150 @@ type ReferralProfile = {
 
 type Tab = "jobs" | "prospects" | "clients" | "referrals";
 
-// ── Constants ────────────────────────────────────────────────────────────────
+// ── i18n ─────────────────────────────────────────────────────────────────────
 
-const STATUSES: { value: JobStatus | "all"; label: string }[] = [
-  { value: "all", label: "Tous" },
-  { value: "submitted", label: "Soumis" },
-  { value: "quoting", label: "En devis" },
-  { value: "in_progress", label: "En cours" },
-  { value: "completed", label: "Complété" },
-];
+const T = {
+  fr: {
+    restricted: "Accès restreint",
+    dashboard: "Tableau de bord",
+    loginDesc: "Entrez votre code d'accès administrateur.",
+    login: "Connexion",
+    loginHint: "Code d'accès administrateur fourni par Nova Net.",
+    accessCode: "Code d'accès",
+    connecting: "Connexion…",
+    access: "Accéder au tableau de bord",
+    invalidCode: "Code invalide. Veuillez réessayer.",
+    connError: "Erreur de connexion. Veuillez réessayer.",
+    administration: "Administration",
+    refresh: "Actualiser",
+    loading: "…",
+    logout: "Déconnexion",
+    tabJobs: "Demandes",
+    tabProspects: "Prospects",
+    tabClients: "Clients",
+    tabReferrals: "Parrainages",
+    filterAll: "Tous",
+    filterSubmitted: "Soumis",
+    filterQuoting: "En devis",
+    filterInProgress: "En cours",
+    filterCompleted: "Complété",
+    noJobs: "Aucune demande.",
+    noProspects: "Aucun prospect.",
+    noClients: "Aucun client.",
+    noReferrals: "Aucun profil de parrainage.",
+    chargement: "Chargement…",
+    type: "Type",
+    description: "Description",
+    status: "Statut",
+    changeStatus: "Changer statut",
+    createdAt: "Créé le",
+    name: "Nom",
+    email: "Email",
+    phone: "Téléphone",
+    message: "Message",
+    actions: "Actions",
+    toClient: "→ Client",
+    address: "Adresse",
+    nbJobs: "Nb travaux",
+    code: "Code",
+    referrals: "Parrainages",
+    reward: "Récompense",
+    link: "Lien",
+    convertTitle: "Convertir en client",
+    fullName: "Nom complet",
+    confirm: "Confirmer",
+    converting: "Conversion…",
+    cancel: "Annuler",
+    nameAddressRequired: "Nom et adresse requis.",
+    convertError: "Erreur lors de la conversion.",
+    addJobTitle: "Ajouter un travail",
+    jobType: "Type de travail",
+    addJob: "Ajouter",
+    addingJob: "Ajout…",
+    jobTypeRequired: "Type de travail requis.",
+    addJobError: "Erreur lors de l'ajout.",
+    jobTypes: [
+      "Lavage de Vitres",
+      "Lavage à Pression",
+      "Scellant de Pavés",
+      "Nettoyage en profondeur",
+      "Sablage",
+      "Finition détaillée",
+      "Autre",
+    ],
+  },
+  en: {
+    restricted: "Restricted Access",
+    dashboard: "Dashboard",
+    loginDesc: "Enter your admin access code.",
+    login: "Login",
+    loginHint: "Admin access code provided by Nova Net.",
+    accessCode: "Access code",
+    connecting: "Connecting…",
+    access: "Access dashboard",
+    invalidCode: "Invalid code. Please try again.",
+    connError: "Connection error. Please try again.",
+    administration: "Administration",
+    refresh: "Refresh",
+    loading: "…",
+    logout: "Logout",
+    tabJobs: "Requests",
+    tabProspects: "Prospects",
+    tabClients: "Clients",
+    tabReferrals: "Referrals",
+    filterAll: "All",
+    filterSubmitted: "Submitted",
+    filterQuoting: "Quoting",
+    filterInProgress: "In Progress",
+    filterCompleted: "Completed",
+    noJobs: "No requests.",
+    noProspects: "No prospects.",
+    noClients: "No clients.",
+    noReferrals: "No referral profiles.",
+    chargement: "Loading…",
+    type: "Type",
+    description: "Description",
+    status: "Status",
+    changeStatus: "Change status",
+    createdAt: "Created",
+    name: "Name",
+    email: "Email",
+    phone: "Phone",
+    message: "Message",
+    actions: "Actions",
+    toClient: "→ Client",
+    address: "Address",
+    nbJobs: "# Jobs",
+    code: "Code",
+    referrals: "Referrals",
+    reward: "Reward",
+    link: "Link",
+    convertTitle: "Convert to client",
+    fullName: "Full name",
+    confirm: "Confirm",
+    converting: "Converting…",
+    cancel: "Cancel",
+    nameAddressRequired: "Name and address required.",
+    convertError: "Error during conversion.",
+    addJobTitle: "Add a job",
+    jobType: "Job type",
+    addJob: "Add",
+    addingJob: "Adding…",
+    jobTypeRequired: "Job type required.",
+    addJobError: "Error adding job.",
+    jobTypes: [
+      "Window Washing",
+      "Pressure Washing",
+      "Paver Sealing",
+      "Deep Cleaning",
+      "Sandblasting",
+      "Detailed Finish",
+      "Other",
+    ],
+  },
+} as const;
+
+// ── Status helpers ────────────────────────────────────────────────────────────
 
 const STATUS_STYLE: Record<string, string> = {
   submitted: "bg-blue-50 text-blue-700 border border-blue-200",
@@ -68,108 +202,121 @@ const STATUS_STYLE: Record<string, string> = {
   completed: "bg-green-50 text-green-700 border border-green-200",
 };
 
-const STATUS_LABEL: Record<string, string> = {
-  submitted: "Soumis",
-  quoting: "En devis",
-  in_progress: "En cours",
-  completed: "Complété",
-};
+function statusLabel(status: string, lang: "fr" | "en") {
+  const map: Record<string, { fr: string; en: string }> = {
+    submitted: { fr: "Soumis", en: "Submitted" },
+    quoting: { fr: "En devis", en: "Quoting" },
+    in_progress: { fr: "En cours", en: "In Progress" },
+    completed: { fr: "Complété", en: "Completed" },
+  };
+  return map[status]?.[lang] ?? status;
+}
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-function Badge({ status }: { status: string }) {
+function Badge({ status, lang }: { status: string; lang: "fr" | "en" }) {
   const style = STATUS_STYLE[status] ?? "bg-slate-100 text-slate-600 border border-slate-200";
   return (
     <span className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-semibold ${style}`}>
-      {STATUS_LABEL[status] ?? status}
+      {statusLabel(status, lang)}
     </span>
   );
 }
 
 function StatusSelect({
   value,
+  lang,
   onChange,
-  disabled,
 }: {
   value: string;
+  lang: "fr" | "en";
   onChange: (v: string) => void;
-  disabled?: boolean;
 }) {
+  const t = T[lang];
+  const options: { value: JobStatus; label: string }[] = [
+    { value: "submitted", label: t.filterSubmitted },
+    { value: "quoting", label: t.filterQuoting },
+    { value: "in_progress", label: t.filterInProgress },
+    { value: "completed", label: t.filterCompleted },
+  ];
   return (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      disabled={disabled}
-      className="rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-700 focus:border-[#0f1f4b] focus:outline-none disabled:opacity-50"
+      className="rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-700 focus:border-[#0f1f4b] focus:outline-none"
     >
-      {STATUSES.filter((s) => s.value !== "all").map((s) => (
-        <option key={s.value} value={s.value}>
-          {s.label}
-        </option>
+      {options.map((o) => (
+        <option key={o.value} value={o.value}>{o.label}</option>
       ))}
     </select>
   );
 }
 
-// ── Main component ───────────────────────────────────────────────────────────
+// ── Main component ────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
+  const { lang } = useLanguage();
+  const t = T[lang];
+
   const [code, setCode] = useState("");
-  const [error, setError] = useState("");
+  const [loginError, setLoginError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sessionCode, setSessionCode] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("jobs");
 
-  // Data per tab
   const [jobs, setJobs] = useState<Job[] | null>(null);
   const [prospects, setProspects] = useState<Prospect[] | null>(null);
   const [clients, setClients] = useState<Client[] | null>(null);
   const [referrals, setReferrals] = useState<ReferralProfile[] | null>(null);
 
-  // Filter state
   const [jobFilter, setJobFilter] = useState<JobStatus | "all">("all");
   const [prospectFilter, setProspectFilter] = useState<JobStatus | "all">("all");
 
-  // Convert-to-client modal state
+  // Convert-to-client modal
   const [converting, setConverting] = useState<Prospect | null>(null);
   const [convertName, setConvertName] = useState("");
   const [convertAddress, setConvertAddress] = useState("");
   const [convertLoading, setConvertLoading] = useState(false);
   const [convertError, setConvertError] = useState("");
 
+  // Add-job modal
+  const [addingJobFor, setAddingJobFor] = useState<Client | null>(null);
+  const [addJobType, setAddJobType] = useState("");
+  const [addJobDesc, setAddJobDesc] = useState("");
+  const [addJobLoading, setAddJobLoading] = useState(false);
+  const [addJobError, setAddJobError] = useState("");
+
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
-  // ── Auth ──────────────────────────────────────────────────────────────────
+  // ── Auth helpers ──────────────────────────────────────────────────────────
 
-  const apiFetch = useCallback(
-    async (input: RequestInfo, init?: RequestInit) => {
-      const res = await fetch(input, {
+  const authedFetch = useCallback(
+    (input: RequestInfo, init?: RequestInit) =>
+      fetch(input, {
         ...init,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionCode || code}`,
+          Authorization: `Bearer ${sessionCode}`,
           ...(init?.headers ?? {}),
         },
-      });
-      return res;
-    },
-    [sessionCode, code],
+      }),
+    [sessionCode],
   );
+
+  // ── Login ─────────────────────────────────────────────────────────────────
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+    setLoginError("");
     try {
       const res = await fetch("/api/dashboard?action=jobs", {
         headers: { Authorization: `Bearer ${code}` },
       });
-      if (!res.ok) { setError("Code invalide. Veuillez réessayer."); return; }
+      if (!res.ok) { setLoginError(t.invalidCode); return; }
       const data = await res.json();
-      setJobs(data.data);
+      setJobs(data.data ?? []);
       setSessionCode(code);
     } catch {
-      setError("Erreur de connexion. Veuillez réessayer.");
+      setLoginError(t.connError);
     } finally {
       setIsLoading(false);
     }
@@ -181,90 +328,71 @@ export default function DashboardPage() {
     async (tab: Tab) => {
       setIsLoading(true);
       try {
-        if (tab === "jobs") {
-          const res = await apiFetch("/api/dashboard?action=jobs");
-          const data = await res.json();
-          setJobs(data.data);
-        } else if (tab === "prospects") {
-          const res = await apiFetch("/api/dashboard?action=potential_clients");
-          const data = await res.json();
-          setProspects(data.data);
-        } else if (tab === "clients") {
-          const res = await apiFetch("/api/dashboard?action=clients");
-          const data = await res.json();
-          setClients(data.data);
-        } else if (tab === "referrals") {
-          const res = await apiFetch("/api/dashboard?action=referrals");
-          const data = await res.json();
-          setReferrals(data.data);
-        }
+        const actionMap: Record<Tab, string> = {
+          jobs: "jobs",
+          prospects: "potential_clients",
+          clients: "clients",
+          referrals: "referrals",
+        };
+        const res = await authedFetch(`/api/dashboard?action=${actionMap[tab]}`);
+        const data = await res.json();
+        if (tab === "jobs") setJobs(data.data ?? []);
+        else if (tab === "prospects") setProspects(data.data ?? []);
+        else if (tab === "clients") setClients(data.data ?? []);
+        else if (tab === "referrals") setReferrals(data.data ?? []);
       } catch {
-        // silently fail — stale data stays
+        /* keep stale data */
       } finally {
         setIsLoading(false);
       }
     },
-    [apiFetch],
+    [authedFetch],
   );
 
   const switchTab = (tab: Tab) => {
     setActiveTab(tab);
-    // Only fetch if data not yet loaded
     if (tab === "jobs" && jobs === null) loadTab(tab);
     else if (tab === "prospects" && prospects === null) loadTab(tab);
     else if (tab === "clients" && clients === null) loadTab(tab);
     else if (tab === "referrals" && referrals === null) loadTab(tab);
   };
 
-  // ── Status update ─────────────────────────────────────────────────────────
+  // ── Status updates ────────────────────────────────────────────────────────
 
-  const updateJobStatus = async (jobId: string, status: string) => {
-    setJobs((prev) =>
-      prev ? prev.map((j) => (j.id === jobId ? { ...j, status } : j)) : prev,
-    );
-    try {
-      await apiFetch("/api/dashboard", {
-        method: "PATCH",
-        body: JSON.stringify({ type: "job", id: jobId, status }),
-      });
-    } catch {
-      // revert on failure by re-loading
-      loadTab("jobs");
-    }
+  const updateJobStatus = async (id: string, status: string) => {
+    setJobs((prev) => prev?.map((j) => j.id === id ? { ...j, status } : j) ?? null);
+    await authedFetch("/api/dashboard", {
+      method: "PATCH",
+      body: JSON.stringify({ type: "job", id, status }),
+    }).catch(() => loadTab("jobs"));
   };
 
   const updateProspectStatus = async (id: string, status: string) => {
-    setProspects((prev) =>
-      prev ? prev.map((p) => (p.id === id ? { ...p, status } : p)) : prev,
-    );
-    try {
-      await apiFetch("/api/dashboard", {
-        method: "PATCH",
-        body: JSON.stringify({ type: "prospect", id, status }),
-      });
-    } catch {
-      loadTab("prospects");
-    }
+    setProspects((prev) => prev?.map((p) => p.id === id ? { ...p, status } : p) ?? null);
+    await authedFetch("/api/dashboard", {
+      method: "PATCH",
+      body: JSON.stringify({ type: "prospect", id, status }),
+    }).catch(() => loadTab("prospects"));
   };
 
   // ── Convert to client ─────────────────────────────────────────────────────
 
-  const openConvert = (prospect: Prospect) => {
-    setConverting(prospect);
-    setConvertName(`${prospect.first_name} ${prospect.last_name}`);
+  const openConvert = (p: Prospect) => {
+    setConverting(p);
+    setConvertName(`${p.first_name} ${p.last_name}`);
     setConvertAddress("");
     setConvertError("");
   };
 
   const submitConvert = async () => {
     if (!converting || !convertName.trim() || !convertAddress.trim()) {
-      setConvertError("Nom et adresse requis.");
+      setConvertError(t.nameAddressRequired);
       return;
     }
     setConvertLoading(true);
     setConvertError("");
     try {
-      const res = await apiFetch("/api/dashboard", {
+      const res = await authedFetch("/api/dashboard", {
         method: "POST",
         body: JSON.stringify({
           action: "convert_client",
@@ -274,26 +402,68 @@ export default function DashboardPage() {
         }),
       });
       if (!res.ok) throw new Error();
-      // Remove from prospects, force reload of clients
       setProspects((prev) => prev?.filter((p) => p.id !== converting.id) ?? null);
-      setClients(null); // will reload on next visit
+      setClients(null); // force reload
       setConverting(null);
     } catch {
-      setConvertError("Erreur lors de la conversion.");
+      setConvertError(t.convertError);
     } finally {
       setConvertLoading(false);
     }
   };
 
-  // ── Derived data ──────────────────────────────────────────────────────────
+  // ── Add job ───────────────────────────────────────────────────────────────
 
-  const filteredJobs =
-    jobFilter === "all" ? jobs : jobs?.filter((j) => j.status === jobFilter);
+  const openAddJob = (c: Client) => {
+    setAddingJobFor(c);
+    setAddJobType(t.jobTypes[0]);
+    setAddJobDesc("");
+    setAddJobError("");
+  };
 
-  const filteredProspects =
-    prospectFilter === "all"
-      ? prospects
-      : prospects?.filter((p) => p.status === prospectFilter);
+  const submitAddJob = async () => {
+    if (!addingJobFor || !addJobType.trim()) {
+      setAddJobError(t.jobTypeRequired);
+      return;
+    }
+    setAddJobLoading(true);
+    setAddJobError("");
+    try {
+      const res = await authedFetch("/api/dashboard", {
+        method: "POST",
+        body: JSON.stringify({
+          action: "add_job",
+          clientId: addingJobFor.id,
+          jobType: addJobType,
+          description: addJobDesc || null,
+        }),
+      });
+      if (!res.ok) throw new Error();
+      // Refresh both tabs
+      setClients(null);
+      setJobs(null);
+      if (activeTab === "clients") loadTab("clients");
+      else if (activeTab === "jobs") loadTab("jobs");
+      setAddingJobFor(null);
+    } catch {
+      setAddJobError(t.addJobError);
+    } finally {
+      setAddJobLoading(false);
+    }
+  };
+
+  // ── Filtered data ─────────────────────────────────────────────────────────
+
+  const filteredJobs = jobFilter === "all" ? jobs : jobs?.filter((j) => j.status === jobFilter);
+  const filteredProspects = prospectFilter === "all" ? prospects : prospects?.filter((p) => p.status === prospectFilter);
+
+  const statusFilters = [
+    { value: "all" as const, label: t.filterAll },
+    { value: "submitted" as const, label: t.filterSubmitted },
+    { value: "quoting" as const, label: t.filterQuoting },
+    { value: "in_progress" as const, label: t.filterInProgress },
+    { value: "completed" as const, label: t.filterCompleted },
+  ];
 
   // ── Login screen ──────────────────────────────────────────────────────────
 
@@ -303,24 +473,24 @@ export default function DashboardPage() {
         <div className="mx-auto flex max-w-lg flex-col px-4 py-12 md:px-6 md:py-16">
           <div className="mb-10 text-center">
             <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#0f1f4b]">
-              Accès restreint
+              {t.restricted}
             </p>
             <h1 className="font-display text-3xl font-bold uppercase leading-tight text-[#0f1f4b] sm:text-4xl md:text-5xl">
-              Tableau de bord
+              {t.dashboard}
             </h1>
             <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-slate-600">
-              Entrez votre code d&apos;accès administrateur.
+              {t.loginDesc}
             </p>
           </div>
-
           <div className="rounded-sm border border-slate-200/90 bg-white p-8 shadow-[0_1px_3px_rgba(15,31,75,0.06)]">
             <h2 className="font-display text-xl font-bold uppercase text-[#0f1f4b] md:text-2xl">
-              Connexion
+              {t.login}
             </h2>
+            <p className="mt-2 text-[13px] leading-snug text-slate-600">{t.loginHint}</p>
             <form onSubmit={handleLogin} className="mt-7 space-y-4">
               <div>
                 <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                  Code d&apos;accès
+                  {t.accessCode}
                 </label>
                 <input
                   type="password"
@@ -332,9 +502,9 @@ export default function DashboardPage() {
                   className="w-full rounded-sm border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-[#0f1f4b]"
                 />
               </div>
-              {error && (
+              {loginError && (
                 <div className="rounded-sm border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700">
-                  {error}
+                  {loginError}
                 </div>
               )}
               <button
@@ -342,7 +512,7 @@ export default function DashboardPage() {
                 disabled={isLoading}
                 className="btn-institutional-primary w-full rounded-sm disabled:opacity-60"
               >
-                {isLoading ? "Connexion…" : "Accéder au tableau de bord"}
+                {isLoading ? t.connecting : t.access}
               </button>
             </form>
           </div>
@@ -354,10 +524,10 @@ export default function DashboardPage() {
   // ── Dashboard ─────────────────────────────────────────────────────────────
 
   const tabs: { key: Tab; label: string }[] = [
-    { key: "jobs", label: "Demandes" },
-    { key: "prospects", label: "Prospects" },
-    { key: "clients", label: "Clients" },
-    { key: "referrals", label: "Parrainages" },
+    { key: "jobs", label: t.tabJobs },
+    { key: "prospects", label: t.tabProspects },
+    { key: "clients", label: t.tabClients },
+    { key: "referrals", label: t.tabReferrals },
   ];
 
   return (
@@ -368,10 +538,10 @@ export default function DashboardPage() {
         <header className="mb-8 flex flex-col gap-4 border-b border-slate-200/90 pb-8 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#0f1f4b]">
-              Administration
+              {t.administration}
             </p>
             <h1 className="font-display text-3xl font-bold uppercase leading-tight text-[#0f1f4b] md:text-4xl">
-              Tableau de bord
+              {t.dashboard}
             </h1>
           </div>
           <div className="flex gap-3">
@@ -381,7 +551,7 @@ export default function DashboardPage() {
               disabled={isLoading}
               className="rounded-sm border border-[#0f1f4b] bg-white px-4 py-2 text-sm font-semibold text-[#0f1f4b] transition-colors hover:bg-[#0f1f4b]/5 disabled:opacity-60"
             >
-              {isLoading ? "…" : "Actualiser"}
+              {isLoading ? t.loading : t.refresh}
             </button>
             <button
               type="button"
@@ -395,25 +565,25 @@ export default function DashboardPage() {
               }}
               className="rounded-sm border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-400"
             >
-              Déconnexion
+              {t.logout}
             </button>
           </div>
         </header>
 
         {/* Tabs */}
         <div className="mb-6 flex gap-1 border-b border-slate-200">
-          {tabs.map((t) => (
+          {tabs.map((tab) => (
             <button
-              key={t.key}
+              key={tab.key}
               type="button"
-              onClick={() => switchTab(t.key)}
+              onClick={() => switchTab(tab.key)}
               className={`px-4 py-2.5 text-sm font-semibold transition-colors ${
-                activeTab === t.key
+                activeTab === tab.key
                   ? "border-b-2 border-[#0f1f4b] text-[#0f1f4b]"
                   : "text-slate-500 hover:text-[#0f1f4b]"
               }`}
             >
-              {t.label}
+              {tab.label}
             </button>
           ))}
         </div>
@@ -421,17 +591,16 @@ export default function DashboardPage() {
         {/* ── JOBS TAB ── */}
         {activeTab === "jobs" && (
           <div>
-            {/* Status filter */}
             <div className="mb-4 flex flex-wrap gap-2">
-              {STATUSES.map((s) => (
+              {statusFilters.map((s) => (
                 <button
                   key={s.value}
                   type="button"
-                  onClick={() => setJobFilter(s.value as JobStatus | "all")}
+                  onClick={() => setJobFilter(s.value)}
                   className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors ${
                     jobFilter === s.value
                       ? "bg-[#0f1f4b] text-white"
-                      : "bg-white border border-slate-200 text-slate-600 hover:border-[#0f1f4b] hover:text-[#0f1f4b]"
+                      : "border border-slate-200 bg-white text-slate-600 hover:border-[#0f1f4b] hover:text-[#0f1f4b]"
                   }`}
                 >
                   {s.label}
@@ -444,11 +613,11 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            {!jobs ? (
-              <p className="py-10 text-center text-sm text-slate-500">Chargement…</p>
+            {jobs === null ? (
+              <p className="py-10 text-center text-sm text-slate-500">{t.chargement}</p>
             ) : filteredJobs?.length === 0 ? (
               <div className="rounded-xl border border-slate-200/90 bg-white p-10 text-center">
-                <p className="text-sm text-slate-500">Aucune demande.</p>
+                <p className="text-sm text-slate-500">{t.noJobs}</p>
               </div>
             ) : (
               <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-sm">
@@ -456,7 +625,7 @@ export default function DashboardPage() {
                   <table className="w-full min-w-[640px] text-sm">
                     <thead>
                       <tr className="border-b border-slate-200 bg-slate-50/90">
-                        {["Type", "Description", "Statut", "Changer statut", "Créé le"].map((h) => (
+                        {[t.type, t.description, t.status, t.changeStatus, t.createdAt].map((h) => (
                           <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                             {h}
                           </th>
@@ -465,25 +634,15 @@ export default function DashboardPage() {
                     </thead>
                     <tbody>
                       {filteredJobs?.map((job, i) => (
-                        <tr
-                          key={job.id}
-                          className={i % 2 === 0 ? "border-b border-slate-100 bg-white" : "border-b border-slate-100 bg-slate-50/50"}
-                        >
+                        <tr key={job.id} className={i % 2 === 0 ? "border-b border-slate-100 bg-white" : "border-b border-slate-100 bg-slate-50/50"}>
                           <td className="px-4 py-3 font-medium text-[#0f1f4b]">{job.job_type}</td>
-                          <td className="max-w-[200px] truncate px-4 py-3 text-slate-600">
-                            {job.description ?? "—"}
-                          </td>
+                          <td className="max-w-[200px] truncate px-4 py-3 text-slate-600">{job.description ?? "—"}</td>
+                          <td className="px-4 py-3"><Badge status={job.status} lang={lang} /></td>
                           <td className="px-4 py-3">
-                            <Badge status={job.status} />
-                          </td>
-                          <td className="px-4 py-3">
-                            <StatusSelect
-                              value={job.status}
-                              onChange={(v) => updateJobStatus(job.id, v)}
-                            />
+                            <StatusSelect value={job.status} lang={lang} onChange={(v) => updateJobStatus(job.id, v)} />
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-slate-500">
-                            {new Date(job.created_at).toLocaleDateString("fr-CA")}
+                            {new Date(job.created_at).toLocaleDateString(lang === "fr" ? "fr-CA" : "en-CA")}
                           </td>
                         </tr>
                       ))}
@@ -498,17 +657,16 @@ export default function DashboardPage() {
         {/* ── PROSPECTS TAB ── */}
         {activeTab === "prospects" && (
           <div>
-            {/* Status filter */}
             <div className="mb-4 flex flex-wrap gap-2">
-              {STATUSES.map((s) => (
+              {statusFilters.map((s) => (
                 <button
                   key={s.value}
                   type="button"
-                  onClick={() => setProspectFilter(s.value as JobStatus | "all")}
+                  onClick={() => setProspectFilter(s.value)}
                   className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors ${
                     prospectFilter === s.value
                       ? "bg-[#0f1f4b] text-white"
-                      : "bg-white border border-slate-200 text-slate-600 hover:border-[#0f1f4b] hover:text-[#0f1f4b]"
+                      : "border border-slate-200 bg-white text-slate-600 hover:border-[#0f1f4b] hover:text-[#0f1f4b]"
                   }`}
                 >
                   {s.label}
@@ -521,11 +679,11 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            {!prospects ? (
-              <p className="py-10 text-center text-sm text-slate-500">Chargement…</p>
+            {prospects === null ? (
+              <p className="py-10 text-center text-sm text-slate-500">{t.chargement}</p>
             ) : filteredProspects?.length === 0 ? (
               <div className="rounded-xl border border-slate-200/90 bg-white p-10 text-center">
-                <p className="text-sm text-slate-500">Aucun prospect.</p>
+                <p className="text-sm text-slate-500">{t.noProspects}</p>
               </div>
             ) : (
               <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-sm">
@@ -533,7 +691,7 @@ export default function DashboardPage() {
                   <table className="w-full min-w-[720px] text-sm">
                     <thead>
                       <tr className="border-b border-slate-200 bg-slate-50/90">
-                        {["Nom", "Email", "Téléphone", "Message", "Statut", "Changer statut", "Actions"].map((h) => (
+                        {[t.name, t.email, t.phone, t.message, t.status, t.changeStatus, t.actions].map((h) => (
                           <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                             {h}
                           </th>
@@ -542,13 +700,10 @@ export default function DashboardPage() {
                     </thead>
                     <tbody>
                       {filteredProspects?.map((p, i) => (
-                        <tr
-                          key={p.id}
-                          className={i % 2 === 0 ? "border-b border-slate-100 bg-white" : "border-b border-slate-100 bg-slate-50/50"}
-                        >
+                        <tr key={p.id} className={i % 2 === 0 ? "border-b border-slate-100 bg-white" : "border-b border-slate-100 bg-slate-50/50"}>
                           <td className="px-4 py-3 font-semibold text-[#0f1f4b]">
                             {p.first_name} {p.last_name}
-                            {p.referral_discount_percent && (
+                            {!!p.referral_discount_percent && (
                               <span className="ml-1.5 rounded bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold text-teal-700">
                                 -{p.referral_discount_percent}%
                               </span>
@@ -556,15 +711,10 @@ export default function DashboardPage() {
                           </td>
                           <td className="px-4 py-3 text-slate-600">{p.email}</td>
                           <td className="whitespace-nowrap px-4 py-3 text-slate-600">{p.phone ?? "—"}</td>
-                          <td className="max-w-[180px] truncate px-4 py-3 text-slate-500">{p.message ?? "—"}</td>
+                          <td className="max-w-[160px] truncate px-4 py-3 text-slate-500">{p.message ?? "—"}</td>
+                          <td className="px-4 py-3"><Badge status={p.status ?? "submitted"} lang={lang} /></td>
                           <td className="px-4 py-3">
-                            <Badge status={p.status ?? "submitted"} />
-                          </td>
-                          <td className="px-4 py-3">
-                            <StatusSelect
-                              value={p.status ?? "submitted"}
-                              onChange={(v) => updateProspectStatus(p.id, v)}
-                            />
+                            <StatusSelect value={p.status ?? "submitted"} lang={lang} onChange={(v) => updateProspectStatus(p.id, v)} />
                           </td>
                           <td className="px-4 py-3">
                             <button
@@ -572,7 +722,7 @@ export default function DashboardPage() {
                               onClick={() => openConvert(p)}
                               className="whitespace-nowrap rounded border border-[#0f1f4b] px-2.5 py-1 text-[11px] font-semibold text-[#0f1f4b] transition-colors hover:bg-[#0f1f4b] hover:text-white"
                             >
-                              → Client
+                              {t.toClient}
                             </button>
                           </td>
                         </tr>
@@ -588,19 +738,19 @@ export default function DashboardPage() {
         {/* ── CLIENTS TAB ── */}
         {activeTab === "clients" && (
           <div>
-            {!clients ? (
-              <p className="py-10 text-center text-sm text-slate-500">Chargement…</p>
+            {clients === null ? (
+              <p className="py-10 text-center text-sm text-slate-500">{t.chargement}</p>
             ) : clients.length === 0 ? (
               <div className="rounded-xl border border-slate-200/90 bg-white p-10 text-center">
-                <p className="text-sm text-slate-500">Aucun client.</p>
+                <p className="text-sm text-slate-500">{t.noClients}</p>
               </div>
             ) : (
               <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-sm">
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[600px] text-sm">
+                  <table className="w-full min-w-[640px] text-sm">
                     <thead>
                       <tr className="border-b border-slate-200 bg-slate-50/90">
-                        {["Nom", "Adresse", "Email", "Téléphone", "Nb travaux", "Créé le"].map((h) => (
+                        {[t.name, t.address, t.email, t.phone, t.nbJobs, t.createdAt, t.actions].map((h) => (
                           <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                             {h}
                           </th>
@@ -609,17 +759,23 @@ export default function DashboardPage() {
                     </thead>
                     <tbody>
                       {clients.map((c, i) => (
-                        <tr
-                          key={c.id}
-                          className={i % 2 === 0 ? "border-b border-slate-100 bg-white" : "border-b border-slate-100 bg-slate-50/50"}
-                        >
+                        <tr key={c.id} className={i % 2 === 0 ? "border-b border-slate-100 bg-white" : "border-b border-slate-100 bg-slate-50/50"}>
                           <td className="px-4 py-3 font-semibold text-[#0f1f4b]">{c.name}</td>
                           <td className="px-4 py-3 text-slate-600">{c.address}</td>
                           <td className="px-4 py-3 text-slate-600">{c.email ?? "—"}</td>
                           <td className="whitespace-nowrap px-4 py-3 text-slate-600">{c.phone ?? "—"}</td>
                           <td className="px-4 py-3 text-slate-700">{c.number_of_jobs}</td>
                           <td className="whitespace-nowrap px-4 py-3 text-slate-500">
-                            {new Date(c.created_at).toLocaleDateString("fr-CA")}
+                            {new Date(c.created_at).toLocaleDateString(lang === "fr" ? "fr-CA" : "en-CA")}
+                          </td>
+                          <td className="px-4 py-3">
+                            <button
+                              type="button"
+                              onClick={() => openAddJob(c)}
+                              className="whitespace-nowrap rounded border border-[#0f1f4b] px-2.5 py-1 text-[11px] font-semibold text-[#0f1f4b] transition-colors hover:bg-[#0f1f4b] hover:text-white"
+                            >
+                              + {t.tabJobs}
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -634,11 +790,11 @@ export default function DashboardPage() {
         {/* ── REFERRALS TAB ── */}
         {activeTab === "referrals" && (
           <div>
-            {!referrals ? (
-              <p className="py-10 text-center text-sm text-slate-500">Chargement…</p>
+            {referrals === null ? (
+              <p className="py-10 text-center text-sm text-slate-500">{t.chargement}</p>
             ) : referrals.length === 0 ? (
               <div className="rounded-xl border border-slate-200/90 bg-white p-10 text-center">
-                <p className="text-sm text-slate-500">Aucun profil de parrainage.</p>
+                <p className="text-sm text-slate-500">{t.noReferrals}</p>
               </div>
             ) : (
               <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-sm">
@@ -646,7 +802,7 @@ export default function DashboardPage() {
                   <table className="w-full min-w-[640px] text-sm">
                     <thead>
                       <tr className="border-b border-slate-200 bg-slate-50/90">
-                        {["Nom", "Code", "Parrainages", "Récompense", "Lien", "Créé le"].map((h) => (
+                        {[t.name, t.code, t.referrals, t.reward, t.link, t.createdAt].map((h) => (
                           <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                             {h}
                           </th>
@@ -655,10 +811,7 @@ export default function DashboardPage() {
                     </thead>
                     <tbody>
                       {referrals.map((r, i) => (
-                        <tr
-                          key={r.id}
-                          className={i % 2 === 0 ? "border-b border-slate-100 bg-white" : "border-b border-slate-100 bg-slate-50/50"}
-                        >
+                        <tr key={r.id} className={i % 2 === 0 ? "border-b border-slate-100 bg-white" : "border-b border-slate-100 bg-slate-50/50"}>
                           <td className="px-4 py-3 font-semibold text-[#0f1f4b]">{r.full_name}</td>
                           <td className="px-4 py-3 font-mono text-xs text-slate-600">{r.referral_code}</td>
                           <td className="px-4 py-3 text-slate-700">{r.referral_count}</td>
@@ -674,7 +827,7 @@ export default function DashboardPage() {
                             </a>
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-slate-500">
-                            {new Date(r.created_at).toLocaleDateString("fr-CA")}
+                            {new Date(r.created_at).toLocaleDateString(lang === "fr" ? "fr-CA" : "en-CA")}
                           </td>
                         </tr>
                       ))}
@@ -694,17 +847,14 @@ export default function DashboardPage() {
           onClick={(e) => { if (e.target === e.currentTarget) setConverting(null); }}
         >
           <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xl">
-            <h2 className="font-display text-lg font-bold uppercase text-[#0f1f4b]">
-              Convertir en client
-            </h2>
+            <h2 className="font-display text-lg font-bold uppercase text-[#0f1f4b]">{t.convertTitle}</h2>
             <p className="mt-1 text-sm text-slate-500">
               {converting.first_name} {converting.last_name} · {converting.email}
             </p>
-
             <div className="mt-5 space-y-3">
               <div>
                 <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                  Nom complet
+                  {t.fullName}
                 </label>
                 <input
                   type="text"
@@ -715,7 +865,7 @@ export default function DashboardPage() {
               </div>
               <div>
                 <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
-                  Adresse
+                  {t.address}
                 </label>
                 <input
                   type="text"
@@ -726,11 +876,7 @@ export default function DashboardPage() {
                 />
               </div>
             </div>
-
-            {convertError && (
-              <p className="mt-3 text-sm text-red-600">{convertError}</p>
-            )}
-
+            {convertError && <p className="mt-3 text-sm text-red-600">{convertError}</p>}
             <div className="mt-5 flex gap-3">
               <button
                 type="button"
@@ -738,14 +884,72 @@ export default function DashboardPage() {
                 disabled={convertLoading}
                 className="btn-institutional-primary flex-1 disabled:opacity-60"
               >
-                {convertLoading ? "Conversion…" : "Confirmer"}
+                {convertLoading ? t.converting : t.confirm}
               </button>
               <button
                 type="button"
                 onClick={() => setConverting(null)}
                 className="flex-1 rounded-sm border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:border-slate-400"
               >
-                Annuler
+                {t.cancel}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Add job modal ── */}
+      {addingJobFor && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setAddingJobFor(null); }}
+        >
+          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xl">
+            <h2 className="font-display text-lg font-bold uppercase text-[#0f1f4b]">{t.addJobTitle}</h2>
+            <p className="mt-1 text-sm text-slate-500">{addingJobFor.name}</p>
+            <div className="mt-5 space-y-3">
+              <div>
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
+                  {t.jobType}
+                </label>
+                <select
+                  value={addJobType}
+                  onChange={(e) => setAddJobType(e.target.value)}
+                  className="w-full rounded-sm border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#0f1f4b]"
+                >
+                  {t.jobTypes.map((jt) => (
+                    <option key={jt} value={jt}>{jt}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
+                  {t.description}
+                </label>
+                <textarea
+                  value={addJobDesc}
+                  onChange={(e) => setAddJobDesc(e.target.value)}
+                  rows={3}
+                  className="w-full rounded-sm border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#0f1f4b]"
+                />
+              </div>
+            </div>
+            {addJobError && <p className="mt-3 text-sm text-red-600">{addJobError}</p>}
+            <div className="mt-5 flex gap-3">
+              <button
+                type="button"
+                onClick={submitAddJob}
+                disabled={addJobLoading}
+                className="btn-institutional-primary flex-1 disabled:opacity-60"
+              >
+                {addJobLoading ? t.addingJob : t.addJob}
+              </button>
+              <button
+                type="button"
+                onClick={() => setAddingJobFor(null)}
+                className="flex-1 rounded-sm border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:border-slate-400"
+              >
+                {t.cancel}
               </button>
             </div>
           </div>

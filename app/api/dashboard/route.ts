@@ -98,6 +98,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, data: client });
     }
 
+    if (action === "add_job") {
+      const { clientId, jobType, description } = body;
+      if (!clientId || !jobType) {
+        return NextResponse.json({ error: "clientId and jobType are required." }, { status: 400 });
+      }
+
+      const job = await jobManager.createJob({
+        client_id: clientId,
+        potential_client_id: null,
+        job_type: jobType,
+        status: "in_progress",
+        location: [0, 0],
+        description: description || null,
+      });
+      return NextResponse.json({ success: true, data: job });
+    }
+
     return NextResponse.json({ error: "Unknown action." }, { status: 400 });
   } catch (error) {
     console.error("Dashboard POST error:", error);
