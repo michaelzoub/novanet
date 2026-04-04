@@ -3,15 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-} from "@/components/ui/sheet";
 import HiringDialog from "./HiringDialog";
 import NavbarLogo from "./NavbarLogo";
 
@@ -49,9 +42,20 @@ export default function Navbar() {
     };
   }, []);
 
+  /* Lock body scroll when menu is open */
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
   useEffect(() => { setMenuOpen(false); }, [pathname]);
 
   const toggleLang = () => setLang(lang === "fr" ? "en" : "fr");
+  const close = () => setMenuOpen(false);
 
   const navLinks = isHomePage
     ? [
@@ -72,7 +76,7 @@ export default function Navbar() {
       >
         {/* Logo */}
         <div className="flex shrink-0 items-center">
-          <Link href="/" className="flex items-center" onClick={() => setMenuOpen(false)}>
+          <Link href="/" className="flex items-center" onClick={close}>
             <NavbarLogo />
           </Link>
         </div>
@@ -81,11 +85,7 @@ export default function Navbar() {
         {isHomePage && (
           <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 flex-wrap items-center justify-center gap-x-5 gap-y-1 md:flex lg:gap-x-7">
             {navLinks.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                className="text-sm font-medium text-slate-700 transition-colors hover:text-[#0f1f4b]"
-              >
+              <a key={l.href} href={l.href} className="text-sm font-medium text-slate-700 transition-colors hover:text-[#0f1f4b]">
                 {l.label}
               </a>
             ))}
@@ -103,7 +103,6 @@ export default function Navbar() {
 
         {/* Right group */}
         <div className="flex items-center gap-2 md:gap-3">
-          {/* Lang toggle */}
           <button
             type="button"
             onClick={toggleLang}
@@ -112,89 +111,132 @@ export default function Navbar() {
             {lang === "fr" ? "EN" : "FR"}
           </button>
 
-          {/* CTA */}
           {isHomePage ? (
-            <a
-              href="#contact"
-              className="btn-institutional-nav !px-2.5 !py-2 !text-[9px] !tracking-[0.1em] sm:!px-4 sm:!py-2.5 sm:!text-[10px] sm:!tracking-[0.16em]"
-            >
+            <a href="#contact" className="btn-institutional-nav !px-2.5 !py-2 !text-[9px] !tracking-[0.1em] sm:!px-4 sm:!py-2.5 sm:!text-[10px] sm:!tracking-[0.16em]">
               <span className="sm:hidden">{lang === "fr" ? "Devis" : "Quote"}</span>
               <span className="hidden sm:inline">{t("quote")}</span>
             </a>
           ) : (
-            <Link
-              href="/#contact"
-              className="btn-institutional-nav !px-2.5 !py-2 !text-[9px] !tracking-[0.1em] sm:!px-4 sm:!py-2.5 sm:!text-[10px] sm:!tracking-[0.16em]"
-            >
+            <Link href="/#contact" className="btn-institutional-nav !px-2.5 !py-2 !text-[9px] !tracking-[0.1em] sm:!px-4 sm:!py-2.5 sm:!text-[10px] sm:!tracking-[0.16em]">
               <span className="sm:hidden">{lang === "fr" ? "Devis" : "Quote"}</span>
               <span className="hidden sm:inline">{t("quote")}</span>
             </Link>
           )}
 
-          {/* Hamburger — mobile only */}
           <button
             type="button"
-            aria-label="Ouvrir le menu"
-            onClick={() => setMenuOpen(true)}
+            aria-label={menuOpen ? "Fermer" : "Menu"}
+            onClick={() => setMenuOpen((v) => !v)}
             className="flex h-9 w-9 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-700 transition-colors hover:border-[#0f1f4b] hover:text-[#0f1f4b] md:hidden"
           >
-            <Menu className="h-4 w-4" />
+            {menuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile Sheet */}
-      <Sheet open={menuOpen} onOpenChange={setMenuOpen} modal={true}>
-        <SheetContent side="left" className="flex flex-col p-0 pt-0 overflow-hidden">
-          <SheetHeader className="shrink-0 border-b border-slate-100 px-6 py-5">
-            <SheetTitle className="sr-only">Menu</SheetTitle>
-            <NavbarLogo />
-          </SheetHeader>
+      {/* ── Custom mobile drawer — no Radix Portal, no dvh issues ── */}
+      {/* Backdrop */}
+      <div
+        onClick={close}
+        className="md:hidden"
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 40,
+          background: "rgba(0,0,0,0.35)",
+          opacity: menuOpen ? 1 : 0,
+          pointerEvents: menuOpen ? "auto" : "none",
+          transition: "opacity 0.25s ease",
+        }}
+      />
 
-          <nav className="flex-1 overflow-y-auto py-3">
-            {navLinks.map((l) => (
-              <SheetClose key={l.href} asChild>
-                <a
-                  href={l.href}
-                  className="flex px-6 py-4 text-[15px] font-medium text-slate-800 transition-colors hover:bg-slate-50 hover:text-[#0f1f4b] border-b border-slate-100"
-                >
-                  {l.label}
-                </a>
-              </SheetClose>
-            ))}
-            <SheetClose asChild>
-              <button
-                type="button"
-                onClick={() => setIsHiringDialogOpen(true)}
-                className="flex w-full px-6 py-4 text-left text-[15px] font-semibold text-[#0f766e] transition-colors hover:bg-slate-50 border-b border-slate-100"
-              >
-                {t("hiring")}
-              </button>
-            </SheetClose>
-          </nav>
+      {/* Drawer panel */}
+      <div
+        className="md:hidden"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: "78%",
+          maxWidth: "320px",
+          zIndex: 50,
+          background: "#fff",
+          display: "flex",
+          flexDirection: "column",
+          transform: menuOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1)",
+          boxShadow: menuOpen ? "4px 0 24px rgba(0,0,0,0.15)" : "none",
+        }}
+      >
+        {/* Header */}
+        <div style={{ borderBottom: "1px solid #f1f5f9", padding: "20px 24px", flexShrink: 0 }}>
+          <NavbarLogo />
+        </div>
 
-          {/* Bottom CTA */}
-          <div className="shrink-0 p-6 border-t border-slate-100">
-            <SheetClose asChild>
-              {isHomePage ? (
-                <a
-                  href="#contact"
-                  className="btn-institutional-primary block w-full text-center py-3"
-                >
-                  {t("quote")}
-                </a>
-              ) : (
-                <Link
-                  href="/#contact"
-                  className="btn-institutional-primary block w-full text-center py-3"
-                >
-                  {t("quote")}
-                </Link>
-              )}
-            </SheetClose>
-          </div>
-        </SheetContent>
-      </Sheet>
+        {/* Links */}
+        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" as never }}>
+          {navLinks.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={close}
+              style={{
+                display: "flex",
+                padding: "18px 24px",
+                fontSize: "15px",
+                fontWeight: 500,
+                color: "#1e293b",
+                borderBottom: "1px solid #f1f5f9",
+                textDecoration: "none",
+              }}
+            >
+              {l.label}
+            </a>
+          ))}
+          <button
+            type="button"
+            onClick={() => { close(); setIsHiringDialogOpen(true); }}
+            style={{
+              display: "flex",
+              width: "100%",
+              padding: "18px 24px",
+              fontSize: "15px",
+              fontWeight: 600,
+              color: "#0f766e",
+              borderBottom: "1px solid #f1f5f9",
+              background: "none",
+              border: "none",
+              borderBottom: "1px solid #f1f5f9" as never,
+              cursor: "pointer",
+              textAlign: "left",
+            }}
+          >
+            {t("hiring")}
+          </button>
+        </div>
+
+        {/* CTA pinned at bottom */}
+        <div style={{ borderTop: "1px solid #f1f5f9", padding: "20px 24px", flexShrink: 0 }}>
+          {isHomePage ? (
+            <a
+              href="#contact"
+              onClick={close}
+              className="btn-institutional-primary block w-full text-center py-3"
+            >
+              {t("quote")}
+            </a>
+          ) : (
+            <Link
+              href="/#contact"
+              onClick={close}
+              className="btn-institutional-primary block w-full text-center py-3"
+            >
+              {t("quote")}
+            </Link>
+          )}
+        </div>
+      </div>
 
       <HiringDialog
         isOpen={isHiringDialogOpen}
