@@ -148,6 +148,7 @@ export default function ReferralsPromo() {
 
           <div className="relative lg:grid lg:grid-cols-2 lg:items-center lg:gap-16">
             <motion.div
+              className="min-w-0"
               initial="hidden"
               whileInView="visible"
               viewport={LANDING_VIEWPORT}
@@ -167,7 +168,7 @@ export default function ReferralsPromo() {
               </motion.p>
               <motion.h2
                 variants={fadeUp}
-                className="font-display text-4xl font-bold uppercase leading-[0.95] text-[#0f1f4b] md:text-5xl whitespace-pre-line"
+                className="font-display text-balance break-words text-3xl font-bold uppercase leading-[0.95] text-[#0f1f4b] sm:text-4xl md:text-5xl whitespace-pre-line"
               >
                 {copy.title}
               </motion.h2>
@@ -202,13 +203,13 @@ export default function ReferralsPromo() {
                 <motion.div
                   key={step.number}
                   variants={stepVariant}
-                  className="group flex gap-6 rounded-sm border border-gray-200/90 bg-gradient-to-br from-[#f8fafc] to-white p-7 md:p-8 shadow-sm transition-all duration-300 hover:border-[#0f1f4b]/25 hover:shadow-md hover:shadow-[#0f1f4b]/[0.06]"
+                  className="group flex min-w-0 gap-5 rounded-sm border border-gray-200/90 bg-gradient-to-br from-[#f8fafc] to-white p-6 shadow-sm transition-all duration-300 hover:border-[#0f1f4b]/25 hover:shadow-md hover:shadow-[#0f1f4b]/[0.06] sm:gap-6 sm:p-7 md:p-8"
                 >
-                  <div className="font-display text-3xl font-bold leading-none text-[#d1d5db] transition-colors duration-300 group-hover:text-[#0f1f4b]/25">
+                  <div className="shrink-0 font-display text-2xl font-bold leading-none text-[#d1d5db] transition-colors duration-300 group-hover:text-[#0f1f4b]/25 sm:text-3xl">
                     {step.number}
                   </div>
-                  <div>
-                    <h3 className="font-display text-base font-bold uppercase text-[#0f1f4b]">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="break-words font-display text-sm font-bold uppercase text-[#0f1f4b] sm:text-base">
                       {step.title}
                     </h3>
                     <p className="mt-1.5 text-[13px] leading-relaxed text-gray-600">

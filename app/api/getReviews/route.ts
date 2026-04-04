@@ -5,6 +5,7 @@ import { fetchGooglePlaceDetails } from "@/lib/google-place-reviews";
 import {
   CURATED_GOOGLE_META,
   getCuratedGoogleReviewsForApi,
+  mergeApiGoogleReviewsWithCurated,
   type CuratedLang,
 } from "@/lib/curated-google-reviews";
 
@@ -43,7 +44,8 @@ export async function GET(request: Request) {
           placeName: place.placeName,
         };
 
-        const body = place.reviews.map((r) => ({
+        const merged = mergeApiGoogleReviewsWithCurated(place.reviews, lang);
+        const body = merged.map((r) => ({
           ...r,
           text:
             r.text.trim() ||

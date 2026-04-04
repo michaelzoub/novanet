@@ -14,7 +14,12 @@ export default function Contact() {
     lang === "fr"
       ? {
           contactInfo: [
-            { icon: Phone, label: "Téléphone", value: "(514) 123-4567" },
+            {
+              icon: Phone,
+              label: "Téléphone",
+              value: "514-758-6241",
+              href: "tel:+15147586241",
+            },
             { icon: Mail, label: "Courriel", value: "novanet.qc@gmail.com" },
             { icon: MapPin, label: "Adresse", value: "Montréal (QC)" },
           ],
@@ -40,7 +45,12 @@ export default function Contact() {
         }
       : {
           contactInfo: [
-            { icon: Phone, label: "Phone", value: "(514) 123-4567" },
+            {
+              icon: Phone,
+              label: "Phone",
+              value: "514-758-6241",
+              href: "tel:+15147586241",
+            },
             { icon: Mail, label: "Email", value: "novanet.qc@gmail.com" },
             { icon: MapPin, label: "Location", value: "Montreal, QC" },
           ],
@@ -148,9 +158,9 @@ export default function Contact() {
       <div className="mx-auto max-w-7xl px-8 md:px-16">
         <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
           <div>
-            <h2 className="mb-5 font-display text-4xl font-bold uppercase leading-tight md:text-5xl lg:text-6xl">
+            <h2 className="mb-5 font-display text-4xl font-bold uppercase leading-tight text-[#0f1f4b] md:text-5xl lg:text-6xl">
               {copy.titlePrefix}
-              <span className="text-[#0f1f4b]">{copy.titleAccent}</span>
+              {copy.titleAccent}
             </h2>
             <p className="mb-8 max-w-md text-[15px] leading-relaxed text-gray-600">
               {copy.description}
@@ -166,7 +176,13 @@ export default function Contact() {
                       {info.label}
                     </div>
                     <div className="text-sm font-semibold text-[#0f1f4b]">
-                      {info.value}
+                      {"href" in info && info.href ? (
+                        <a href={info.href} className="hover:underline">
+                          {info.value}
+                        </a>
+                      ) : (
+                        info.value
+                      )}
                     </div>
                   </div>
                 </div>
@@ -252,7 +268,7 @@ export default function Contact() {
                   onChange={handleChange}
             required
                   className="w-full rounded-sm border border-gray-200 px-3.5 py-2.5 text-sm focus:border-[#0f1f4b] focus:outline-none"
-                  placeholder="(514) 123-4567"
+                  placeholder="514-758-6241"
                 />
               </div>
               <div>

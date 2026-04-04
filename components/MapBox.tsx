@@ -45,9 +45,9 @@ export default function MapBox() {
     let longitudeCorrection = -0.045;
     let latitudeCorrection = 0.053;
 
-    // Center camera on the priority zone bbox (NDG + Westmount highlight).
-    const priorityCenterLng = (-73.648 + -73.575) / 2; // -73.6115
-    const priorityCenterLat = (45.458 + 45.512) / 2; // 45.485
+    // Center camera on the priority zone bbox (NDG + Westmount + voisinage).
+    const priorityCenterLng = (-73.678 + -73.545) / 2;
+    const priorityCenterLat = (45.438 + 45.532) / 2;
 
     let centerLng = priorityCenterLng;
     let centerLat = priorityCenterLat;
@@ -205,7 +205,7 @@ export default function MapBox() {
             </div>
           )}
           <button
-            className="mt-3 text-[11px] text-[#0f1f4b] transition-colors hover:cursor-pointer hover:text-[#152a5a]"
+            className="mt-3 text-[11px] text-[#0f1f4b] transition-colors hover:cursor-pointer hover:text-[#0f1f4b]"
             onClick={() => setSelectedMarkerInfo(null)}
           >
             Fermer

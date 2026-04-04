@@ -19,21 +19,20 @@ function createReferralCode(fullName: string) {
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
-    const fullName = url.searchParams.get("fullName")?.trim() || "";
+    const code = url.searchParams.get("code")?.trim() || "";
 
-    if (fullName.length < 3) {
+    if (code.length < 2) {
       return NextResponse.json(
-        { error: "Full name is required.", code: "FULL_NAME_REQUIRED" },
+        { error: "Referral code is required.", code: "CODE_REQUIRED" },
         { status: 400 },
       );
     }
 
-    const profile =
-      await referralManager.getReferralProfileByFullName(fullName);
+    const profile = await referralManager.getReferralProfileByCode(code);
 
     if (!profile) {
       return NextResponse.json(
-        { error: "Referral profile not found.", code: "REFERRAL_NOT_FOUND" },
+        { error: "No profile found for this code. Please check and try again.", code: "REFERRAL_NOT_FOUND" },
         { status: 404 },
       );
     }
@@ -48,7 +47,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("Error fetching referral profile:", error);
     return NextResponse.json(
-      { error: "Unable to verify the referral link." },
+      { error: "Unable to find that referral code. Please try again." },
       { status: 500 },
     );
   }
@@ -59,6 +58,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const fullName =
       typeof body.fullName === "string" ? body.fullName.trim() : "";
+    const phone =
+      typeof body.phone === "string" ? body.phone.trim() : undefined;
 
     if (fullName.length < 3) {
       return NextResponse.json(
@@ -89,6 +90,7 @@ export async function POST(request: Request) {
 
     const profile = await referralManager.createReferralProfile({
       full_name: fullName,
+      ...(phone ? { phone } : {}),
       referral_code: referralCode,
       reward_percent: 20,
     });

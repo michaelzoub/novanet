@@ -1,13 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Phone } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { scrollToSectionById } from "@/lib/scroll-to-section";
+import HiringDialog from "./HiringDialog";
 import NavbarLogo from "./NavbarLogo";
+
+const PHONE_DISPLAY = "514-758-6241";
+const PHONE_TEL = "tel:+15147586241";
 
 export default function Footer() {
   const router = useRouter();
   const { lang } = useLanguage();
+  const [hiringOpen, setHiringOpen] = useState(false);
 
   const copy =
     lang === "fr"
@@ -17,6 +24,8 @@ export default function Footer() {
           company: "Entreprise",
           services: "Services",
           rights: "Tous droits réservés.",
+          phoneLabel: "Téléphone",
+          hiringCta: "On embauche",
           links: {
             company: [
               { label: "À propos", href: "#about" },
@@ -38,6 +47,8 @@ export default function Footer() {
           company: "Company",
           services: "Services",
           rights: "All rights reserved.",
+          phoneLabel: "Phone",
+          hiringCta: "We're hiring",
           links: {
             company: [
               { label: "About", href: "#about" },
@@ -82,6 +93,27 @@ export default function Footer() {
             <p className="text-[13px] leading-relaxed text-gray-600">
               {copy.description}
             </p>
+            <a
+              href={PHONE_TEL}
+              className="mt-4 inline-flex items-center gap-2 text-[13px] font-semibold text-[#0f1f4b] transition-colors hover:underline"
+            >
+              <Phone className="h-4 w-4 shrink-0" aria-hidden />
+              <span>
+                <span className="mr-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                  {copy.phoneLabel}
+                </span>
+                {PHONE_DISPLAY}
+              </span>
+            </a>
+            <div className="mt-3">
+              <button
+                type="button"
+                onClick={() => setHiringOpen(true)}
+                className="text-[13px] font-semibold text-[#0f766e] transition-colors hover:text-[#0d9488] hover:underline"
+              >
+                {copy.hiringCta}
+              </button>
+            </div>
           </div>
           <div>
             <h4 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
@@ -122,6 +154,7 @@ export default function Footer() {
           © {new Date().getFullYear()} Nova Net. {copy.rights}
         </div>
       </div>
+      <HiringDialog isOpen={hiringOpen} onClose={() => setHiringOpen(false)} />
     </footer>
   );
 }

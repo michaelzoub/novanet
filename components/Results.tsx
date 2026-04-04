@@ -16,6 +16,8 @@ type ResultPair = {
   afterSet: { avif: string; webp: string };
   titleFr: string;
   titleEn: string;
+  objectPosition?: string;
+  objectFit?: "cover" | "contain";
 };
 
 const beforeAfterPairs: ResultPair[] = [
@@ -78,6 +80,47 @@ const beforeAfterPairs: ResultPair[] = [
     },
     titleFr: "Scellant de Pavés",
     titleEn: "Paver Sealing",
+  },
+  {
+    beforeJpeg: "/before4.jpeg",
+    afterJpeg: "/after4.jpeg",
+    beforePreload: "/results/before4-1280.webp",
+    afterPreload: "/results/after4-1280.webp",
+    beforeSet: {
+      avif:
+        "/results/before4-640.avif 640w, /results/before4-960.avif 960w, /results/before4-1280.avif 1280w, /results/before4-1600.avif 1600w",
+      webp:
+        "/results/before4-640.webp 640w, /results/before4-960.webp 960w, /results/before4-1280.webp 1280w, /results/before4-1600.webp 1600w",
+    },
+    afterSet: {
+      avif:
+        "/results/after4-640.avif 640w, /results/after4-960.avif 960w, /results/after4-1280.avif 1280w, /results/after4-1600.avif 1600w",
+      webp:
+        "/results/after4-640.webp 640w, /results/after4-960.webp 960w, /results/after4-1280.webp 1280w, /results/after4-1600.webp 1600w",
+    },
+    titleFr: "Nettoyage en profondeur",
+    titleEn: "Deep cleaning",
+    objectPosition: "center bottom",
+  },
+  {
+    beforeJpeg: "/before6.jpeg",
+    afterJpeg: "/after6.jpeg",
+    beforePreload: "/results/before6-1280.webp",
+    afterPreload: "/results/after6-1280.webp",
+    beforeSet: {
+      avif:
+        "/results/before6-640.avif 640w, /results/before6-960.avif 960w, /results/before6-1280.avif 1280w, /results/before6-1600.avif 1600w",
+      webp:
+        "/results/before6-640.webp 640w, /results/before6-960.webp 960w, /results/before6-1280.webp 1280w, /results/before6-1600.webp 1600w",
+    },
+    afterSet: {
+      avif:
+        "/results/after6-640.avif 640w, /results/after6-960.avif 960w, /results/after6-1280.avif 1280w, /results/after6-1600.avif 1600w",
+      webp:
+        "/results/after6-640.webp 640w, /results/after6-960.webp 960w, /results/after6-1280.webp 1280w, /results/after6-1600.webp 1600w",
+    },
+    titleFr: "Finition détaillée",
+    titleEn: "Detailed finish",
   },
 ];
 
@@ -294,7 +337,7 @@ export default function Results() {
                 return (
                   <div
                     key={p.beforeJpeg}
-                    className={`absolute inset-0 transition-opacity will-change-[opacity] ${
+                    className={`absolute inset-0 transition-opacity will-change-[opacity] ${p.objectFit === "contain" ? "bg-gray-900" : ""} ${
                       active
                         ? uiReady
                           ? "opacity-100"
@@ -336,7 +379,8 @@ export default function Results() {
                           loading={active ? "eager" : "lazy"}
                           decoding="async"
                           fetchPriority={active ? "high" : "low"}
-                          className="h-full w-full object-cover"
+                          className={`h-full w-full ${p.objectFit === "contain" ? "object-contain" : "object-cover"}`}
+                          style={p.objectPosition ? { objectPosition: p.objectPosition } : undefined}
                         />
                       </picture>
                     </div>
@@ -378,7 +422,8 @@ export default function Results() {
                           loading={active ? "eager" : "lazy"}
                           decoding="async"
                           fetchPriority={active ? "high" : "low"}
-                          className="h-full w-full object-cover"
+                          className={`h-full w-full ${p.objectFit === "contain" ? "object-contain" : "object-cover"}`}
+                          style={p.objectPosition ? { objectPosition: p.objectPosition } : undefined}
                         />
                       </picture>
                     </div>

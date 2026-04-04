@@ -15,6 +15,12 @@ const pairs = [
   { in: "after2.jpeg", outBase: "after2" },
   { in: "before3.jpeg", outBase: "before3" },
   { in: "after3.jpeg", outBase: "after3" },
+  { in: "before4.jpeg", outBase: "before4" },
+  { in: "after4.jpeg", outBase: "after4" },
+  { in: "before5.jpeg", outBase: "before5" },
+  { in: "after5.jpeg", outBase: "after5" },
+  { in: "before6.jpeg", outBase: "before6" },
+  { in: "after6.jpeg", outBase: "after6" },
 ];
 
 async function ensureDir(p) {

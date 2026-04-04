@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "geo:montreal": "node scripts/smooth-montreal-island.mjs",
-    "images:results": "node scripts/optimize-results-images.mjs"
+    "images:results": "node scripts/optimize-results-images.mjs",
+    "images:about": "node scripts/optimize-about-images.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",

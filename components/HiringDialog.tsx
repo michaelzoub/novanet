@@ -292,7 +292,7 @@ export default function HiringDialog({ isOpen, onClose }: HiringDialogProps) {
                 onChange={handleChange}
                 required
                 className="w-full px-3.5 py-2.5 border border-gray-200 rounded focus:outline-none focus:border-[#0f1f4b] text-sm"
-                placeholder="(514) 123-4567"
+                placeholder="514-758-6241"
               />
             </div>
           </div>

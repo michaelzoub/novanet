@@ -7,7 +7,7 @@ export const NOVANET_GOOGLE_BUSINESS_SHARE_URL =
 
 export const CURATED_GOOGLE_META = {
   rating: 5.0,
-  userRatingsTotal: 40,
+  userRatingsTotal: 12,
   placeName: "Nova Net Lavage Extérieur",
 } as const;
 
@@ -167,4 +167,47 @@ export function getCuratedGoogleReviewsForApi(lang: CuratedLang) {
     date: lang === "en" ? r.dateEn : r.dateFr,
     source: "google" as const,
   }));
+}
+
+type ApiReviewShape = {
+  id: string;
+  name: string;
+  rating: number;
+  text: string;
+  jobType?: string;
+  date?: string;
+  source: "google";
+};
+
+/**
+ * Places Details ne renvoie qu’un sous-ensemble d’avis ; on complète avec la liste
+ * conservée localement jusqu’à `max` entrées (sans doublons évidents).
+ */
+export function mergeApiGoogleReviewsWithCurated(
+  api: ApiReviewShape[],
+  lang: CuratedLang,
+  max = 50,
+): ApiReviewShape[] {
+  const extra = getCuratedGoogleReviewsForApi(lang);
+  const seen = new Set<string>();
+  const out: ApiReviewShape[] = [];
+  const key = (r: { name: string; text: string }) =>
+    `${r.name.trim().toLowerCase()}|${(r.text ?? "").slice(0, 120)}`;
+
+  for (const r of api) {
+    const k = key(r);
+    if (!seen.has(k)) {
+      seen.add(k);
+      out.push(r);
+    }
+  }
+  for (const r of extra) {
+    if (out.length >= max) break;
+    const k = key(r);
+    if (!seen.has(k)) {
+      seen.add(k);
+      out.push(r);
+    }
+  }
+  return out;
 }

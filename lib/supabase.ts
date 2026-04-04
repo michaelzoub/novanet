@@ -301,6 +301,7 @@ export const potentialClientManager = {
 export interface ReferralProfile {
   id: string;
   full_name: string;
+  phone?: string;
   referral_code: string;
   referral_count: number;
   reward_percent: number;

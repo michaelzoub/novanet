@@ -135,12 +135,13 @@ export function emphasizeAdministrativeBoundaries(map: mapboxgl.Map) {
  * same bbox, corners filleted (ellipse in lng/lat for a rounder on-screen look).
  */
 function buildPriorityZoneRoundedPolygon(): GeoJSON.FeatureCollection {
-  const west = -73.648;
-  const south = 45.458;
-  const east = -73.575;
-  const north = 45.512;
-  const rx = Math.min(0.0115, (east - west) * 0.26);
-  const ry = Math.min(0.0085, (north - south) * 0.26);
+  /* Zone « on priorise » — bbox élargi (NDG, Westmount et voisinage proche). */
+  const west = -73.678;
+  const south = 45.462;
+  const east = -73.565;
+  const north = 45.525;
+  const rx = Math.min(0.014, (east - west) * 0.26);
+  const ry = Math.min(0.011, (north - south) * 0.26);
   const steps = 12;
 
   const arc = (
@@ -159,7 +160,7 @@ function buildPriorityZoneRoundedPolygon(): GeoJSON.FeatureCollection {
     return out;
   };
 
-  const ring: GeoJSON.Position[] = [
+  const rawRing: GeoJSON.Position[] = [
     [west + rx, south],
     [east - rx, south],
     ...arc(east - rx, south + ry, -Math.PI / 2, 0, true),
@@ -171,6 +172,26 @@ function buildPriorityZoneRoundedPolygon(): GeoJSON.FeatureCollection {
     ...arc(west + rx, south + ry, Math.PI, 1.5 * Math.PI, true),
     [west + rx, south],
   ];
+
+  /* Rotate ~22° counter-clockwise around the bbox centre.
+     We work in metres (accounting for longitude compression at this latitude)
+     so the shape stays geographically round. */
+  const clng = (west + east) / 2;
+  const clat = (south + north) / 2;
+  const cosLat = Math.cos((clat * Math.PI) / 180);
+  const DEG_TO_M_LAT = 111320;
+  const DEG_TO_M_LNG = 111320 * cosLat;
+  const θ = (22 * Math.PI) / 180; // CCW = left tilt
+  const cosθ = Math.cos(θ);
+  const sinθ = Math.sin(θ);
+
+  const ring = rawRing.map(([lng, lat]) => {
+    const xm = (lng - clng) * DEG_TO_M_LNG;
+    const ym = (lat - clat) * DEG_TO_M_LAT;
+    const xr = xm * cosθ - ym * sinθ;
+    const yr = xm * sinθ + ym * cosθ;
+    return [clng + xr / DEG_TO_M_LNG, clat + yr / DEG_TO_M_LAT] as GeoJSON.Position;
+  });
 
   return {
     type: "FeatureCollection",

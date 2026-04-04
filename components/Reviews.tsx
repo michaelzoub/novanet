@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
@@ -96,10 +96,12 @@ export default function Reviews() {
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : googleMeta?.rating ?? 5.0;
 
-  const reviewCountLabel =
-    reviews.length > 0
-      ? reviews.length
-      : (googleMeta?.userRatingsTotal ?? 0);
+  const displayRating =
+    reviewSource === "google" && googleMeta?.rating != null
+      ? googleMeta.rating
+      : averageRating;
+
+  const reviewCountLabel = 49;
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }).map((_, i) => (
@@ -124,6 +126,8 @@ export default function Reviews() {
           googleCta: "Voir sur Google",
           googleSummary:
             "Les avis détaillés sont affichés sur Google. Voici la note publique de l’établissement :",
+          seeMore: "Voir tous les avis",
+          seeLess: "Réduire",
         }
       : {
           eyebrow: "Testimonials",
@@ -136,6 +140,8 @@ export default function Reviews() {
           googleCta: "View on Google",
           googleSummary:
             "Full reviews are shown on Google. Public listing summary:",
+          seeMore: "See all reviews",
+          seeLess: "Show less",
         };
 
   return (
@@ -165,11 +171,11 @@ export default function Reviews() {
           </div>
           <div className="flex items-center gap-3">
             <div className="font-display text-3xl font-bold text-[#0f1f4b]">
-              {averageRating.toFixed(1)}
+              {displayRating.toFixed(1)}
             </div>
             <div>
               <div className="flex text-[#f59e0b] mb-1">
-                {renderStars(Math.round(averageRating))}
+                {renderStars(Math.round(displayRating))}
               </div>
               <div className="text-[11px] text-gray-500 font-medium">
                 {copy.basedOn} {reviewCountLabel} {copy.reviews}
@@ -222,84 +228,84 @@ export default function Reviews() {
           <div className="overflow-hidden">
             <div
               className="flex transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-              style={{
-                transform: `translateX(-${currentPage * 100}%)`,
-              }}
+              style={{ transform: `translateX(-${currentPage * 100}%)` }}
             >
-              {Array.from({ length: Math.ceil(reviews.length / 2) }).map(
-                (_, pageIdx) => (
-                  <div
-                    key={pageIdx}
-                    className="min-w-full grid grid-cols-1 md:grid-cols-2 gap-5"
-                  >
-                    {reviews
-                      .slice(pageIdx * 2, pageIdx * 2 + 2)
-                      .map((review, idx) => (
-                        <div
-                          key={review.id ?? idx}
-                          className="rounded-sm border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
-                        >
-                          <div className="mb-3 flex items-center gap-3">
-                            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#0f1f4b] text-sm font-semibold text-white">
-                              {(review.name?.trim()?.[0] ?? "?").toUpperCase()}
-                            </div>
-                            <div>
-                              <div className="text-sm font-semibold text-[#0f1f4b]">
-                                {review.name}
-                              </div>
-                              <div className="text-[11px] text-gray-500">
-                                {review.source === "google"
-                                  ? review.date ?? "Google"
-                                  : copy.verified}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex text-[#f59e0b] mb-2.5">
-                            {renderStars(review.rating)}
-                          </div>
-                          <p className="text-[13px] text-gray-700 leading-relaxed italic">
-                            {review.text}
-                          </p>
-                        </div>
-                      ))}
-                  </div>
-                ),
-              )}
+              {Array.from({ length: Math.ceil(reviews.length / 2) }).map((_, pageIdx) => (
+                <div key={pageIdx} className="min-w-full grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {reviews.slice(pageIdx * 2, pageIdx * 2 + 2).map((review, idx) => (
+                    <ReviewCard key={review.id ?? idx} review={review} verified={copy.verified} renderStars={renderStars} />
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         )}
         {reviews.length > 0 && (
-          <div className="flex justify-center items-center gap-3 mt-6">
-            <button
-              onClick={prevPage}
-              className="w-9 h-9 rounded-full border border-gray-200 bg-white hover:bg-[#0f1f4b] hover:text-white hover:border-[#0f1f4b] transition-colors flex items-center justify-center"
+          <div className="flex flex-col items-center gap-4 mt-6">
+            <div className="flex justify-center items-center gap-3">
+                <button
+                  onClick={prevPage}
+                  className="w-9 h-9 rounded-full border border-gray-200 bg-white hover:bg-[#0f1f4b] hover:text-white hover:border-[#0f1f4b] transition-colors flex items-center justify-center"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <div className="flex gap-1.5">
+                  {Array.from({ length: Math.ceil(reviews.length / 2) }).map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => goToPage(idx)}
+                      className={`h-1.5 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none ${
+                        idx === currentPage ? "w-6 bg-[#0f1f4b]" : "w-1.5 bg-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <button
+                  onClick={nextPage}
+                  className="w-9 h-9 rounded-full border border-gray-200 bg-white hover:bg-[#0f1f4b] hover:text-white hover:border-[#0f1f4b] transition-colors flex items-center justify-center"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            <a
+              href={process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL ?? DEFAULT_GOOGLE_LISTING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[13px] font-semibold text-[#0f1f4b] underline underline-offset-2 hover:opacity-70 transition-opacity"
             >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <div className="flex gap-1.5">
-              {Array.from({ length: Math.ceil(reviews.length / 2) }).map(
-                (_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => goToPage(idx)}
-                    className={`h-1.5 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none ${
-                      idx === currentPage
-                        ? "w-6 bg-[#0f1f4b]"
-                        : "w-1.5 bg-gray-300"
-                    }`}
-                  />
-                ),
-              )}
-            </div>
-            <button
-              onClick={nextPage}
-              className="w-9 h-9 rounded-full border border-gray-200 bg-white hover:bg-[#0f1f4b] hover:text-white hover:border-[#0f1f4b] transition-colors flex items-center justify-center"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
+              {copy.seeMore}
+            </a>
           </div>
         )}
       </div>
     </section>
+  );
+}
+
+function ReviewCard({
+  review,
+  verified,
+  renderStars,
+}: {
+  review: Review;
+  verified: string;
+  renderStars: (rating: number) => React.ReactNode;
+}) {
+  return (
+    <div className="rounded-sm border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md">
+      <div className="mb-3 flex items-center gap-3">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#0f1f4b] text-sm font-semibold text-white">
+          {(review.name?.trim()?.[0] ?? "?").toUpperCase()}
+        </div>
+        <div>
+          <div className="text-sm font-semibold text-[#0f1f4b]">{review.name}</div>
+          <div className="text-[11px] text-gray-500">
+            {review.source === "google" ? review.date ?? "Google" : verified}
+          </div>
+        </div>
+      </div>
+      <div className="flex text-[#f59e0b] mb-2.5">{renderStars(review.rating)}</div>
+      <p className="text-[13px] text-gray-700 leading-relaxed italic">{review.text}</p>
+    </div>
   );
 }
