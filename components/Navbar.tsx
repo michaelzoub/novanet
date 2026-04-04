@@ -66,13 +66,13 @@ export default function Navbar() {
     <>
       <nav
         ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-50 flex h-[64px] items-center border-b border-slate-200/60 bg-white/70 px-4 backdrop-blur-md transition-[box-shadow,background-color] md:h-[70px] md:px-10 ${
+        className={`fixed top-0 left-0 right-0 z-50 flex min-h-[64px] items-center border-b border-slate-200/60 bg-white/70 px-4 py-2 backdrop-blur-md transition-[box-shadow,background-color] md:min-h-[70px] md:px-10 ${
           scrolled ? "shadow-sm bg-white/85" : ""
         }`}
       >
         {/* Logo */}
         <div className="flex shrink-0 items-center">
-          <Link href="/" className="flex items-center py-1" onClick={() => setMenuOpen(false)}>
+          <Link href="/" className="flex items-center" onClick={() => setMenuOpen(false)}>
             <NavbarLogo />
           </Link>
         </div>
