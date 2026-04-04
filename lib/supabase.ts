@@ -41,11 +41,14 @@ export interface Client {
   updated_at: string;
 }
 
+export type JobStatus = "submitted" | "quoting" | "in_progress" | "completed";
+
 export interface Job {
   id: string;
-  client_id: string;
+  client_id: string | null;
+  potential_client_id?: string | null;
   job_type: string;
-  status: string;
+  status: JobStatus | string;
   location: [number, number]; // [longitude, latitude]
   review?: string | null;
   rating?: number | null;
@@ -192,19 +195,32 @@ export const jobManager = {
 
     if (error) throw error;
 
-    // Update client's current_job_id and increment job count
-    await supabaseAdmin
-      .from("clients")
-      .update({
-        current_job_id: data.id,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", job.client_id);
+    // Only link to client if client_id is provided
+    if (job.client_id) {
+      await supabaseAdmin
+        .from("clients")
+        .update({
+          current_job_id: data.id,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", job.client_id);
 
-    // Increment job count
-    await clientManager.incrementJobCount(job.client_id);
+      await clientManager.incrementJobCount(job.client_id);
+    }
 
     return data as Job;
+  },
+
+  // Get jobs by status
+  async getJobsByStatus(status: string) {
+    const { data, error } = await supabaseAdmin
+      .from("jobs")
+      .select("*")
+      .eq("status", status)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return data as Job[];
   },
 
   // Update a job
@@ -253,6 +269,7 @@ export interface PotentialClient {
   message?: string | null;
   referred_by_referral_profile_id?: string | null;
   referral_discount_percent?: number | null;
+  status: JobStatus | string;
   created_at: string;
   updated_at: string;
 }
@@ -262,7 +279,7 @@ export interface PotentialClient {
 export const potentialClientManager = {
   // Create a new potential client
   async createPotentialClient(
-    client: Omit<PotentialClient, "id" | "created_at" | "updated_at">,
+    client: Omit<PotentialClient, "id" | "created_at" | "updated_at" | "status">,
   ) {
     const { data, error } = await supabaseAdmin
       .from("potential_clients")
@@ -295,6 +312,40 @@ export const potentialClientManager = {
 
     if (error) throw error;
     return data as PotentialClient;
+  },
+
+  // Update status of a potential client
+  async updateStatus(id: string, status: string) {
+    const { data, error } = await supabaseAdmin
+      .from("potential_clients")
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data as PotentialClient;
+  },
+
+  // Convert a potential client to a real client
+  async convertToClient(id: string, name: string, address: string) {
+    const potClient = await potentialClientManager.getPotentialClientById(id);
+
+    const newClient = await clientManager.createClient({
+      name,
+      address,
+      phone: potClient.phone ?? undefined,
+      email: potClient.email,
+      current_job_id: null,
+    });
+
+    // Link any jobs that referenced this potential_client to the new client
+    await supabaseAdmin
+      .from("jobs")
+      .update({ client_id: newClient.id, updated_at: new Date().toISOString() })
+      .eq("potential_client_id", id);
+
+    return newClient;
   },
 };
 

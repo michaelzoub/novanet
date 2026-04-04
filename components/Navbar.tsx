@@ -42,26 +42,6 @@ export default function Navbar() {
     };
   }, []);
 
-  /* Lock body scroll when menu is open — iOS-safe pattern.
-     overflow:hidden alone doesn't stop iOS bounce scroll and causes
-     fixed elements to shift sideways when the scrollbar disappears. */
-  useEffect(() => {
-    if (!menuOpen) return;
-    const scrollY = window.scrollY;
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-      document.body.style.overflow = "";
-      window.scrollTo(0, scrollY);
-    };
-  }, [menuOpen]);
 
   useEffect(() => { setMenuOpen(false); }, [pathname]);
 
@@ -145,8 +125,8 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ── Custom mobile drawer — no Radix Portal, no dvh issues ── */}
-      {/* Backdrop */}
+      {/* ── Mobile dropdown — slides down from navbar ── */}
+      {/* Backdrop (tap outside to close) */}
       <div
         onClick={close}
         className="md:hidden"
@@ -154,82 +134,70 @@ export default function Navbar() {
           position: "fixed",
           inset: 0,
           zIndex: 40,
-          background: "rgba(0,0,0,0.35)",
+          background: "rgba(0,0,0,0.25)",
           opacity: menuOpen ? 1 : 0,
           pointerEvents: menuOpen ? "auto" : "none",
-          transition: "opacity 0.25s ease",
+          transition: "opacity 0.2s ease",
         }}
       />
 
-      {/* Drawer panel */}
+      {/* Dropdown panel */}
       <div
         className="md:hidden"
         style={{
           position: "fixed",
-          top: 0,
+          top: "var(--navbar-height, 64px)",
           left: 0,
-          width: "78%",
-          maxWidth: "320px",
-          height: "100dvh",
-          zIndex: 50,
+          right: 0,
+          zIndex: 49,
           background: "#fff",
-          display: "flex",
-          flexDirection: "column",
-          transform: menuOpen ? "translateX(0)" : "translateX(-100%)",
-          transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1)",
-          boxShadow: menuOpen ? "4px 0 24px rgba(0,0,0,0.15)" : "none",
+          borderBottom: "1px solid #e2e8f0",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.10)",
+          transformOrigin: "top center",
+          transform: menuOpen ? "scaleY(1)" : "scaleY(0)",
+          opacity: menuOpen ? 1 : 0,
+          transition: "transform 0.25s cubic-bezier(0.22,1,0.36,1), opacity 0.2s ease",
+          pointerEvents: menuOpen ? "auto" : "none",
         }}
       >
-        {/* Header */}
-        <div style={{ borderBottom: "1px solid #f1f5f9", padding: "20px 24px", flexShrink: 0 }}>
-          <NavbarLogo />
-        </div>
-
-        {/* Links */}
-        <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" as never }}>
-          {navLinks.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={close}
-              style={{
-                display: "flex",
-                padding: "18px 24px",
-                fontSize: "15px",
-                fontWeight: 500,
-                color: "#1e293b",
-                borderBottom: "1px solid #f1f5f9",
-                textDecoration: "none",
-              }}
-            >
-              {l.label}
-            </a>
-          ))}
-          <button
-            type="button"
-            onClick={() => { close(); setIsHiringDialogOpen(true); }}
+        {navLinks.map((l) => (
+          <a
+            key={l.href}
+            href={l.href}
+            onClick={close}
             style={{
               display: "flex",
-              width: "100%",
-              padding: "18px 24px",
+              padding: "16px 24px",
               fontSize: "15px",
-              fontWeight: 600,
-              color: "#0f766e",
-              background: "none",
-              borderTop: "none",
-              borderLeft: "none",
-              borderRight: "none",
+              fontWeight: 500,
+              color: "#1e293b",
               borderBottom: "1px solid #f1f5f9",
-              cursor: "pointer",
-              textAlign: "left",
+              textDecoration: "none",
             }}
           >
-            {t("hiring")}
-          </button>
-        </div>
-
-        {/* CTA pinned at bottom */}
-        <div style={{ borderTop: "1px solid #f1f5f9", padding: "20px 24px", flexShrink: 0 }}>
+            {l.label}
+          </a>
+        ))}
+        <button
+          type="button"
+          onClick={() => { close(); setIsHiringDialogOpen(true); }}
+          style={{
+            display: "flex",
+            width: "100%",
+            padding: "16px 24px",
+            fontSize: "15px",
+            fontWeight: 600,
+            color: "#0f766e",
+            background: "none",
+            border: "none",
+            borderBottom: "1px solid #f1f5f9",
+            cursor: "pointer",
+            textAlign: "left",
+          }}
+        >
+          {t("hiring")}
+        </button>
+        <div style={{ padding: "16px 24px" }}>
           {isHomePage ? (
             <a
               href="#contact"

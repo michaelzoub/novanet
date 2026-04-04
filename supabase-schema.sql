@@ -248,3 +248,19 @@
 --       FOR ALL USING (true) WITH CHECK (true);
 --   END IF;
 -- END $$;
+
+-- ── MIGRATION: job request tracking ─────────────────────────────────────────
+-- Run these in your Supabase SQL editor.
+
+-- 1. Make client_id nullable so contact-form jobs exist before a client is created
+-- ALTER TABLE jobs ALTER COLUMN client_id DROP NOT NULL;
+
+-- 2. Link a job back to the potential_client that originated it
+-- ALTER TABLE jobs ADD COLUMN IF NOT EXISTS potential_client_id UUID REFERENCES potential_clients(id) ON DELETE SET NULL;
+
+-- 3. Add status to potential_clients (submitted | quoting | in_progress | completed)
+-- ALTER TABLE potential_clients ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'submitted';
+
+-- 4. Create index on new columns
+-- CREATE INDEX IF NOT EXISTS idx_jobs_potential_client_id ON jobs(potential_client_id);
+-- CREATE INDEX IF NOT EXISTS idx_potential_clients_status ON potential_clients(status);

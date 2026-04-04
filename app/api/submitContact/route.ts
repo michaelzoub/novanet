@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { potentialClientManager, referralManager } from "@/lib/supabase";
+import { potentialClientManager, referralManager, jobManager } from "@/lib/supabase";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -39,6 +39,21 @@ export async function POST(request: Request) {
       referred_by_referral_profile_id: referralProfile?.id ?? null,
       referral_discount_percent: referralProfile ? 20 : null,
     });
+
+    // Create a corresponding job so it appears in the dashboard job tracker
+    try {
+      await jobManager.createJob({
+        client_id: null,
+        potential_client_id: potentialClient.id,
+        job_type: "Demande de soumission",
+        status: "submitted",
+        location: [0, 0],
+        description: message || null,
+      });
+    } catch (jobError) {
+      // Non-fatal — potential client was saved, job link is a best-effort
+      console.error("Could not create linked job:", jobError);
+    }
 
     if (referralProfile) {
       try {
