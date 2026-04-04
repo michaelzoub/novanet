@@ -38,7 +38,7 @@ const sheetVariants = cva(
     variants: {
       side: {
         left: cn(
-          "inset-y-0 left-0 h-[100dvh] w-3/4 max-w-xs border-r",
+          "inset-y-0 left-0 w-3/4 max-w-xs border-r",
           "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
         ),
         right: cn(

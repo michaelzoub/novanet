@@ -145,18 +145,18 @@ export default function Navbar() {
 
       {/* Mobile Sheet */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen} modal={true}>
-        <SheetContent side="left" className="flex h-[100dvh] flex-col p-0 pt-0">
-          <SheetHeader className="border-b border-slate-100 px-6 py-5">
+        <SheetContent side="left" className="flex flex-col p-0 pt-0 overflow-hidden">
+          <SheetHeader className="shrink-0 border-b border-slate-100 px-6 py-5">
             <SheetTitle className="sr-only">Menu</SheetTitle>
             <NavbarLogo />
           </SheetHeader>
 
-          <nav className="flex flex-col flex-1 py-3">
+          <nav className="flex-1 overflow-y-auto py-3">
             {navLinks.map((l) => (
               <SheetClose key={l.href} asChild>
                 <a
                   href={l.href}
-                  className="px-6 py-4 text-[15px] font-medium text-slate-800 transition-colors hover:bg-slate-50 hover:text-[#0f1f4b] border-b border-slate-100 last:border-0"
+                  className="flex px-6 py-4 text-[15px] font-medium text-slate-800 transition-colors hover:bg-slate-50 hover:text-[#0f1f4b] border-b border-slate-100"
                 >
                   {l.label}
                 </a>
@@ -166,7 +166,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setIsHiringDialogOpen(true)}
-                className="px-6 py-4 text-left text-[15px] font-semibold text-[#0f766e] transition-colors hover:bg-slate-50 border-b border-slate-100"
+                className="flex w-full px-6 py-4 text-left text-[15px] font-semibold text-[#0f766e] transition-colors hover:bg-slate-50 border-b border-slate-100"
               >
                 {t("hiring")}
               </button>
@@ -174,7 +174,7 @@ export default function Navbar() {
           </nav>
 
           {/* Bottom CTA */}
-          <div className="p-6 border-t border-slate-100">
+          <div className="shrink-0 p-6 border-t border-slate-100">
             <SheetClose asChild>
               {isHomePage ? (
                 <a
