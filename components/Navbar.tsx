@@ -204,7 +204,6 @@ export default function Navbar() {
               fontSize: "15px",
               fontWeight: 600,
               color: "#0f766e",
-              borderBottom: "1px solid #f1f5f9",
               background: "none",
               borderTop: "none",
               borderLeft: "none",
