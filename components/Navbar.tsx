@@ -145,7 +145,7 @@ export default function Navbar() {
 
       {/* Mobile Sheet */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen} modal={true}>
-        <SheetContent side="left" className="flex flex-col p-0 pt-0">
+        <SheetContent side="left" className="flex h-[100dvh] flex-col p-0 pt-0">
           <SheetHeader className="border-b border-slate-100 px-6 py-5">
             <SheetTitle className="sr-only">Menu</SheetTitle>
             <NavbarLogo />
