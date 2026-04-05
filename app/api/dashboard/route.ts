@@ -62,11 +62,20 @@ export async function PATCH(request: Request) {
 
     if (type === "job") {
       const updated = await jobManager.updateJob(id, { status });
+      // Sync to linked prospect so both stay in lock-step
+      if (updated.potential_client_id) {
+        await potentialClientManager.updateStatus(updated.potential_client_id, status).catch(() => {});
+      }
       return NextResponse.json({ success: true, data: updated });
     }
 
     if (type === "prospect") {
       const updated = await potentialClientManager.updateStatus(id, status);
+      // Sync to linked job so both stay in lock-step
+      const linkedJob = await jobManager.getJobByPotentialClientId(id).catch(() => null);
+      if (linkedJob) {
+        await jobManager.updateJob(linkedJob.id, { status }).catch(() => {});
+      }
       return NextResponse.json({ success: true, data: updated });
     }
 

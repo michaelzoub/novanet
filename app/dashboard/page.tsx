@@ -15,6 +15,14 @@ type Job = {
   status: string;
   description?: string | null;
   created_at: string;
+  // Joined from potential_clients table
+  potential_clients?: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone?: string | null;
+  } | null;
 };
 
 type Prospect = {
@@ -27,6 +35,12 @@ type Prospect = {
   status: string;
   referral_discount_percent?: number | null;
   created_at: string;
+  // Joined from referral_profiles table
+  referral_profiles?: {
+    full_name: string;
+    referral_code: string;
+    reward_percent: number;
+  } | null;
 };
 
 type Client = {
@@ -83,6 +97,7 @@ const T = {
     noReferrals: "Aucun profil de parrainage.",
     chargement: "Chargement…",
     type: "Type",
+    contact: "Contact",
     description: "Description",
     status: "Statut",
     changeStatus: "Changer statut",
@@ -91,6 +106,7 @@ const T = {
     email: "Email",
     phone: "Téléphone",
     message: "Message",
+    referredBy: "Parrainé par",
     actions: "Actions",
     toClient: "→ Client",
     address: "Adresse",
@@ -152,6 +168,7 @@ const T = {
     noReferrals: "No referral profiles.",
     chargement: "Loading…",
     type: "Type",
+    contact: "Contact",
     description: "Description",
     status: "Status",
     changeStatus: "Change status",
@@ -160,6 +177,7 @@ const T = {
     email: "Email",
     phone: "Phone",
     message: "Message",
+    referredBy: "Referred by",
     actions: "Actions",
     toClient: "→ Client",
     address: "Address",
@@ -623,10 +641,10 @@ export default function DashboardPage() {
             ) : (
               <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-sm">
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[640px] text-sm">
+                  <table className="w-full min-w-[760px] text-sm">
                     <thead>
                       <tr className="border-b border-slate-200 bg-slate-50/90">
-                        {[t.type, t.description, t.status, t.changeStatus, t.createdAt].map((h) => (
+                        {[t.contact, t.type, t.description, t.status, t.changeStatus, t.createdAt].map((h) => (
                           <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                             {h}
                           </th>
@@ -636,8 +654,20 @@ export default function DashboardPage() {
                     <tbody>
                       {filteredJobs?.map((job, i) => (
                         <tr key={job.id} className={i % 2 === 0 ? "border-b border-slate-100 bg-white" : "border-b border-slate-100 bg-slate-50/50"}>
+                          <td className="px-4 py-3">
+                            {job.potential_clients ? (
+                              <div>
+                                <p className="font-semibold text-[#0f1f4b]">
+                                  {job.potential_clients.first_name} {job.potential_clients.last_name}
+                                </p>
+                                <p className="text-[11px] text-slate-400">{job.potential_clients.email}</p>
+                              </div>
+                            ) : (
+                              <span className="text-slate-400">—</span>
+                            )}
+                          </td>
                           <td className="px-4 py-3 font-medium text-[#0f1f4b]">{job.job_type}</td>
-                          <td className="max-w-[200px] truncate px-4 py-3 text-slate-600">{job.description ?? "—"}</td>
+                          <td className="max-w-[160px] truncate px-4 py-3 text-slate-600">{job.description ?? "—"}</td>
                           <td className="px-4 py-3"><Badge status={job.status} lang={lang} /></td>
                           <td className="px-4 py-3">
                             <StatusSelect value={job.status} lang={lang} onChange={(v) => updateJobStatus(job.id, v)} />
@@ -689,10 +719,10 @@ export default function DashboardPage() {
             ) : (
               <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-sm">
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[720px] text-sm">
+                  <table className="w-full min-w-[800px] text-sm">
                     <thead>
                       <tr className="border-b border-slate-200 bg-slate-50/90">
-                        {[t.name, t.email, t.phone, t.message, t.status, t.changeStatus, t.actions].map((h) => (
+                        {[t.name, t.email, t.phone, t.message, t.referredBy, t.status, t.changeStatus, t.actions].map((h) => (
                           <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
                             {h}
                           </th>
@@ -704,15 +734,25 @@ export default function DashboardPage() {
                         <tr key={p.id} className={i % 2 === 0 ? "border-b border-slate-100 bg-white" : "border-b border-slate-100 bg-slate-50/50"}>
                           <td className="px-4 py-3 font-semibold text-[#0f1f4b]">
                             {p.first_name} {p.last_name}
-                            {!!p.referral_discount_percent && (
-                              <span className="ml-1.5 rounded bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold text-teal-700">
-                                -{p.referral_discount_percent}%
-                              </span>
-                            )}
                           </td>
                           <td className="px-4 py-3 text-slate-600">{p.email}</td>
                           <td className="whitespace-nowrap px-4 py-3 text-slate-600">{p.phone ?? "—"}</td>
                           <td className="max-w-[160px] truncate px-4 py-3 text-slate-500">{p.message ?? "—"}</td>
+                          <td className="px-4 py-3">
+                            {p.referral_profiles ? (
+                              <div>
+                                <p className="font-medium text-teal-700">{p.referral_profiles.full_name}</p>
+                                <p className="text-[11px] text-slate-400">
+                                  {p.referral_profiles.referral_code}
+                                  {!!p.referral_discount_percent && (
+                                    <span className="ml-1.5 text-teal-600">· -{p.referral_discount_percent}%</span>
+                                  )}
+                                </p>
+                              </div>
+                            ) : (
+                              <span className="text-slate-400">—</span>
+                            )}
+                          </td>
                           <td className="px-4 py-3"><Badge status={p.status ?? "submitted"} lang={lang} /></td>
                           <td className="px-4 py-3">
                             <StatusSelect value={p.status ?? "submitted"} lang={lang} onChange={(v) => updateProspectStatus(p.id, v)} />

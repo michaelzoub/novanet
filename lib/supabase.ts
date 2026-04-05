@@ -138,11 +138,11 @@ export const clientManager = {
 // Job operations
 // These use supabaseAdmin (service role) to bypass RLS for server-side operations
 export const jobManager = {
-  // Get all jobs
+  // Get all jobs (with linked prospect info)
   async getAllJobs() {
     const { data, error } = await supabaseAdmin
       .from("jobs")
-      .select("*")
+      .select("*, potential_clients(id, first_name, last_name, email, phone)")
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -222,16 +222,28 @@ export const jobManager = {
     return data as Job;
   },
 
-  // Get jobs by status
+  // Get jobs by status (with linked prospect info)
   async getJobsByStatus(status: string) {
     const { data, error } = await supabaseAdmin
       .from("jobs")
-      .select("*")
+      .select("*, potential_clients(id, first_name, last_name, email, phone)")
       .eq("status", status)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
     return data as Job[];
+  },
+
+  // Find the job linked to a given potential_client (for reverse sync)
+  async getJobByPotentialClientId(potentialClientId: string) {
+    const { data, error } = await supabaseAdmin
+      .from("jobs")
+      .select("id, status")
+      .eq("potential_client_id", potentialClientId)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data as { id: string; status: string } | null;
   },
 
   // Update a job
@@ -302,11 +314,11 @@ export const potentialClientManager = {
     return data as PotentialClient;
   },
 
-  // Get all potential clients
+  // Get all potential clients (with referral profile info)
   async getAllPotentialClients() {
     const { data, error } = await supabaseAdmin
       .from("potential_clients")
-      .select("*")
+      .select("*, referral_profiles(full_name, referral_code, reward_percent)")
       .order("created_at", { ascending: false });
 
     if (error) throw error;
