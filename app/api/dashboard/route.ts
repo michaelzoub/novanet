@@ -95,11 +95,13 @@ export async function POST(request: Request) {
       }
 
       const client = await potentialClientManager.convertToClient(potentialClientId, name, address);
+      // Mark the prospect as completed so it doesn't reappear on refresh
+      await potentialClientManager.updateStatus(potentialClientId, "completed").catch(() => {});
       return NextResponse.json({ success: true, data: client });
     }
 
     if (action === "add_job") {
-      const { clientId, jobType, description } = body;
+      const { clientId, jobType, description, jobStatus } = body;
       if (!clientId || !jobType) {
         return NextResponse.json({ error: "clientId and jobType are required." }, { status: 400 });
       }
@@ -108,7 +110,7 @@ export async function POST(request: Request) {
         client_id: clientId,
         potential_client_id: null,
         job_type: jobType,
-        status: "in_progress",
+        status: jobStatus || "quoting",
         location: [0, 0],
         description: description || null,
       });

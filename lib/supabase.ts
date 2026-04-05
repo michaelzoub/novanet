@@ -187,25 +187,36 @@ export const jobManager = {
 
   // Create a new job
   async createJob(job: Omit<Job, "id" | "created_at" | "updated_at">) {
+    // Strip keys with null/undefined values so columns that may not exist yet
+    // (e.g. potential_client_id before migration) don't cause insert errors.
+    const payload = Object.fromEntries(
+      Object.entries(job).filter(([, v]) => v !== null && v !== undefined),
+    );
+
     const { data, error } = await supabaseAdmin
       .from("jobs")
-      .insert(job)
+      .insert(payload)
       .select()
       .single();
 
     if (error) throw error;
 
-    // Only link to client if client_id is provided
+    // Only link to client if client_id is provided — non-fatal so a missing
+    // RPC function or constraint doesn't roll back the already-saved job.
     if (job.client_id) {
-      await supabaseAdmin
-        .from("clients")
-        .update({
-          current_job_id: data.id,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", job.client_id);
+      try {
+        await supabaseAdmin
+          .from("clients")
+          .update({
+            current_job_id: data.id,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", job.client_id);
 
-      await clientManager.incrementJobCount(job.client_id);
+        await clientManager.incrementJobCount(job.client_id);
+      } catch (e) {
+        console.error("createJob: post-insert client update failed (non-fatal):", e);
+      }
     }
 
     return data as Job;

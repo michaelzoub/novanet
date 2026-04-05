@@ -68,16 +68,16 @@ const T = {
     refresh: "Actualiser",
     loading: "…",
     logout: "Déconnexion",
-    tabJobs: "Demandes",
+    tabJobs: "Travaux",
     tabProspects: "Prospects",
     tabClients: "Clients",
     tabReferrals: "Parrainages",
     filterAll: "Tous",
-    filterSubmitted: "Soumis",
+    filterSubmitted: "Demande",
     filterQuoting: "En devis",
     filterInProgress: "En cours",
     filterCompleted: "Complété",
-    noJobs: "Aucune demande.",
+    noJobs: "Aucun travail.",
     noProspects: "Aucun prospect.",
     noClients: "Aucun client.",
     noReferrals: "Aucun profil de parrainage.",
@@ -137,16 +137,16 @@ const T = {
     refresh: "Refresh",
     loading: "…",
     logout: "Logout",
-    tabJobs: "Requests",
+    tabJobs: "Jobs",
     tabProspects: "Prospects",
     tabClients: "Clients",
     tabReferrals: "Referrals",
     filterAll: "All",
-    filterSubmitted: "Submitted",
+    filterSubmitted: "Request",
     filterQuoting: "Quoting",
     filterInProgress: "In Progress",
     filterCompleted: "Completed",
-    noJobs: "No requests.",
+    noJobs: "No jobs.",
     noProspects: "No prospects.",
     noClients: "No clients.",
     noReferrals: "No referral profiles.",
@@ -204,7 +204,7 @@ const STATUS_STYLE: Record<string, string> = {
 
 function statusLabel(status: string, lang: "fr" | "en") {
   const map: Record<string, { fr: string; en: string }> = {
-    submitted: { fr: "Soumis", en: "Submitted" },
+    submitted: { fr: "Demande", en: "Request" },
     quoting: { fr: "En devis", en: "Quoting" },
     in_progress: { fr: "En cours", en: "In Progress" },
     completed: { fr: "Complété", en: "Completed" },
@@ -280,6 +280,7 @@ export default function DashboardPage() {
   // Add-job modal
   const [addingJobFor, setAddingJobFor] = useState<Client | null>(null);
   const [addJobType, setAddJobType] = useState("");
+  const [addJobStatus, setAddJobStatus] = useState<JobStatus>("quoting");
   const [addJobDesc, setAddJobDesc] = useState("");
   const [addJobLoading, setAddJobLoading] = useState(false);
   const [addJobError, setAddJobError] = useState("");
@@ -351,10 +352,8 @@ export default function DashboardPage() {
 
   const switchTab = (tab: Tab) => {
     setActiveTab(tab);
-    if (tab === "jobs" && jobs === null) loadTab(tab);
-    else if (tab === "prospects" && prospects === null) loadTab(tab);
-    else if (tab === "clients" && clients === null) loadTab(tab);
-    else if (tab === "referrals" && referrals === null) loadTab(tab);
+    // Always reload on tab switch so counts and statuses stay fresh
+    loadTab(tab);
   };
 
   // ── Status updates ────────────────────────────────────────────────────────
@@ -417,6 +416,7 @@ export default function DashboardPage() {
   const openAddJob = (c: Client) => {
     setAddingJobFor(c);
     setAddJobType(t.jobTypes[0]);
+    setAddJobStatus("quoting");
     setAddJobDesc("");
     setAddJobError("");
   };
@@ -435,6 +435,7 @@ export default function DashboardPage() {
           action: "add_job",
           clientId: addingJobFor.id,
           jobType: addJobType,
+          jobStatus: addJobStatus,
           description: addJobDesc || null,
         }),
       });
@@ -920,6 +921,20 @@ export default function DashboardPage() {
                   {t.jobTypes.map((jt) => (
                     <option key={jt} value={jt}>{jt}</option>
                   ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-[#0f1f4b]">
+                  {t.status}
+                </label>
+                <select
+                  value={addJobStatus}
+                  onChange={(e) => setAddJobStatus(e.target.value as JobStatus)}
+                  className="w-full rounded-sm border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#0f1f4b]"
+                >
+                  <option value="quoting">{t.filterQuoting}</option>
+                  <option value="in_progress">{t.filterInProgress}</option>
+                  <option value="completed">{t.filterCompleted}</option>
                 </select>
               </div>
               <div>
