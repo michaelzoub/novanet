@@ -138,7 +138,12 @@ export const clientManager = {
 // Manually attach client info to jobs that have a client_id but no potential_client_id.
 // We can't use Supabase's implicit join syntax because it requires a FK constraint
 // between jobs.client_id and clients.id which may not exist in the schema.
-async function attachClientInfo(jobs: Record<string, unknown>[]) {
+type JobWithClient = Job & {
+  potential_clients?: { id: string; first_name: string; last_name: string; email: string; phone?: string | null } | null;
+  clients?: { id: string; name: string; email?: string | null; phone?: string | null } | null;
+};
+
+async function attachClientInfo(jobs: JobWithClient[]): Promise<JobWithClient[]> {
   const clientIds = [...new Set(
     jobs
       .filter((j) => j.client_id && !j.potential_client_id)
@@ -152,11 +157,11 @@ async function attachClientInfo(jobs: Record<string, unknown>[]) {
     .select("id, name, email, phone")
     .in("id", clientIds);
 
-  const clientMap = new Map((clientRows ?? []).map((c: Record<string, unknown>) => [c.id, c]));
+  const clientMap = new Map((clientRows ?? []).map((c: { id: string; name: string; email?: string | null; phone?: string | null }) => [c.id, c]));
 
   return jobs.map((j) =>
-    j.client_id && !j.potential_client_id && clientMap.has(j.client_id as string)
-      ? { ...j, clients: clientMap.get(j.client_id as string) }
+    j.client_id && !j.potential_client_id && clientMap.has(j.client_id)
+      ? { ...j, clients: clientMap.get(j.client_id) }
       : j,
   );
 }
