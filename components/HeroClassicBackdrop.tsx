@@ -83,10 +83,20 @@ export default function HeroClassicBackdrop({
       <div className="pointer-events-none absolute inset-0">
         <HeroRestoredPhotoFill
           alt={copy.heroImageAlt}
-          className="bg-[position:34%_42%] sm:bg-[position:68%_center] md:bg-[position:62%_center]"
+          className="bg-[position:22%_68%] sm:bg-[position:68%_center] md:bg-[position:62%_center]"
         />
+        {/* Mobile: solid white on left (text zone), fades so truck shows on the right */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 md:hidden"
+          style={{
+            background:
+              "linear-gradient(to right, rgb(255,255,255) 0%, rgba(255,255,255,0.98) 42%, rgba(255,255,255,0.72) 62%, rgba(255,255,255,0.2) 82%, transparent 100%)",
+          }}
+          aria-hidden
+        />
+        {/* Desktop: original left-to-right reveal */}
+        <div
+          className="absolute inset-0 hidden md:block"
           style={{
             background:
               "linear-gradient(to right, rgb(255 255 255) 0%, rgba(255, 255, 255, 0.97) 30%, rgba(255, 255, 255, 0.78) 44%, rgba(255, 255, 255, 0.28) 62%, transparent 100%)",
@@ -99,62 +109,62 @@ export default function HeroClassicBackdrop({
         />
       </div>
 
-      <div className="relative z-[1] w-full max-w-[1120px] px-5 py-12 pl-6 sm:px-10 sm:py-16 sm:pl-8 md:py-[clamp(3rem,8vw,5.5rem)] md:pl-12 lg:pl-16">
+      <div className="relative z-[1] w-full max-w-[1120px] px-5 py-8 sm:px-10 sm:py-16 sm:pl-8 md:py-[clamp(3rem,8vw,5.5rem)] md:pl-12 lg:pl-16">
         <div className="motion-reduce:transition-none">
-          <div className="mb-6 md:mb-8">
-            <div className="inline-flex max-w-[min(100%,calc(100vw-2.75rem))] items-stretch overflow-hidden border border-slate-200/90 bg-slate-50/70 shadow-[0_1px_0_rgba(15,31,75,0.06)]">
+          <div className="mb-4 md:mb-8">
+            <div className="inline-flex items-stretch overflow-hidden border border-slate-200/90 bg-white/90 shadow-[0_1px_0_rgba(15,31,75,0.06)]">
               <span className="w-1 shrink-0 bg-[#0f1f4b]" aria-hidden />
-              <span className="min-w-0 whitespace-nowrap px-3 py-2 text-[9px] font-semibold uppercase leading-snug tracking-[0.18em] text-slate-600 text-ellipsis sm:px-4 sm:py-2.5 sm:text-[11px] sm:tracking-[0.2em]">
+              <span className="min-w-0 px-2.5 py-1.5 text-[7.5px] font-semibold uppercase leading-snug tracking-[0.12em] text-slate-600 sm:px-4 sm:py-2.5 sm:text-[11px] sm:tracking-[0.2em]">
                 {copy.badge}
               </span>
             </div>
           </div>
 
-          <h1 className="max-w-[18ch] text-balance font-display text-[clamp(2.75rem,7.5vw,6.75rem)] font-semibold uppercase leading-[0.94] tracking-[-0.02em] text-[#0f1f4b]">
+          <h1 className="max-w-[14ch] text-balance font-display text-[clamp(2rem,8vw,6.75rem)] font-semibold uppercase leading-[0.94] tracking-[-0.02em] text-[#0f1f4b]">
             {copy.titleLine1}
             <br />
             {copy.titleLine2}
           </h1>
 
-          <p className="mt-6 max-w-[min(28rem,100%)] text-pretty text-[15px] font-normal leading-[1.65] text-slate-700 sm:mt-7 sm:text-base sm:leading-[1.7] md:max-w-[450px]">
+          <p className="mt-4 max-w-[min(20rem,78%)] text-pretty text-[13px] font-normal leading-[1.6] text-slate-800 sm:mt-7 sm:text-base sm:leading-[1.7] sm:max-w-[28rem] md:max-w-[450px]">
             {copy.description}
           </p>
 
-          <div className="mt-9 flex flex-wrap gap-3.5 sm:mt-10">
-            <a href="#contact" className="btn-institutional-primary">
+          <div className="mt-5 flex flex-wrap gap-2.5 sm:mt-10 sm:gap-3.5">
+            <a href="#contact" className="btn-institutional-primary px-5 py-2 text-[9.5px] sm:px-7 sm:py-3 sm:text-[11px]">
               {copy.primaryCta}
             </a>
-            <a href="#resultats" className="btn-institutional-secondary">
+            <a href="#resultats" className="btn-institutional-secondary bg-white/70 px-5 py-2 text-[9.5px] sm:bg-white sm:px-7 sm:py-3 sm:text-[11px]">
               {copy.secondaryCta}
             </a>
           </div>
 
           <div
             ref={statsRef}
-            className="mt-12 flex flex-wrap gap-x-11 gap-y-7 border-t border-slate-200/90 pt-9 sm:mt-14 sm:gap-x-14 sm:gap-y-8 sm:pt-10"
+            className="mt-7 grid grid-cols-3 gap-x-4 sm:mt-14 md:flex md:flex-wrap md:gap-x-14 md:gap-y-8"
           >
             <div>
-              <div className="font-display text-4xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-5xl">
+              <div className="font-display text-[1.5rem] font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-5xl">
                 <span data-t="5">5</span>
                 <span className="text-amber-500">★</span>
               </div>
-              <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+              <div className="mt-1.5 text-[8px] font-semibold uppercase tracking-[0.15em] text-slate-500 sm:mt-2 sm:text-[10px] sm:tracking-[0.2em]">
                 Google
               </div>
             </div>
             <div>
-              <div className="font-display text-4xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-5xl">
+              <div className="font-display text-[1.5rem] font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-5xl">
                 <span data-t="100">100</span>%
               </div>
-              <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+              <div className="mt-1.5 text-[8px] font-semibold uppercase tracking-[0.15em] text-slate-500 sm:mt-2 sm:text-[10px] sm:tracking-[0.2em]">
                 {copy.satisfaction}
               </div>
             </div>
             <div>
-              <div className="font-display text-4xl font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-5xl">
+              <div className="font-display text-[1.5rem] font-semibold leading-none tabular-nums text-[#0f1f4b] sm:text-5xl">
                 <span data-t="24">24</span>H
               </div>
-              <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+              <div className="mt-1.5 text-[8px] font-semibold uppercase tracking-[0.15em] text-slate-500 sm:mt-2 sm:text-[10px] sm:tracking-[0.2em]">
                 {copy.response}
               </div>
             </div>

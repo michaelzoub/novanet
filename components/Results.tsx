@@ -133,8 +133,6 @@ export default function Results() {
   const [isDragging, setIsDragging] = useState(false);
   // uiReady = wait only for slide 0 images (before/after) so the first paint isn't grey.
   const [uiReady, setUiReady] = useState(false);
-  const [autoplayKey, setAutoplayKey] = useState(0);
-
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const loadedUrlsRef = useRef<Set<string>>(new Set());
   const switchReqRef = useRef(0);
@@ -243,16 +241,6 @@ export default function Results() {
     [preloadSlide],
   );
 
-  // Auto-rotate slides (disabled when user prefers reduced motion).
-  // autoplayKey resets the interval whenever the user manually navigates.
-  useEffect(() => {
-    if (reduceMotion) return;
-    const id = window.setInterval(() => {
-      switchTo((currentSlideRef.current + 1) % beforeAfterPairs.length);
-    }, 6000);
-    return () => window.clearInterval(id);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [switchTo, reduceMotion, autoplayKey]);
 
   const computePercent = (clientX: number) => {
     const el = sliderRef.current;
@@ -462,7 +450,6 @@ export default function Results() {
             type="button"
             onClick={() => {
               if (isSwitching) return;
-              setAutoplayKey((k) => k + 1);
               switchTo((currentSlideRef.current - 1 + beforeAfterPairs.length) % beforeAfterPairs.length);
             }}
             className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-[#0f1f4b] hover:text-white transition-colors z-20"
@@ -473,7 +460,6 @@ export default function Results() {
             type="button"
             onClick={() => {
               if (isSwitching) return;
-              setAutoplayKey((k) => k + 1);
               switchTo((currentSlideRef.current + 1) % beforeAfterPairs.length);
             }}
             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-[#0f1f4b] hover:text-white transition-colors z-20"
@@ -488,7 +474,6 @@ export default function Results() {
                 type="button"
                 onClick={() => {
                   if (isSwitching) return;
-                  setAutoplayKey((k) => k + 1);
                   switchTo(idx);
                 }}
                 className={`h-1.5 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none ${
