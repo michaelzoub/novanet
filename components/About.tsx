@@ -149,13 +149,6 @@ export default function About() {
     goTo(currentRef.current - 1);
   }, [goTo]);
 
-  useEffect(() => {
-    if (reduceMotion) return;
-    const id = window.setInterval(() => {
-      next();
-    }, 5500);
-    return () => window.clearInterval(id);
-  }, [next, reduceMotion]);
 
   return (
     <section id="about" className="bg-gray-50 py-20">

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Phone } from "lucide-react";
+import { Phone, Facebook, Linkedin } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { scrollToSectionById } from "@/lib/scroll-to-section";
 import HiringDialog from "./HiringDialog";
@@ -105,6 +105,26 @@ export default function Footer() {
                 {PHONE_DISPLAY}
               </span>
             </a>
+            <div className="mt-4 flex items-center gap-3">
+              <a
+                href="https://www.facebook.com/share/1aQPKtddCf/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="text-gray-500 transition-colors hover:text-[#0f1f4b]"
+              >
+                <Facebook className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.linkedin.com/company/nova-net-lavage-ext%C3%A9rieur/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="text-gray-500 transition-colors hover:text-[#0f1f4b]"
+              >
+                <Linkedin className="h-4 w-4" />
+              </a>
+            </div>
             <div className="mt-3">
               <button
                 type="button"
