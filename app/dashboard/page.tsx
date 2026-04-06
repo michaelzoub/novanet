@@ -23,6 +23,13 @@ type Job = {
     email: string;
     phone?: string | null;
   } | null;
+  // Joined from clients table (for jobs created directly from a client)
+  clients?: {
+    id: string;
+    name: string;
+    email?: string | null;
+    phone?: string | null;
+  } | null;
 };
 
 type Prospect = {
@@ -661,6 +668,13 @@ export default function DashboardPage() {
                                   {job.potential_clients.first_name} {job.potential_clients.last_name}
                                 </p>
                                 <p className="text-[11px] text-slate-400">{job.potential_clients.email}</p>
+                              </div>
+                            ) : job.clients ? (
+                              <div>
+                                <p className="font-semibold text-[#0f1f4b]">{job.clients.name}</p>
+                                {job.clients.email && (
+                                  <p className="text-[11px] text-slate-400">{job.clients.email}</p>
+                                )}
                               </div>
                             ) : (
                               <span className="text-slate-400">—</span>

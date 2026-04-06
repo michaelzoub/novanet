@@ -138,11 +138,11 @@ export const clientManager = {
 // Job operations
 // These use supabaseAdmin (service role) to bypass RLS for server-side operations
 export const jobManager = {
-  // Get all jobs (with linked prospect info)
+  // Get all jobs (with linked prospect or client info)
   async getAllJobs() {
     const { data, error } = await supabaseAdmin
       .from("jobs")
-      .select("*, potential_clients(id, first_name, last_name, email, phone)")
+      .select("*, potential_clients(id, first_name, last_name, email, phone), clients(id, name, email, phone)")
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -222,11 +222,11 @@ export const jobManager = {
     return data as Job;
   },
 
-  // Get jobs by status (with linked prospect info)
+  // Get jobs by status (with linked prospect or client info)
   async getJobsByStatus(status: string) {
     const { data, error } = await supabaseAdmin
       .from("jobs")
-      .select("*, potential_clients(id, first_name, last_name, email, phone)")
+      .select("*, potential_clients(id, first_name, last_name, email, phone), clients(id, name, email, phone)")
       .eq("status", status)
       .order("created_at", { ascending: false });
 
