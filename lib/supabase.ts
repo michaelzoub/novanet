@@ -135,6 +135,32 @@ export const clientManager = {
   },
 };
 
+// Manually attach client info to jobs that have a client_id but no potential_client_id.
+// We can't use Supabase's implicit join syntax because it requires a FK constraint
+// between jobs.client_id and clients.id which may not exist in the schema.
+async function attachClientInfo(jobs: Record<string, unknown>[]) {
+  const clientIds = [...new Set(
+    jobs
+      .filter((j) => j.client_id && !j.potential_client_id)
+      .map((j) => j.client_id as string),
+  )];
+
+  if (clientIds.length === 0) return jobs;
+
+  const { data: clientRows } = await supabaseAdmin
+    .from("clients")
+    .select("id, name, email, phone")
+    .in("id", clientIds);
+
+  const clientMap = new Map((clientRows ?? []).map((c: Record<string, unknown>) => [c.id, c]));
+
+  return jobs.map((j) =>
+    j.client_id && !j.potential_client_id && clientMap.has(j.client_id as string)
+      ? { ...j, clients: clientMap.get(j.client_id as string) }
+      : j,
+  );
+}
+
 // Job operations
 // These use supabaseAdmin (service role) to bypass RLS for server-side operations
 export const jobManager = {
@@ -142,11 +168,11 @@ export const jobManager = {
   async getAllJobs() {
     const { data, error } = await supabaseAdmin
       .from("jobs")
-      .select("*, potential_clients(id, first_name, last_name, email, phone), clients(id, name, email, phone)")
+      .select("*, potential_clients(id, first_name, last_name, email, phone)")
       .order("created_at", { ascending: false });
 
     if (error) throw error;
-    return data as Job[];
+    return attachClientInfo(data ?? []);
   },
 
   // Get jobs by client ID
@@ -226,12 +252,12 @@ export const jobManager = {
   async getJobsByStatus(status: string) {
     const { data, error } = await supabaseAdmin
       .from("jobs")
-      .select("*, potential_clients(id, first_name, last_name, email, phone), clients(id, name, email, phone)")
+      .select("*, potential_clients(id, first_name, last_name, email, phone)")
       .eq("status", status)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
-    return data as Job[];
+    return attachClientInfo(data ?? []);
   },
 
   // Find the job linked to a given potential_client (for reverse sync)
